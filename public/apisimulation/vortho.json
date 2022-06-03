@@ -1,0 +1,74 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "wall1",
+      "type": "Feature",
+      "properties": {
+        "name": "wall1",
+        "photo": "",
+        "min": 0,
+        "max": 10
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            9.954301780966361,
+            53.522835138166606
+          ],
+          [
+            9.954317514288904,
+            53.52196815057045
+          ]
+        ]
+      }
+    },
+    {
+      "id": "wall2",
+      "type": "Feature",
+      "properties": {
+        "name": "wall2",
+        "photo": "",
+        "min": 0,
+        "max": 10
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            9.954303933413216,
+            53.5242488765115
+          ],
+          [
+            9.95430269940571,
+            53.523438626428046
+          ]
+        ]
+      }
+    },
+    {
+      "id": "wall3",
+      "type": "Feature",
+      "properties": {
+        "name": "wall3",
+        "photo": "",
+        "min": 0,
+        "max": 10
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            9.952001221907329,
+            53.52103299093593
+          ],
+          [
+            9.950910650207842,
+            53.52127660307192
+          ]
+        ]
+      }
+    }
+  ]
+}
