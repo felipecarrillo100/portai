@@ -24,6 +24,13 @@ import {
 } from "./components/contextmenu/FeatureContextmenu";
 import {ContextmenuRecords} from "./components/contextmenu/ContextmenuRecords";
 import {SortableListForm} from "./forms/SortableListForm";
+import {LayerControlForm} from "./forms/layercontrol/LayerControlForm";
+import {CartesianMapForm} from "./forms/cartesian/CartesianMapForm";
+import {Connect3DTilesForm} from "./forms/connect/Connect3DTilesForm";
+import {Feature} from "@luciad/ria/model/feature/Feature";
+import {ConnectDronePhotoForm} from "./forms/connect/ConnectDronePhotoForm";
+import {ConnectLTSForm} from "./forms/connect/ConnectLTSForm";
+import {ConnectWMTSForm} from "./forms/connect/ConnectWMTSForm";
 
 
 interface StateProps {
@@ -54,10 +61,16 @@ const App: React.FC = () => {
         }
     }, [myContextMenu.current])
 
-    const createForm = (parameters: { formName: string }) => {
+    const createForm = (parameters: { formName: string; data?: any }) => {
         switch (parameters.formName) {
             case "ConnectWMS":
                 FormManager.openForm(FormHolders.LEFT, <ConnectWMSForm  />)
+                break;
+            case "ConnectLTS":
+                FormManager.openForm(FormHolders.LEFT, <ConnectLTSForm />)
+                break;
+            case "ConnectWMTS":
+                FormManager.openForm(FormHolders.LEFT, <ConnectWMTSForm />)
                 break;
             case "ConnectWFS":
                 FormManager.openForm(FormHolders.LEFT, <ConnectWFSForm />)
@@ -65,11 +78,24 @@ const App: React.FC = () => {
             case "ConnectBingmaps":
                 FormManager.openForm(FormHolders.LEFT, <ConnectBingmapsForm />)
                 break;
+            case "Connect3DTilesForm":
+                FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm />)
+                break;
             case "ConnectVOrthophoto":
                 FormManager.openForm(FormHolders.LEFT, <ConnectVOrthoPhotoForm />)
                 break;
+            case "DronePhoto":
+                FormManager.openForm(FormHolders.LEFT, <ConnectDronePhotoForm />)
+                break;
             case "SortableListForm":
-                FormManager.openForm(FormHolders.LEFT, <SortableListForm />)
+                FormManager.openForm(FormHolders.RIGHT, <LayerControlForm />)
+                break;
+            case "CartesianMapForm":
+                if (parameters.data) {
+                    const feature = parameters.data.feature as Feature;
+                    const type = parameters.data.type as string;
+                    FormManager.openForm(FormHolders.BOTTOM, <CartesianMapForm feature={feature} type={type}/>)
+                }
                 break;
         }
     }
@@ -112,6 +138,7 @@ const App: React.FC = () => {
                 </AppContent>
                 <FormHolder id={FormHolders.LEFT} />
                 <FormHolder id={FormHolders.RIGHT} />
+                <FormHolder id={FormHolders.BOTTOM} />
                 <FeatureContextmenu ref={myContextMenu} anchorEl={contextMenuAnchorRef.current} />
             </div>
         </div>

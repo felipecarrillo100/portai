@@ -1,0 +1,31 @@
+.mouse-coordinate-readout {
+  --text-color: white;
+  --halo-color: black;
+
+  position: absolute;
+  width: fit-content;
+  left: 50%;
+  transform: translate(-50%, 0);
+  right: 0;
+  bottom: 15px;
+  display: flex;
+  flex-direction: row;
+  text-align: right;
+
+  color: var(--text-color);
+  text-shadow: -1px -1px 0 var(--halo-color),
+  1px -1px 0 var(--halo-color),
+  -1px 1px 0 var(--halo-color),
+  1px 1px 0 var(--halo-color);
+
+  pointer-events: none;
+  font-family: monospace;
+}
+
+.mouse-coordinates {
+  width: 14em;
+}
+
+.mouse-height {
+  width: 4.1em;
+}

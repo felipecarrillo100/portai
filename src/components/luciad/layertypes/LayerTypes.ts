@@ -15,4 +15,5 @@ export enum LayerTypes {
     FeaturesFileLayer = "FeaturesFileLayer",
     DatabaseRasterTileset = "DatabaseRasterTileset",
     VOrthophotoAPILayer = "VOrthophotoAPILayer",
+    DronePhotoAPILayer = "DronePhotoAPILayer",
 }

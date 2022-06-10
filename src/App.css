@@ -15,12 +15,14 @@
 @media (min-width: 532px) {
   .AppBody {
     top: 56px;
+    bottom: 0;
   }
 }
 
 @media (min-width: 600px) {
   .AppBody {
     top: 64px;
+    bottom: 0;
   }
 }
 
@@ -28,6 +30,7 @@
 @media (min-width: 900px) {
   .AppBody {
     top: 68.5px;
+    bottom: 0;
   }
 }
 

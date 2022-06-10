@@ -21,6 +21,7 @@ interface FormHolderObjectType  {
 export enum FormHolders {
     LEFT= "LEFT",
     RIGHT= "RIGHT",
+    BOTTOM = "BOTTOM",
 }
 
 const FormHolder: React.FC<Props> = ( props: Props ) => {

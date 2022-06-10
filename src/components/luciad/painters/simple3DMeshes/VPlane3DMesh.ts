@@ -24,12 +24,7 @@
  * A 3D cylinder mesh.
  **/
 export class VPlane3DMesh {
-
-  private readonly _radius: number;
-  private readonly _height: number;
-  private readonly _sliceCount: number;
-  private readonly _indices: number[];
-  private _zOffset: number;
+  private data: { indices: number[]; positions: number[]; texCoords: number[] };
 
   /**
    * Creates a 3D cylinder mesh
@@ -38,33 +33,36 @@ export class VPlane3DMesh {
    * @param height the height of the cylinder
    * @param sliceCount the number of slices (subdivisions) of the side surface of the stick and the tip
    */
-  constructor(radius: number, height: number, sliceCount: number) {
-    this._radius = radius;
-    this._height = height;
-    this._sliceCount = sliceCount;
-
-    this._indices = [];
-    this._zOffset = 0;
-  }
-
-  get zOffset(): number {
-    return this._zOffset;
-  }
-
-  set zOffset(value: number) {
-    this._zOffset = value;
+  constructor(width: number, height: number) {
+      const positions = [
+        0, -width / 2, height / 2, // vertex 0
+        0, width / 2, -height / 2, // vertex 1
+        0, -width / 2, -height / 2, // vertex 2
+        0, width / 2, height / 2  // vertex 3
+      ];
+      const indices = [
+        0, 1, 2, // triangle 0-1-2
+        0, 3, 1, // triangle 0-3-1
+      ];
+      const texCoords = [
+        1, 0, // mapped to vertex 0
+        0, 1, // mapped to vertex 1
+        1, 1, // mapped to vertex 2
+        0, 0, // mapped to vertex 3
+      ];
+      this.data = {
+        positions,
+        indices,
+        texCoords,
+      };
   }
 
   createVertices(): number[] {
-   // fill in here
-    const vertices: number[] = [0,0,0, 1,0,0, 0,1,0];
-    return vertices;
+    return this.data.positions;
   }
 
   createIndices(): number[] {
-    // fill in here
-    const triangles: number[] = [0,1,2];
-    return triangles;
+    return this.data.indices;
   }
 
   createNormals(): number[] {
@@ -73,7 +71,6 @@ export class VPlane3DMesh {
   }
 
   createTextureCoordinates(): number[] {
-    const texCoords: number[] = [0,1,2];
-    return texCoords;
+    return this.data.texCoords;
   }
 }

@@ -17,6 +17,7 @@ import {ScreenMessage} from "../../screen/ScreenMessage";
 import {DefaultMapController} from "./controllers/DefaultMapController";
 import {ContextMenu} from "@luciad/ria/view/ContextMenu";
 import {ContextmenuRecords} from "../contextmenu/ContextmenuRecords";
+import {MouseCoordinateReadout} from "./mousecoordinates/MouseCoordinateReadout";
 
 interface Props {
     id?: string;
@@ -156,6 +157,7 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
     const createMap = () => {
         if (divEl.current !== null) {
             const newMap = new WebGLMap(divEl.current, { reference: getReference(proj.current) });
+            if (newMap.mapNavigator.constraints.above) newMap.mapNavigator.constraints.above.minAltitude = 0.5;
             newMap.onShowContextMenu = onShowContextMenu;
             const mapHandler = new MapHandler(newMap);
             mapHandler.onLayerTreeChange = notifyLayerChange;
@@ -226,9 +228,10 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
         }
     }
 
-    const className = "LuciadMap"+ (typeof props.className !== undefined ? " " + props.className : "");
+    const className = "LuciadMap"+ (typeof props.className !== "undefined" ? " " + props.className : "");
 
     return <div id={props.id} className={className} ref={divEl}>
+        {<MouseCoordinateReadout map={map.current} reference={map.current?.reference}  />}
         {props.children}
     </div>
 }

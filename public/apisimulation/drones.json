@@ -1,0 +1,110 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": 1,
+      "properties": {
+        "name": "Drone 1",
+        "photo": "_DSC8554.JPG",
+        "description": "",
+        "video": "",
+        "url": "",
+        "meta": "",
+        "icon": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.954530286956336,
+          53.528650455487174,
+          0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 2,
+      "properties": {
+        "name": "Drone 2",
+        "photo": "_DSC8563.JPG",
+        "description": "",
+        "video": "",
+        "url": "",
+        "meta": "",
+        "icon": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.95609529807647,
+          53.52277010710642,
+          0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 3,
+      "properties": {
+        "name": "Drone 3",
+        "photo": "_DSC8624.JPG",
+        "description": "",
+        "video": "",
+        "url": "",
+        "meta": "",
+        "icon": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.938469099185436,
+          53.533552184196225,
+          0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4,
+      "properties": {
+        "name": "Drone 4",
+        "photo": "_DSC8644.JPG",
+        "description": "",
+        "video": "",
+        "url": "",
+        "meta": "",
+        "icon": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.938692819614314,
+          53.52083910241047,
+          0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5,
+      "properties": {
+        "name": "Drone 5",
+        "photo": "_DSC8653.JPG",
+        "description": "",
+        "video": "",
+        "url": "",
+        "meta": "",
+        "icon": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.962209085640884,
+          53.53376209314967,
+          0
+        ]
+      }
+    }
+  ]
+}

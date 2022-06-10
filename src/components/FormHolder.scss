@@ -1,23 +1,25 @@
 $headerHeight: 30px;
 $transitionDuration: 125ms;
 $formWidth: 480px;
+$formHeight: 720px;
+
 $formHiddenPositionLeft: -($formWidth + 20px);
 $formHiddenPositionRight: -($formWidth + 20px);
-$backgroundColor: #1976d2;
+$formHiddenPositionBottom: -($formHeight + 20px);
+$backgroundHeaderColor: #1976d2;
 
 .FormHolder {
   position: absolute;
   padding: 0;
-  top: 0;
-  bottom: 0;
-
-  width: $formWidth;
   max-width: 100%;
   border: 1px solid black;
   border-radius: 5px;
   overflow: hidden;
 
   &#LEFT {
+    width: $formWidth;
+    top: 0;
+    bottom: 0;
     position: absolute;
     left: $formHiddenPositionLeft;
     transition: all $transitionDuration ease 0s;
@@ -28,6 +30,9 @@ $backgroundColor: #1976d2;
   }
 
   &#RIGHT {
+    width: $formWidth;
+    top: 0;
+    bottom: 0;
     position: absolute;
     right: $formHiddenPositionRight;
     transition: all $transitionDuration ease 0s;
@@ -37,10 +42,26 @@ $backgroundColor: #1976d2;
     }
   }
 
+  &#BOTTOM {
+    display: none;
+    height: $formHeight;
+    max-height: 100%;
+    bottom: $formHiddenPositionBottom;
+    position: absolute;
+    left: 0;
+    right: 0;
+    transition: all $transitionDuration ease 100s;
+
+    &.visible {
+      display: inherit;
+      bottom: 0;
+    }
+  }
+
   .header {
     height: $headerHeight;
     width: 100%;
-    background-color: $backgroundColor;
+    background-color: $backgroundHeaderColor;
     overflow: hidden;
 
     div.title {

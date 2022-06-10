@@ -10,17 +10,10 @@ import {
     Switch,
     TextField
 } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
 import {FormProps} from "./interfaces";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import styled from "@emotion/styled";
-import {BingMapsImagerySet} from "../commands/ConnectCommands";
-import {CreateCommand} from "../commands/CreateCommand";
-import {ApplicationCommands} from "../commands/ApplicationCommands";
-import {LayerTypes} from "../components/luciad/layertypes/LayerTypes";
-import {SetAppCommand} from "../reduxboilerplate/command/actions";
 import DraggableList from "../components/draggable/DraggableList";
 import {DropResult} from "react-beautiful-dnd";
 import {getItems, reorder} from "./helpres";

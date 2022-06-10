@@ -46,6 +46,7 @@ interface CreateForm {
     action: ApplicationCommands.CREATE_APP_FORM;
     parameters: {
         formName: string;
+        data?: any
     }
 }
 

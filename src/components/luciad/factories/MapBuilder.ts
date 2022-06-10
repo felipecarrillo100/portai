@@ -45,6 +45,9 @@ class MapBuilder {
                 case LayerTypes.WFSLayer:
                     layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createWFSModel, LayerFactory.createWFSLayer);
                     break;
+                case LayerTypes.DronePhotoAPILayer:
+                    layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createRestAPIModel, LayerFactory.createDronePhotoRestAPILayer);
+                    break;
                 case LayerTypes.VOrthophotoAPILayer:
                     layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createRestAPIModel, LayerFactory.createVOrthoRestAPILayer);
                     break;

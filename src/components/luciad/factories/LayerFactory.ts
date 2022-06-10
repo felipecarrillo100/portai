@@ -21,6 +21,11 @@ import {getReference} from "@luciad/ria/reference/ReferenceProvider";
 import {createEllipsoidalGeodesy} from "@luciad/ria/geodesy/GeodesyFactory";
 import {LineType} from "@luciad/ria/geodesy/LineType";
 import {createPoint} from "@luciad/ria/shape/ShapeFactory";
+import {store} from "../../../reduxboilerplate/store";
+import {CreateCommand} from "../../../commands/CreateCommand";
+import {ApplicationCommands} from "../../../commands/ApplicationCommands";
+import {SetAppCommand} from "../../../reduxboilerplate/command/actions";
+import {DronePhotoPainter} from "../painters/DronePhotoPainter";
 
 class LayerFactory {
 
@@ -47,10 +52,22 @@ class LayerFactory {
         const distance = pvGeodesy.distance(p1, p0);
         const azimuth = pvGeodesy.forwardAzimuth(p1, p0);
         const center = line.focusPoint;
-        const viewPoint = pvGeodesy.interpolate(center, distance * 1.5, azimuth + 90, LineType.SHORTEST_DISTANCE);
+        const viewPoint = pvGeodesy.interpolate(center, distance *1.0, azimuth + 90, LineType.SHORTEST_DISTANCE);
         const h = feature.properties.max - feature.properties.min;
         const viewPointElevated = createPoint(viewPoint.reference, [viewPoint.x, viewPoint.y, h]);
         map.mapNavigator.lookFrom(viewPointElevated, azimuth-90,0,0, {animate: true})
+    }
+
+    static EditVOrtho(map: Map, feature: Feature, type: string) {
+        const pvShapeReference = getReference("CRS:84");
+        const command = CreateCommand({
+            action: ApplicationCommands.CREATE_APP_FORM,
+            parameters: {
+                formName: "CartesianMapForm",
+                data: {feature: feature, type: type}
+            }
+        });
+        store.dispatch(SetAppCommand(command));
     }
 
     static createVOrthoRestAPILayer(model: FeatureModel, layerOptions: any) {
@@ -60,9 +77,23 @@ class LayerFactory {
 
             const CreateContextMenu = (layer: FeatureLayer) => (contextMenu: ContextMenu, map: Map, contextMenuInfo: any) => {
                 const feature = contextMenuInfo.objects[0];
-                contextMenu.addItem({label:"Edit", action: ()=>{console.log("Edit", feature)}});
+                contextMenu.addItem({label:"Edit", action: ()=>{LayerFactory.EditVOrtho(map, feature, "tiff")}});
                 contextMenu.addItem({label:"Flag", action: ()=>{console.log("Flag", feature)}});
                 contextMenu.addItem({label:"Look from", action: ()=>{LayerFactory.LookFrom(map, feature)}});
+            };
+
+            layer.onCreateContextMenu = CreateContextMenu(layer);
+            resolve(layer);
+        })
+    }
+
+    static createDronePhotoRestAPILayer(model: FeatureModel, layerOptions: any) {
+        return new Promise<FeatureLayer>((resolve)=>{
+            const layer = new FeatureLayer(model, layerOptions);
+            layer.painter = new DronePhotoPainter();
+            const CreateContextMenu = (layer: FeatureLayer) => (contextMenu: ContextMenu, map: Map, contextMenuInfo: any) => {
+                const feature = contextMenuInfo.objects[0];
+                contextMenu.addItem({label:"Edit", action: ()=>{LayerFactory.EditVOrtho(map, feature, "drone")}});
             };
 
             layer.onCreateContextMenu = CreateContextMenu(layer);

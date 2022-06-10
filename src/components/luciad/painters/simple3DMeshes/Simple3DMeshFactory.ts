@@ -170,21 +170,13 @@ export const create3DCylinder = (radius: number, height: number, sliceCount: num
  * @param sliceCount the number of slices (subdivisions) of the side surface of the stick and the tip
  * @param texture the texture to be applied to the 3D cylinder
  */
-export const createVPlane = (radius: number, height: number, sliceCount: number,
-                                 texture?: HTMLCanvasElement | HTMLImageElement | string): Mesh => {
-  const vPlane3DMesh = new Cylinder3DMesh(radius, height, sliceCount);
- // console.log(vPlane3DMesh);
-  console.log("vertices", vPlane3DMesh.createVertices());
-  console.log("indices", vPlane3DMesh.createIndices());
-  console.log("normals", vPlane3DMesh.createNormals());
-  console.log("texture", vPlane3DMesh.createTextureCoordinates());
+export const createVPlane = (width: number, height: number, texture?: HTMLCanvasElement | HTMLImageElement | string): Mesh => {
+  const vPlane3DMesh = new VPlane3DMesh(width, height);
+
   return texture ? create3DMesh(vPlane3DMesh.createVertices(), vPlane3DMesh.createIndices(), {
-    normals: vPlane3DMesh.createNormals(),
     texCoords: vPlane3DMesh.createTextureCoordinates(),
     image: texture
-  }) : create3DMesh(vPlane3DMesh.createVertices(), vPlane3DMesh.createIndices(), {
-    normals: vPlane3DMesh.createNormals()
-  });
+  }) : create3DMesh(vPlane3DMesh.createVertices(), vPlane3DMesh.createIndices(), { });
 };
 
 /**

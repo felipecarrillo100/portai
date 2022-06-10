@@ -38,14 +38,17 @@ const AdvancedNavBar: React.FC = () => {
     const ConnectMenu: MenuItemsArray = [
         {title: "WMS", action: CommandByName("ConnectWMS")},
         {title: "WFS", action: CommandByName("ConnectWFS")},
+        {title: "WMTS", action: CommandByName("ConnectWMTS")},
+        {title: "LTS", action: CommandByName("ConnectLTS")},
         {title: "Bingmaps", action: CommandByName("ConnectBingmaps")},
+        {title: "OGC 3D Tiles", action: CommandByName("Connect3DTilesForm")},
         {title: "Vertical Orthophoto", action: CommandByName("ConnectVOrthophoto")},
-        {title: "Sortable", action: CommandByName("SortableListForm")},
-
+        {title: "Drone photo", action: CommandByName("DronePhoto")},
     ];
 
     const ViewMenu: MenuItemsArray = [
         {title: "Full screen", action: ()=>{}},
+        {title: "Layers", action: CommandByName("SortableListForm")},
     ];
 
     const menuItems: MenuEntry[] = [

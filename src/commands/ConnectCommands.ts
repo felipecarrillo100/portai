@@ -4,6 +4,7 @@ import {Model} from "@luciad/ria/model/Model";
 import {WMTSCapabilitiesTileMatrixLimits} from "@luciad/ria/model/capabilities/WMTSCapabilitiesTileMatrixSet";
 import {RasterDataType} from "@luciad/ria/model/tileset/RasterDataType";
 import {RasterSamplingMode} from "@luciad/ria/model/tileset/RasterSamplingMode";
+import {TileLoadingStrategy} from "@luciad/ria/view/tileset/TileSet3DLayer";
 
 
 export interface BoundsObject {
@@ -88,6 +89,24 @@ export  interface CreateVOrthophotoCommand extends CreateLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER;
     parameters: {
         layerType: LayerTypes.VOrthophotoAPILayer;
+        reusableModel?: Model;
+        model: {
+            url: string;
+        };
+        layer: {
+            visible?: boolean;
+            label?: string;
+            id?: string;
+            selectable?: boolean;
+        },
+        autoZoom?: boolean
+    }
+}
+
+export  interface CreateDronePhotoCommand extends CreateLayerBaseCommand {
+    action: ApplicationCommands.CREATELAYER;
+    parameters: {
+        layerType: LayerTypes.DronePhotoAPILayer;
         reusableModel?: Model;
         model: {
             url: string;
@@ -279,9 +298,13 @@ export interface CreatLayerOGC3DTilesCommand  extends CreateLayerBaseCommand  {
             url: string;
         };
         layer: {
+            transparency?: boolean,
+            idProperty?: string,
+            loadingStrategy?: TileLoadingStrategy,
             visible: boolean;
             label: string;
             id?: string;
+            offsetTerrain?: boolean;
             qualityFactor: number;
         };
         autoZoom?: boolean
@@ -309,5 +332,5 @@ export interface CreatLayerBingMapsCommand  extends CreateRasterLayerBaseCommand
 }
 
 export type LayerConnectCommandsTypes = CreatLayerWFSCommand | CreatLayerWMSCommand | CreatLayerTMSCommand | CreatRootLayerCommand |
-    CreatLayerGroupCommand | CreateVOrthophotoCommand |
+    CreatLayerGroupCommand | CreateVOrthophotoCommand | CreateDronePhotoCommand |
     CreatLayerBingMapsCommand | CreatLayerWMTSCommand | CreatLayerLTSCommand | CreatLayerOGC3DTilesCommand | CreatLayerFeaturesFileCommand | CreatDatabaseRasterTilesetCommand

@@ -15,7 +15,7 @@ import {FormProps} from "../interfaces";
 import {BingMapsImagerySet} from "../../commands/ConnectCommands";
 import styled from "@emotion/styled";
 
-const myToken = "";
+const myToken = "AugjqbGwtwHP0n0fUtpZqptdgkixBt5NXpfSzxb7q-6ATmbk-Vs4QnqiW6fhaV-i";
 
 const DivButtons = styled('div')`
   float: right;

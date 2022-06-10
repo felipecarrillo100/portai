@@ -5,8 +5,8 @@
       "id": "wall1",
       "type": "Feature",
       "properties": {
-        "name": "wall1",
-        "photo": "",
+        "name": "GEOTIFF_Orthofoto_Hachmannkai_Sued_1",
+        "photo": "GEOTIFF_Orthofoto_Hachmannkai_Sued_1.tif",
         "min": 0,
         "max": 10
       },
@@ -28,8 +28,8 @@
       "id": "wall2",
       "type": "Feature",
       "properties": {
-        "name": "wall2",
-        "photo": "",
+        "name": "GEOTIFF_Orthofoto_Hachmannkai_Sued_2",
+        "photo": "GEOTIFF_Orthofoto_Hachmannkai_Sued_2.tif",
         "min": 0,
         "max": 10
       },
@@ -51,8 +51,8 @@
       "id": "wall3",
       "type": "Feature",
       "properties": {
-        "name": "wall3",
-        "photo": "",
+        "name": "GEOTIFF_Orthofoto_Hachmannkai_Sued_3",
+        "photo": "GEOTIFF_Orthofoto_Hachmannkai_Sued_3.tif",
         "min": 0,
         "max": 10
       },

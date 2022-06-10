@@ -35,8 +35,8 @@ const ConnectWFSForm = (props: FormProps) =>{
     const [inputs, setInputs] = useState({
         url: "https://sampleservices.luciad.com/wfs",
         label: "",
-        layer: "Press Get Layers Button",
-        format: "Press Get Layers Button",
+        layer: "",
+        format: "",
     });
 
     const [layers, setLayers] = useState([] as WFSCapabilitiesFeatureType[]);
@@ -82,7 +82,7 @@ const ConnectWFSForm = (props: FormProps) =>{
                     newInputs.label = result.featureTypes[0].title;
                     newInputs.format = getPreferredFormat(result.featureTypes[0].outputFormats);
                     setInputs(newInputs);
-                })
+                },1)
                 setFormats(result.featureTypes[0].outputFormats);
             }
             setLayers(result.featureTypes);
@@ -186,7 +186,7 @@ const ConnectWFSForm = (props: FormProps) =>{
                             label="Layers"
                             name="layer"
                             onChange={handleChange}
-                            input={<OutlinedInput label="Name" />}
+                            input={<OutlinedInput label="Layers" />}
                         >
                             {renderLayers}
                         </Select>
