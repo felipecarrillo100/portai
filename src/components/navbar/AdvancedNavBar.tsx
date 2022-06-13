@@ -24,11 +24,12 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const AdvancedNavBar: React.FC = () => {
     const dispatch = useDispatch();
-    const CommandByName = (commandName: string) => () => {
+    const CommandByName = (commandName: string, options?: any) => () => {
         const command = CreateCommand({
             action: ApplicationCommands.CREATE_APP_FORM,
             parameters: {
                 formName: commandName,
+                data: options
             }
         });
         dispatch(SetAppCommand(command));
@@ -41,14 +42,16 @@ const AdvancedNavBar: React.FC = () => {
         {title: "WMTS", action: CommandByName("ConnectWMTS")},
         {title: "LTS", action: CommandByName("ConnectLTS")},
         {title: "Bingmaps", action: CommandByName("ConnectBingmaps")},
-        {title: "OGC 3D Tiles", action: CommandByName("Connect3DTilesForm")},
+        {title: "BIM", action: CommandByName("Connect3DTilesForm", {url: "http://localhost:8081/ogc/3dtiles/merged/tileset.json"})},
+        {title: "Point clouds", action: CommandByName("Connect3DTilesForm", {url: "http://localhost:8081/ogc/3dtiles/uw_pw_gesamt_point_cloud_new/tileset.json"})},
         {title: "Vertical Orthophoto", action: CommandByName("ConnectVOrthophoto")},
         {title: "Drone photo", action: CommandByName("DronePhoto")},
     ];
 
     const ViewMenu: MenuItemsArray = [
         {title: "Full screen", action: ()=>{}},
-        {title: "Layers", action: CommandByName("SortableListForm")},
+        {title: "Layers", action: CommandByName("LayerControlForm")},
+        {title: "Tools", action: CommandByName("ShowTools")},
     ];
 
     const menuItems: MenuEntry[] = [

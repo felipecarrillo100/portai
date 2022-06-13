@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
 import {AppContent} from "./components/AppContent";
-import {FormHolder, FormHolders, FormManager} from "./components/FormHolder";
+import {FormHolder, FormHolders, FormManager} from "./components/holders/FormHolder";
 import {Map} from "@luciad/ria/view/Map";
 import {AdvancedNavBar} from "./components/navbar/AdvancedNavBar";
 import {LuciadMap} from "./components/luciad/LuciadMap";
@@ -31,6 +31,7 @@ import {Feature} from "@luciad/ria/model/feature/Feature";
 import {ConnectDronePhotoForm} from "./forms/connect/ConnectDronePhotoForm";
 import {ConnectLTSForm} from "./forms/connect/ConnectLTSForm";
 import {ConnectWMTSForm} from "./forms/connect/ConnectWMTSForm";
+import {ToolsHolder} from "./components/holders/ToolsHolder";
 
 
 interface StateProps {
@@ -43,6 +44,7 @@ const defaultFilename = "noname.wsp";
 
 const App: React.FC = () => {
     const dispatch = useDispatch();
+    const [toolbarVisible, setToolbarVisible] = useState(true);
     const [workspaceName, setWorkspaceName ] = useState(defaultFilename);
     const myContextMenu = useRef<FeatureContextmenuExports>(null);
     const contextMenuAnchorRef = useRef<HTMLDivElement>(null);
@@ -79,7 +81,11 @@ const App: React.FC = () => {
                 FormManager.openForm(FormHolders.LEFT, <ConnectBingmapsForm />)
                 break;
             case "Connect3DTilesForm":
-                FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm />)
+                if (parameters.data){
+                    FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm default={parameters.data.url}/>)
+                } else {
+                    FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm />)
+                }
                 break;
             case "ConnectVOrthophoto":
                 FormManager.openForm(FormHolders.LEFT, <ConnectVOrthoPhotoForm />)
@@ -87,8 +93,11 @@ const App: React.FC = () => {
             case "DronePhoto":
                 FormManager.openForm(FormHolders.LEFT, <ConnectDronePhotoForm />)
                 break;
-            case "SortableListForm":
+            case "LayerControlForm":
                 FormManager.openForm(FormHolders.RIGHT, <LayerControlForm />)
+                break;
+            case "ShowTools":
+                setToolbarVisible(true);
                 break;
             case "CartesianMapForm":
                 if (parameters.data) {
@@ -136,6 +145,7 @@ const App: React.FC = () => {
                 <AppContent>
                     <LuciadMap proj={proj} onMapChange={storeMapToRedux} command={command}  onLayersChange={storeTreeNodeToRedux} onCurrentLayersChange={storeCurrentLayerToRedux} onSaveMap={onSaveMap}/>
                 </AppContent>
+                <ToolsHolder visible={toolbarVisible} onClose={()=>setToolbarVisible(false)}/>
                 <FormHolder id={FormHolders.LEFT} />
                 <FormHolder id={FormHolders.RIGHT} />
                 <FormHolder id={FormHolders.BOTTOM} />

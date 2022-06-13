@@ -22,18 +22,18 @@ import IconProvider, {IconProviderShapes} from "../iconimagefactory/IconProvider
 const normalIconStyle: IconStyle = {
     url: "images/drone480_blue.png",
     draped: false,
-    anchorY: "100%",
-    width: "32px",
-    height: "32px",
+    anchorY: "50%",
+    width: "36px",
+    height: "36px",
     opacity: 1
 }
 
 const selectedIconStyle: IconStyle = {
     url: "images/drone480_red.png",
     draped: false,
-    anchorY: "100%",
-    width: "32px",
-    height: "32px",
+    anchorY: "50%",
+    width: "36px",
+    height: "36px",
     opacity: 1
 }
 

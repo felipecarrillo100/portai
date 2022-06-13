@@ -27,6 +27,18 @@ const styles = {
     }
 }
 
+const bingmapSet = [
+    {
+        value: BingMapsImagerySet.AERIAL,
+        title: "BingMaps Satellite"
+    }, {
+        value: BingMapsImagerySet.HYBRID,
+        title: "BingMaps Hybrid"
+    }, {
+        value: BingMapsImagerySet.ROAD,
+        title: "BingMaps Streets"
+    }];
+
 const ConnectBingmapsForm = (props: FormProps) =>{
     const dispatch = useDispatch();
     const {closeForm} = props;
@@ -56,17 +68,7 @@ const ConnectBingmapsForm = (props: FormProps) =>{
         if (token) setInputs({...inputs, token})
     }
 
-    const [bingmapSet] = useState([
-        {
-            value: BingMapsImagerySet.AERIAL,
-            title: "BingMaps Satellite"
-        }, {
-            value: BingMapsImagerySet.HYBRID,
-            title: "BingMaps Hybrid"
-        }, {
-            value: BingMapsImagerySet.ROAD,
-            title: "BingMaps Streets"
-        }]);
+
 
     const pageTitle = "Connect to Bingmaps";
 

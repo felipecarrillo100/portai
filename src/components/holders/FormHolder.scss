@@ -3,6 +3,8 @@ $transitionDuration: 125ms;
 $formWidth: 480px;
 $formHeight: 720px;
 
+$formWidthTools: 212px;
+
 $formHiddenPositionLeft: -($formWidth + 20px);
 $formHiddenPositionRight: -($formWidth + 20px);
 $formHiddenPositionBottom: -($formHeight + 20px);
@@ -15,6 +17,20 @@ $backgroundHeaderColor: #1976d2;
   border: 1px solid black;
   border-radius: 5px;
   overflow: hidden;
+
+
+  &#tool-bar-id {
+    width: $formWidthTools;
+    top: 0;
+    bottom: 0;
+    position: absolute;
+    right: $formHiddenPositionRight;
+    transition: all $transitionDuration ease 0s;
+
+    &.visible {
+      right: 0;
+    }
+  }
 
   &#LEFT {
     width: $formWidth;

@@ -16,7 +16,7 @@ import {BingMapsImagerySet} from "../../commands/ConnectCommands";
 import styled from "@emotion/styled";
 import {TileLoadingStrategy} from "@luciad/ria/view/tileset/TileSet3DLayer";
 
-const url = "http://localhost:8081/ogc/3dtiles/e57/tileset.json\n";
+const url = "http://localhost:8081/ogc/3dtiles/uw_pw_gesamt_point_cloud_new/tileset.json\n";
 
 const DivButtons = styled('div')`
   float: right;
@@ -31,7 +31,11 @@ const styles = {
 const DefaultOffsetTerrain = false;
 const DefaultLoadingStrategy = TileLoadingStrategy.OVERVIEW_FIRST;
 
-const Connect3DTilesForm = (props: FormProps) =>{
+interface Props extends FormProps {
+    default?: string;
+}
+
+const Connect3DTilesForm = (props: Props) =>{
     const dispatch = useDispatch();
     const {closeForm} = props;
 
@@ -41,17 +45,11 @@ const Connect3DTilesForm = (props: FormProps) =>{
         qualityFactor: 0.6
     });
 
-    const [bingmapSet] = useState([
-        {
-            value: BingMapsImagerySet.AERIAL,
-            title: "BingMaps Satellite"
-        }, {
-            value: BingMapsImagerySet.HYBRID,
-            title: "BingMaps Hybrid"
-        }, {
-            value: BingMapsImagerySet.ROAD,
-            title: "BingMaps Streets"
-        }]);
+    useEffect(()=>{
+        if (props.default) {
+            setInputs({...inputs, url: props.default});
+        }
+    }, [props.default])
 
     const pageTitle = "Connect to Bingmaps";
 
