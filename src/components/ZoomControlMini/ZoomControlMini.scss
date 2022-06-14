@@ -1,0 +1,72 @@
+/*
+ *
+ * Copyright (c) 1999-2022 Luciad All Rights Reserved.
+ *
+ * Luciad grants you ("Licensee") a non-exclusive, royalty free, license to use,
+ * modify and redistribute this software in source and binary code form,
+ * provided that i) this copyright notice and license appear on all copies of
+ * the software; and ii) Licensee does not utilize the software in a manner
+ * which is disparaging to Luciad.
+ *
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING ANY
+ * IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR
+ * NON-INFRINGEMENT, ARE HEREBY EXCLUDED. LUCIAD AND ITS LICENSORS SHALL NOT BE
+ * LIABLE FOR ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING
+ * OR DISTRIBUTING THE SOFTWARE OR ITS DERIVATIVES. IN NO EVENT WILL LUCIAD OR ITS
+ * LICENSORS BE LIABLE FOR ANY LOST REVENUE, PROFIT OR DATA, OR FOR DIRECT,
+ * INDIRECT, SPECIAL, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER
+ * CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY, ARISING OUT OF THE USE OF
+ * OR INABILITY TO USE SOFTWARE, EVEN IF LUCIAD HAS BEEN ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGES.
+ */
+$primary: #007bff;
+
+.ZoomControlMini {
+  z-index: 10;
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+
+  .zoom-control-button {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+
+    border: 1px solid gray;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.4);
+    font-family : 'Lucida Console', monospace;
+    line-height: 0.9;
+
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    color: white;
+    text-shadow: 1px 1px 2px grey, 0 0 1px grey, 0 0 0.2px grey;
+
+  }
+
+  .zoom-control-button:hover {
+    color: $primary;
+    background-color: rgba(0, 0, 0, 1);
+  }
+
+  .zoom-control-button:active {
+    color: $primary;
+    background-color: rgb(55, 55, 55);
+  }
+
+  .round-border-top {
+    border-radius: 5px 5px 0px 0px;
+  }
+
+  .round-border-bottom {
+    border-radius: 0px 0px 5px 5px;
+  }
+}
+
