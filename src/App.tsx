@@ -33,6 +33,7 @@ import {ConnectLTSForm} from "./forms/connect/ConnectLTSForm";
 import {ConnectWMTSForm} from "./forms/connect/ConnectWMTSForm";
 import {ToolsHolder} from "./components/holders/ToolsHolder";
 import {ConnectPanoramicForm} from "./forms/connect/ConnectPanoramicForm";
+import {ConnectPanoramicPorstAIForm} from "./forms/connect/ConnectPanoramicPorstAIForm";
 
 
 interface StateProps {
@@ -109,6 +110,9 @@ const App: React.FC = () => {
                 break;
             case "ConnectPanorama":
                 FormManager.openForm(FormHolders.LEFT, <ConnectPanoramicForm />)
+                break;
+            case "ConnectPanoramaProtAI":
+                FormManager.openForm(FormHolders.LEFT, <ConnectPanoramicPorstAIForm />)
                 break;
         }
     }

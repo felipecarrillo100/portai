@@ -47,6 +47,7 @@ const AdvancedNavBar: React.FC = () => {
         {title: "Vertical Orthophoto", action: CommandByName("ConnectVOrthophoto")},
         {title: "Drone photo", action: CommandByName("DronePhoto")},
         {title: "Panorama", action: CommandByName("ConnectPanorama")},
+        {title: "Panorama Port AI", action: CommandByName("ConnectPanoramaProtAI")},
     ];
 
     const ViewMenu: MenuItemsArray = [

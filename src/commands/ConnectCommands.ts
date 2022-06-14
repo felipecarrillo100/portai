@@ -183,6 +183,25 @@ export interface CreatLayerPanoramicCommand extends CreateLayerBaseCommand {
     }
 }
 
+export interface CreatLayerPanoramicPortAICommand extends CreateLayerBaseCommand {
+    action: ApplicationCommands.CREATELAYER;
+    parameters: {
+        layerType: LayerTypes.PanoramicPortAILayer;
+        reusableModel?: Model;
+        model: {
+            target: string;
+        };
+        layer: {
+            visible?: boolean;
+            label?: string;
+            id?: string;
+            selectable?: boolean;
+        },
+        autoZoom?: boolean,
+        fitBounds?: BoundsObject
+    }
+}
+
 export interface CreatLayerWMSCommand extends CreateRasterLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER,
     parameters: {
@@ -351,5 +370,5 @@ export interface CreatLayerBingMapsCommand  extends CreateRasterLayerBaseCommand
 }
 
 export type LayerConnectCommandsTypes = CreatLayerWFSCommand | CreatLayerWMSCommand | CreatLayerTMSCommand | CreatRootLayerCommand |
-    CreatLayerGroupCommand | CreateVOrthophotoCommand | CreateDronePhotoCommand | CreatLayerPanoramicCommand |
+    CreatLayerGroupCommand | CreateVOrthophotoCommand | CreateDronePhotoCommand | CreatLayerPanoramicCommand | CreatLayerPanoramicPortAICommand |
     CreatLayerBingMapsCommand | CreatLayerWMTSCommand | CreatLayerLTSCommand | CreatLayerOGC3DTilesCommand | CreatLayerFeaturesFileCommand | CreatDatabaseRasterTilesetCommand

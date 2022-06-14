@@ -16,7 +16,20 @@ import {UrlStore} from "@luciad/ria/model/store/UrlStore";
 
 class ModelFactory {
 
-    public static createPanoramicModel(modelOptions: any) {
+    public static createPanoramicFusionModel(modelOptions: any) {
+        return new Promise<FeatureModel>((resolve, reject)=> {
+            const store = new UrlStore({
+                target: modelOptions.target,
+            });
+
+            const model = new FeatureModel(store, {
+                reference: getReference("CRS:84")
+            });
+            resolve(model);
+        });
+    }
+
+    public static createPanoramicPortAIModel(modelOptions: any) {
         return new Promise<FeatureModel>((resolve, reject)=> {
             const store = new UrlStore({
                 target: modelOptions.target,

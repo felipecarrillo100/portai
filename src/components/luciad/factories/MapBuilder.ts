@@ -44,8 +44,11 @@ class MapBuilder {
         return new Promise<Layer | LayerGroup | LayerTree>(resolve => {
             let layerPromise = null;
             switch (command.parameters.layerType) {
+                case LayerTypes.PanoramicPortAILayer:
+                    layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createPanoramicPortAIModel, LayerFactory.createPanoramicPortAILayer);
+                    break;
                 case LayerTypes.PanoramicLayer:
-                    layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createPanoramicModel, LayerFactory.createPanoramicLayer);
+                    layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createPanoramicFusionModel, LayerFactory.createPanoramicFusionLayer);
                     break;
                 case LayerTypes.WFSLayer:
                     layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createWFSModel, LayerFactory.createWFSLayer);
@@ -105,7 +108,7 @@ class MapBuilder {
                             delete restoreCommand.parameters.autoZoom;
                             AdvanceLayerTools.fitToLayer(map, layer);
 
-                            if (restoreCommand.parameters.layerType === LayerTypes.PanoramicLayer) {
+                            if (restoreCommand.parameters.layerType === LayerTypes.PanoramicLayer || restoreCommand.parameters.layerType === LayerTypes.PanoramicPortAILayer) {
                                 if (map && (map as any)._myPanoramaActions) {
                                     const panoActions = (map as any)._myPanoramaActions as PanoramaActions;
                                     map.controller = DefaultMapController.getPanoramaConmtroller(panoActions, layer as FeatureLayer);
