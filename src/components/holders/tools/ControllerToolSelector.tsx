@@ -170,7 +170,7 @@ const ControllerToolSelector: React.FC<Props> = (props: Props) => {
     const closePanorama = () => {
         if (props.map && (props.map as any)._myPanoramaActions) {
             const panoActions = (props.map as any)._myPanoramaActions as PanoramaActions;
-            panoActions.leavePanoramaMode()
+            if (panoActions.isInPanoramaMode()) panoActions.leavePanoramaMode();
         }
     }
 
