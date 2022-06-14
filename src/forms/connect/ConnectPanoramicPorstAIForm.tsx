@@ -12,7 +12,7 @@ import {FormProps} from "../interfaces";
 import styled from "@emotion/styled";
 import {TileLoadingStrategy} from "@luciad/ria/view/tileset/TileSet3DLayer";
 
-const url = "https://sampledata.luciad.com/data/panoramics/LucernePegasus/cubemap_final.json";
+const url = "http://localhost/panoramics/json/features.json";
 
 const DivButtons = styled('div')`
   float: right;

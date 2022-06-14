@@ -29,31 +29,43 @@ import {DronePhotoPainter} from "../painters/DronePhotoPainter";
 import {PanoramaFeaturePainter} from "../painters/PanoramaFeaturePainter";
 import {FusionPanoramaModel} from "@luciad/ria/model/tileset/FusionPanoramaModel";
 import {UrlStore} from "@luciad/ria/model/store/UrlStore";
+import {PortAIPanoramaModel} from "../models/PortAIPanoramaModel";
+import {PanoramaContext} from "@luciad/ria/model/tileset/PanoramaContext";
 
 class LayerFactory {
 
-    static createPanoramicFusionLayer(model: FeatureModel, layerOptions: any) {
+    static createPanoramicPortAILayer(model: FeatureModel, layerOptions: any) {
         return new Promise<FeatureLayer>((resolve)=>{
             const store = model.store as UrlStore;
             const url =  (store as any).target;
-            const panoModel = new FusionPanoramaModel(url);
+            // const panoModel = new FusionPanoramaModel(url);
+            const panoModel = new PortAIPanoramaModel(url);
             const layer = new FeatureLayer(model, {
                 ...layerOptions,
                 panoramaModel: panoModel,
                 painter:new PanoramaFeaturePainter({
                     overview: false,
-                    iconHeightOffset: 2.5 // sensor height in meters above street level (approx)
+                  //  iconHeightOffset: 2.5 // sensor height in meters above street level (approx)
+                    iconHeightOffset: 1 // sensor height in meters above street level (approx)
                 })
             });
             resolve(layer);
         })
     }
 
-    static createPanoramicPortAILayer(model: FeatureModel, layerOptions: any) {
+    static createPanoramicFusionLayer(model: FeatureModel, layerOptions: any) {
         return new Promise<FeatureLayer>((resolve)=>{
             const store = model.store as UrlStore;
             const url =  (store as any).target;
             const panoModel = new FusionPanoramaModel(url);
+            //console.log("pano", panoModel.)
+            const xtmp = panoModel.getPanoramaDescriptor;
+
+            (panoModel as any).getPanoramaDescriptor = (feature: Feature, context: PanoramaContext)=> {
+                const a = xtmp(feature, context);
+                console.log("a:", a)
+                return a;
+            }
             const layer = new FeatureLayer(model, {
                 ...layerOptions,
                 panoramaModel: panoModel,
