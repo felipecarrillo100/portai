@@ -20,6 +20,8 @@ import {WMTSTileSetModel} from "@luciad/ria/model/tileset/WMTSTileSetModel";
 import {FusionTileSetModel} from "@luciad/ria/model/tileset/FusionTileSetModel";
 import {OGC3DTilesModel} from "@luciad/ria/model/tileset/OGC3DTilesModel";
 import {TileSet3DLayer} from "@luciad/ria/view/tileset/TileSet3DLayer";
+import {DefaultMapController} from "../controllers/DefaultMapController";
+import {PanoramaActions} from "../controllers/actions/PanoramaActions";
 
 function PromiseToModel<mytype>(model:any) {
     return new Promise<mytype>((resolve)=>resolve(model));
@@ -42,6 +44,9 @@ class MapBuilder {
         return new Promise<Layer | LayerGroup | LayerTree>(resolve => {
             let layerPromise = null;
             switch (command.parameters.layerType) {
+                case LayerTypes.PanoramicLayer:
+                    layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createPanoramicModel, LayerFactory.createPanoramicLayer);
+                    break;
                 case LayerTypes.WFSLayer:
                     layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createWFSModel, LayerFactory.createWFSLayer);
                     break;
@@ -99,6 +104,13 @@ class MapBuilder {
                             restoreCommand.parameters.autoZoom = false;
                             delete restoreCommand.parameters.autoZoom;
                             AdvanceLayerTools.fitToLayer(map, layer);
+
+                            if (restoreCommand.parameters.layerType === LayerTypes.PanoramicLayer) {
+                                if (map && (map as any)._myPanoramaActions) {
+                                    const panoActions = (map as any)._myPanoramaActions as PanoramaActions;
+                                    map.controller = DefaultMapController.getPanoramaConmtroller(panoActions, layer as FeatureLayer);
+                                }
+                            }
                         }
                     }
                     if (target) {

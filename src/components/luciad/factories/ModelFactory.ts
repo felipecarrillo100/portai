@@ -12,8 +12,22 @@ import {OGC3DTilesModel} from "@luciad/ria/model/tileset/OGC3DTilesModel";
 import {HSPCTilesModel} from "@luciad/ria/model/tileset/HSPCTilesModel";
 import {FeatureFileStore} from "../stores/FeatureFileStore";
 import {RestStore} from "../stores/RestStore";
+import {UrlStore} from "@luciad/ria/model/store/UrlStore";
 
 class ModelFactory {
+
+    public static createPanoramicModel(modelOptions: any) {
+        return new Promise<FeatureModel>((resolve, reject)=> {
+            const store = new UrlStore({
+                target: modelOptions.target,
+            });
+
+            const model = new FeatureModel(store, {
+                reference: getReference("CRS:84")
+            });
+            resolve(model);
+        });
+    }
 
     public static createBingMapsModel(command: any) {
         return new Promise<BingMapsTileSetModel>((resolve, reject) => {

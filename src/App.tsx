@@ -32,6 +32,7 @@ import {ConnectDronePhotoForm} from "./forms/connect/ConnectDronePhotoForm";
 import {ConnectLTSForm} from "./forms/connect/ConnectLTSForm";
 import {ConnectWMTSForm} from "./forms/connect/ConnectWMTSForm";
 import {ToolsHolder} from "./components/holders/ToolsHolder";
+import {ConnectPanoramicForm} from "./forms/connect/ConnectPanoramicForm";
 
 
 interface StateProps {
@@ -105,6 +106,9 @@ const App: React.FC = () => {
                     const type = parameters.data.type as string;
                     FormManager.openForm(FormHolders.BOTTOM, <CartesianMapForm feature={feature} type={type}/>)
                 }
+                break;
+            case "ConnectPanorama":
+                FormManager.openForm(FormHolders.LEFT, <ConnectPanoramicForm />)
                 break;
         }
     }

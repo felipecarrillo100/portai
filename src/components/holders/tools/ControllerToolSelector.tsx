@@ -23,6 +23,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormatUtil from "../../luciad/controllers/measurement/utils/FormatUtil";
 import {ENUM_DISTANCE_UNIT} from "../../luciad/units/DistanceUnits";
 import Box from "@mui/material/Box";
+import {PanoramaActions} from "../../luciad/controllers/actions/PanoramaActions";
+import {CompositeController} from "../../luciad/controllers/CompositeController";
 
 interface Props {
     map: Map | null;
@@ -76,7 +78,7 @@ const ControllerToolSelector: React.FC<Props> = (props: Props) => {
                 handle.current = null;
             }
         }
-    }, [props.map])
+    }, [props.map]);
 
     const set2DRuler = () => {
         const update2DRulerValues = (newValues: Ruler2DUpdateValues) => {
@@ -138,6 +140,9 @@ const ControllerToolSelector: React.FC<Props> = (props: Props) => {
             controllerName = props.map.controller.constructor.name;
         }
         setControllerName(controllerName);
+        if (controllerName!==CompositeController.name) {
+            closePanorama();
+        }
     }
 
     const handleSelect2D = (event: any) => {
@@ -161,6 +166,13 @@ const ControllerToolSelector: React.FC<Props> = (props: Props) => {
     const render2DModes = Rule2DModes.map( m=> (<MenuItem value={m.value} key={m.value}>{m.title}</MenuItem> ))
     const render3DModes = Rule3DModes.map( m=> (<MenuItem value={m.value} key={m.value}>{m.title}</MenuItem> ))
 
+
+    const closePanorama = () => {
+        if (props.map && (props.map as any)._myPanoramaActions) {
+            const panoActions = (props.map as any)._myPanoramaActions as PanoramaActions;
+            panoActions.leavePanoramaMode()
+        }
+    }
 
     return (
         <>

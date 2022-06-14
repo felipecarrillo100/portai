@@ -16,4 +16,5 @@ export enum LayerTypes {
     DatabaseRasterTileset = "DatabaseRasterTileset",
     VOrthophotoAPILayer = "VOrthophotoAPILayer",
     DronePhotoAPILayer = "DronePhotoAPILayer",
+    PanoramicLayer = "PanoramicLayer"
 }

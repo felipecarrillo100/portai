@@ -46,6 +46,7 @@ const AdvancedNavBar: React.FC = () => {
         {title: "Point clouds", action: CommandByName("Connect3DTilesForm", {url: "http://localhost:8081/ogc/3dtiles/uw_pw_gesamt_point_cloud_new/tileset.json"})},
         {title: "Vertical Orthophoto", action: CommandByName("ConnectVOrthophoto")},
         {title: "Drone photo", action: CommandByName("DronePhoto")},
+        {title: "Panorama", action: CommandByName("ConnectPanorama")},
     ];
 
     const ViewMenu: MenuItemsArray = [

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Map} from "@luciad/ria/view/Map";
 import {WebGLMap} from "@luciad/ria/view/WebGLMap";
 import {getReference} from "@luciad/ria/reference/ReferenceProvider";
@@ -18,6 +18,14 @@ import {DefaultMapController} from "./controllers/DefaultMapController";
 import {ContextMenu} from "@luciad/ria/view/ContextMenu";
 import {ContextmenuRecords} from "../contextmenu/ContextmenuRecords";
 import {MouseCoordinateReadout} from "./mousecoordinates/MouseCoordinateReadout";
+import {
+    ENTERED_PANORAMA_MODE_EVENT,
+    LEFT_PANORAMA_MODE_EVENT,
+    PanoramaActions
+} from "./controllers/actions/PanoramaActions";
+import {Handle} from "@luciad/ria/util/Evented";
+import {CompositeController} from "./controllers/CompositeController";
+import Button from "@mui/material/Button";
 
 interface Props {
     id?: string;
@@ -31,6 +39,8 @@ interface Props {
 }
 
 const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
+    const [showLeaveButton, setShowLeaveButton] = useState(false);
+    const controllerChangedHandler = useRef<Handle | null>(null);
 
     const divEl = useRef(null);
     const proj = useRef("EPSG:4978");
@@ -154,10 +164,21 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
         }
     }
 
+
     const createMap = () => {
         if (divEl.current !== null) {
             const newMap = new WebGLMap(divEl.current, { reference: getReference(proj.current) });
-            if (newMap.mapNavigator.constraints.above) newMap.mapNavigator.constraints.above.minAltitude = 0.5;
+            if (newMap) {
+                const myPanoramaActions = new PanoramaActions(newMap);
+                (newMap as any)._myPanoramaActions = myPanoramaActions;
+                let enteredListener = myPanoramaActions.on(ENTERED_PANORAMA_MODE_EVENT, () => {
+                    setShowLeaveButton(true);
+                });
+                let leftListener = myPanoramaActions.on(LEFT_PANORAMA_MODE_EVENT, () => {
+                    setShowLeaveButton(false)
+                });
+            }
+            if (newMap.mapNavigator.constraints.above) newMap.mapNavigator.constraints.above.minAltitude = 0; // 0.5;
             newMap.onShowContextMenu = onShowContextMenu;
             const mapHandler = new MapHandler(newMap);
             mapHandler.onLayerTreeChange = notifyLayerChange;
@@ -193,6 +214,10 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
         if (map.current !== null) {
             if (map.current.controller) {
                 map.current.controller = null;
+            }
+            if (controllerChangedHandler.current) {
+                controllerChangedHandler.current.remove();
+                controllerChangedHandler.current =  null;
             }
             map.current.destroy();
             map.current =  null;
@@ -230,8 +255,20 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
 
     const className = "LuciadMap"+ (typeof props.className !== "undefined" ? " " + props.className : "");
 
+    const closePanorama = () => {
+        if (map.current && (map.current as any)._myPanoramaActions) {
+            const panoActions = (map.current as any)._myPanoramaActions as PanoramaActions;
+            panoActions.leavePanoramaMode()
+        }
+    }
+
     return <div id={props.id} className={className} ref={divEl}>
         {<MouseCoordinateReadout map={map.current} reference={map.current?.reference}  />}
+        {showLeaveButton &&
+            <div style={{width:"100%", height:"100%", backgroundColor: "transparent", position: "absolute", top:0, left:0, padding:10, pointerEvents: "none",  textAlign: "center"}}>
+                <Button variant="contained" onClick={closePanorama}  size="small" sx={{margin: "0 auto", pointerEvents: "all"}}>Close Panorama</Button>
+            </div>
+        }
         {props.children}
     </div>
 }

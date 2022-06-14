@@ -12,7 +12,7 @@ import {FormProps} from "../interfaces";
 import styled from "@emotion/styled";
 import {TileLoadingStrategy} from "@luciad/ria/view/tileset/TileSet3DLayer";
 
-const url = "http://localhost:8081/ogc/3dtiles/uw_pw_gesamt_point_cloud_new/tileset.json\n";
+const url = "https://sampledata.luciad.com/data/panoramics/LucernePegasus/cubemap_final.json";
 
 const DivButtons = styled('div')`
   float: right;
@@ -31,14 +31,13 @@ interface Props extends FormProps {
     default?: string;
 }
 
-const Connect3DTilesForm = (props: Props) =>{
+const ConnectPanoramicForm = (props: Props) =>{
     const dispatch = useDispatch();
     const {closeForm} = props;
 
     const [inputs, setInputs] = useState({
         url: url,
-        label: "Point cloud",
-        qualityFactor: 0.6
+        label: "Panoramas",
     });
 
     useEffect(()=>{
@@ -57,18 +56,14 @@ const Connect3DTilesForm = (props: Props) =>{
         const command = CreateCommand({
             action: ApplicationCommands.CREATELAYER,
             parameters: {
-                layerType: LayerTypes.OGC3DTilesLayer,
+                layerType: LayerTypes.PanoramicLayer,
                 model: {
-                    url: inputs.url,
+                    target: inputs.url,
                 },
                 layer: {
-                    transparency: true,
-                    idProperty: "FeatureID",
-                    loadingStrategy: DefaultLoadingStrategy,
-                    label: inputs.label,
                     visible: true,
-                    offsetTerrain: DefaultOffsetTerrain,
-                    qualityFactor: inputs.qualityFactor
+                    label: inputs.label,
+                    selectable: true,
                 },
                 autoZoom: true
             }
@@ -94,7 +89,7 @@ const Connect3DTilesForm = (props: Props) =>{
              autoComplete="off"
         >
             <Typography variant="h6" align="center" margin="dense">
-                Connect to 3D Tiles
+                Connect to Panorama
             </Typography>
             <Grid container spacing={1}>
                 <Grid item xs={12} sm={12}>
@@ -124,23 +119,6 @@ const Connect3DTilesForm = (props: Props) =>{
                     />
                 </Grid>
                 <Grid item xs={12} sm={12}>
-                    <Typography id="non-linear-slider" gutterBottom>
-                        Quality Factor: {inputs.qualityFactor}
-                    </Typography>
-                    <Slider
-                        onChange={handleChange}
-                        aria-labelledby="non-linear-slider"
-                        min={0}
-                        step={0.1}
-                        max={2}
-                        size="small"
-                        value={inputs.qualityFactor}
-                        name="qualityFactor"
-                        aria-label="Small"
-                        valueLabelDisplay="auto"
-                    />
-                </Grid>
-                <Grid item xs={12} sm={12}>
                     <Divider variant="middle" />
                 </Grid>
                 <Grid item xs={12} sm={12}>
@@ -156,5 +134,5 @@ const Connect3DTilesForm = (props: Props) =>{
 
 
 export {
-    Connect3DTilesForm
+    ConnectPanoramicForm
 }

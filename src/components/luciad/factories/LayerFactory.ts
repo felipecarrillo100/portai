@@ -26,9 +26,29 @@ import {CreateCommand} from "../../../commands/CreateCommand";
 import {ApplicationCommands} from "../../../commands/ApplicationCommands";
 import {SetAppCommand} from "../../../reduxboilerplate/command/actions";
 import {DronePhotoPainter} from "../painters/DronePhotoPainter";
+import {PanoramaFeaturePainter} from "../painters/PanoramaFeaturePainter";
+import {FusionPanoramaModel} from "@luciad/ria/model/tileset/FusionPanoramaModel";
+import {UrlStore} from "@luciad/ria/model/store/UrlStore";
 
 class LayerFactory {
 
+    static createPanoramicLayer(model: FeatureModel, layerOptions: any) {
+        return new Promise<FeatureLayer>((resolve)=>{
+            const store = model.store as UrlStore;
+            const url =  (store as any).target;
+            const panoModel = new FusionPanoramaModel(url);
+
+            const layer = new FeatureLayer(model, {
+                ...layerOptions,
+                panoramaModel: panoModel,
+                painter:new PanoramaFeaturePainter({
+                    overview: false,
+                    iconHeightOffset: 2.5 // sensor height in meters above street level (approx)
+                })
+            });
+            resolve(layer);
+        })
+    }
     static createWFSLayer(model: FeatureModel, layerOptions: any) {
         return new Promise<FeatureLayer>((resolve)=>{
             const layer = new FeatureLayer(model, layerOptions);
