@@ -30,6 +30,7 @@ const DefaultLoadingStrategy = TileLoadingStrategy.OVERVIEW_FIRST;
 interface Props extends FormProps {
     default?: string;
     label?: string;
+    offsetTerrain?: boolean;
 }
 
 const Connect3DTilesForm = (props: Props) =>{
@@ -68,7 +69,7 @@ const Connect3DTilesForm = (props: Props) =>{
                     loadingStrategy: DefaultLoadingStrategy,
                     label: inputs.label,
                     visible: true,
-                    offsetTerrain: DefaultOffsetTerrain,
+                    offsetTerrain: typeof props.offsetTerrain !== "undefined" ? props.offsetTerrain: DefaultOffsetTerrain,
                     qualityFactor: inputs.qualityFactor
                 },
                 autoZoom: true

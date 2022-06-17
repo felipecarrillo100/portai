@@ -2,8 +2,15 @@ import {Map} from "@luciad/ria/view/Map";
 import React from "react";
 import {ContinuousActionTrigger} from "./ContinuousActionTrigger";
 import "./ZoomControlMini.scss";
+import {PanoramaActions} from "../luciad/controllers/actions/PanoramaActions";
 
 function zoomIn(map: Map) {
+    if (map && (map as any)._myPanoramaActions) {
+        const panoActions = (map as any)._myPanoramaActions as PanoramaActions;
+        if (panoActions.isInPanoramaMode()) {
+            panoActions.leavePanoramaMode();
+        }
+    }
     map?.mapNavigator.zoom({
         factor: 2,
         animate: {
@@ -13,8 +20,12 @@ function zoomIn(map: Map) {
 }
 
 function zoomOut(map: Map) {
-    //#snippet zoomout
-    //#description use the mapNavigator to zoom
+    if (map && (map as any)._myPanoramaActions) {
+        const panoActions = (map as any)._myPanoramaActions as PanoramaActions;
+        if (panoActions.isInPanoramaMode()) {
+            panoActions.leavePanoramaMode();
+        }
+    }
     map?.mapNavigator.zoom({
         factor: 0.5,
         animate: {

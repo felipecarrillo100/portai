@@ -54,12 +54,14 @@ const AdvancedNavBar: React.FC = () => {
         {title: "BIM", action: CommandCreateFormByName("Connect3DTilesForm",
                 {
                     url: "http://localhost:8081/ogc/3dtiles/merged/tileset.json",
-                    label: "BIM/IFC"
+                    label: "BIM/IFC",
+                    offsetTerrain: false
                 })},
         {title: "Point clouds", action: CommandCreateFormByName("Connect3DTilesForm",
                 {
-                    url: "http://localhost:8081/ogc/3dtiles/uw_pw_gesamt_point_cloud_new/tileset.json",
-                    label: "POINT CLOUD"
+                    url: "http://localhost:8081/ogc/3dtiles/uw_pw_gesamt_point_cloud-2/tileset.json\n",
+                    label: "Point Cloud",
+                    offsetTerrain: true
                 })},
         {title: "Vertical Orthophoto", action: CommandCreateFormByName("ConnectVOrthophoto")},
         {title: "Drone photo", action: CommandCreateFormByName("DronePhoto")},

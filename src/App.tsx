@@ -86,7 +86,7 @@ const App: React.FC = () => {
                 break;
             case "Connect3DTilesForm":
                 if (parameters.data){
-                    FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm default={parameters.data.url} label={parameters.data.label}/>)
+                    FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm default={parameters.data.url} label={parameters.data.label} offsetTerrain={parameters.data.offsetTerrain}/>)
                 } else {
                     FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm />)
                 }

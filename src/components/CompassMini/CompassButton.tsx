@@ -11,6 +11,7 @@ import React, {useEffect, useRef} from "react";
 import {clamp, RAD2DEG} from "./Math";
 import compassIcon from "./compass.svg";
 import "./CompassButton.scss";
+import {PanoramaActions} from "../luciad/controllers/actions/PanoramaActions";
 
 const CRS84 = getReference("CRS:84");
 const geodesy = createEllipsoidalGeodesy(CRS84);
@@ -83,6 +84,12 @@ function calculateCSSRotation(map: Map) {
 }
 
 function rotateToNorth(map: Map) {
+  if (map && (map as any)._myPanoramaActions) {
+    const panoActions = (map as any)._myPanoramaActions as PanoramaActions;
+    if (panoActions.isInPanoramaMode()) {
+      panoActions.leavePanoramaMode();
+    }
+  }
   //try to rotate around the center of the screen or fall back to a rotation on the camera itself.
   let center;
   try {
