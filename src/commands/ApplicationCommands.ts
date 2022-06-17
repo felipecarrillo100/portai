@@ -10,5 +10,6 @@ export enum ApplicationCommands {
     MAPRESET = "MAPRESET",
     APPALERT = "APPALERT",
     CREATE_APP_FORM = "CREATE_APP_FORM",
+    TOGGLE_FULL_SCREEN = "TOGGLE_FULL_SCREEN",
 }
 

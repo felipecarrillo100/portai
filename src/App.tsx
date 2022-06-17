@@ -34,6 +34,7 @@ import {ConnectWMTSForm} from "./forms/connect/ConnectWMTSForm";
 import {ToolsHolder} from "./components/holders/ToolsHolder";
 import {ConnectPanoramicForm} from "./forms/connect/ConnectPanoramicForm";
 import {ConnectPanoramicPorstAIForm} from "./forms/connect/ConnectPanoramicPorstAIForm";
+import {FullScreen} from "./utils/fullscreen/FullScreen";
 
 
 interface StateProps {
@@ -122,6 +123,11 @@ const App: React.FC = () => {
             switch (command.action) {
                 case ApplicationCommands.CREATE_APP_FORM:
                     createForm(command.parameters);
+                    break;
+                case ApplicationCommands.TOGGLE_FULL_SCREEN:
+                    const elem = document.body;
+                    const fullScreen = !FullScreen.isFullscreen();
+                    fullScreen ? FullScreen.requestFullscreen(elem) : FullScreen.cancelFullscreen();
                     break;
             }
         }

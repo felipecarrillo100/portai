@@ -28,8 +28,8 @@ import {GestureEvent} from "@luciad/ria/view/input/GestureEvent";
 import {GestureEventType} from "@luciad/ria/view/input/GestureEventType";
 import {ModifierType} from "@luciad/ria/view/input/ModifierType";
 import {Map} from "@luciad/ria/view/Map";
-import {clamp} from "./util/Math";
-import {LookFromZoomAnimation} from "./animation/LookFromZoomAnimaton";
+import {clamp} from "../util/Math";
+import {LookFromZoomAnimation} from "../animation/LookFromZoomAnimaton";
 
 export interface LookFromZoomControllerOptions {
   minFOVy?: number;

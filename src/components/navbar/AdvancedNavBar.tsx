@@ -24,7 +24,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const AdvancedNavBar: React.FC = () => {
     const dispatch = useDispatch();
-    const CommandByName = (commandName: string, options?: any) => () => {
+    const CommandCreateFormByName = (commandName: string, options?: any) => () => {
         const command = CreateCommand({
             action: ApplicationCommands.CREATE_APP_FORM,
             parameters: {
@@ -36,30 +36,38 @@ const AdvancedNavBar: React.FC = () => {
         handleCloseUserMenu();
     }
 
+    const SendBasicCommand = (action: ApplicationCommands, parameters?: any) => () => {
+        const command = CreateCommand({
+            action,
+            parameters
+        });
+        dispatch(SetAppCommand(command));
+        handleCloseUserMenu();
+    }
+
     const ConnectMenu: MenuItemsArray = [
-        {title: "WMS", action: CommandByName("ConnectWMS")},
-        {title: "WFS", action: CommandByName("ConnectWFS")},
-        {title: "WMTS", action: CommandByName("ConnectWMTS")},
-        {title: "LTS", action: CommandByName("ConnectLTS")},
-        {title: "Bingmaps", action: CommandByName("ConnectBingmaps")},
-        {title: "BIM", action: CommandByName("Connect3DTilesForm", {url: "http://localhost:8081/ogc/3dtiles/merged/tileset.json"})},
-        {title: "Point clouds", action: CommandByName("Connect3DTilesForm", {url: "http://localhost:8081/ogc/3dtiles/uw_pw_gesamt_point_cloud_new/tileset.json"})},
-        {title: "Vertical Orthophoto", action: CommandByName("ConnectVOrthophoto")},
-        {title: "Drone photo", action: CommandByName("DronePhoto")},
-        {title: "Panorama", action: CommandByName("ConnectPanorama")},
-        {title: "Panorama Port AI", action: CommandByName("ConnectPanoramaProtAI")},
+        {title: "WMS", action: CommandCreateFormByName("ConnectWMS")},
+        {title: "WFS", action: CommandCreateFormByName("ConnectWFS")},
+        {title: "WMTS", action: CommandCreateFormByName("ConnectWMTS")},
+        {title: "LTS", action: CommandCreateFormByName("ConnectLTS")},
+        {title: "Bingmaps", action: CommandCreateFormByName("ConnectBingmaps")},
+        {title: "BIM", action: CommandCreateFormByName("Connect3DTilesForm", {url: "http://localhost:8081/ogc/3dtiles/merged/tileset.json"})},
+        {title: "Point clouds", action: CommandCreateFormByName("Connect3DTilesForm", {url: "http://localhost:8081/ogc/3dtiles/uw_pw_gesamt_point_cloud_new/tileset.json"})},
+        {title: "Vertical Orthophoto", action: CommandCreateFormByName("ConnectVOrthophoto")},
+        {title: "Drone photo", action: CommandCreateFormByName("DronePhoto")},
+        {title: "Panorama", action: CommandCreateFormByName("ConnectPanorama")},
+        {title: "Panorama Port AI", action: CommandCreateFormByName("ConnectPanoramaProtAI")},
     ];
 
     const ViewMenu: MenuItemsArray = [
-        {title: "Full screen", action: ()=>{}},
-        {title: "Layers", action: CommandByName("LayerControlForm")},
-        {title: "Tools", action: CommandByName("ShowTools")},
+        {title: "Full screen", action: SendBasicCommand(ApplicationCommands.TOGGLE_FULL_SCREEN)},
+        {title: "Layers", action: CommandCreateFormByName("LayerControlForm")},
     ];
 
     const menuItems: MenuEntry[] = [
         {title: "Connect", items: ConnectMenu, hint:"Connect to external services"},
         {title: "View", items: ViewMenu, hint:"Expand view menu"},
-        {title: "Tools", action: ()=>{console.log("Tools")}, hint:"Expand tools menu"}
+        {title: "Tools", action: CommandCreateFormByName("ShowTools"), hint:"Expand tools menu"}
     ]
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);

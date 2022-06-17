@@ -27,8 +27,8 @@ import {Controller} from "@luciad/ria/view/controller/Controller";
 import {HandleEventResult} from "@luciad/ria/view/controller/HandleEventResult";
 import {GestureEvent} from "@luciad/ria/view/input/GestureEvent";
 import {GestureEventType} from "@luciad/ria/view/input/GestureEventType";
-import {clamp, DEG2RAD, RAD2DEG} from "./util/Math";
-import {InertiaAnimation} from "./animation/InertiaAnimation";
+import {clamp, DEG2RAD, RAD2DEG} from "../util/Math";
+import {InertiaAnimation} from "../animation/InertiaAnimation";
 import {GestureSpeedTracker} from "./GestureSpeedTracker";
 
 const INERTIA_DRAG_HISTORY_SIZE = 10;

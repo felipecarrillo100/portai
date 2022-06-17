@@ -127,7 +127,8 @@ export class PanoramaFeaturePainter extends FeaturePainter {
   paintPanorama(geoCanvas: GeoCanvas, feature: Feature, shape: Shape): void {
     if (this.isPanoVisible(feature) && shape.focusPoint) {
       const opacity = this.getPanoOpacity(feature) ;
-      const orientation = this.getPanoOrientation(feature) - 270;
+      // const orientation = this.getPanoOrientation(feature) - 270;
+      const orientation = this.getPanoOrientation(feature) - 270 + 5;
       geoCanvas.drawPanorama(shape.focusPoint!, {
         opacity: opacity ? opacity*1: opacity,
         skyOpacity: opacity,

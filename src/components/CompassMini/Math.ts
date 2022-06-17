@@ -20,52 +20,23 @@
  * OR INABILITY TO USE SOFTWARE, EVEN IF LUCIAD HAS BEEN ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGES.
  */
-$primary: #007bff;
+export const DEG2RAD = Math.PI / 180;
+export const RAD2DEG = 180 / Math.PI;
 
-.ZoomControlMini {
-//  z-index: 10;
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
-
-  .zoom-control-button {
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Old versions of Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
-
-    border: 1px solid gray;
-    text-align: center;
-    background-color: rgba(255, 255, 255, 0.3);
-    font-family : 'Lucida Console', monospace;
-    line-height: 0.9;
-
-    width: 30px;
-    height: 30px;
-    font-size: 30px;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-    color: white;
-    text-shadow: 1px 1px 2px grey, 0 0 1px grey, 0 0 0.2px grey;
-  }
-
-  .zoom-control-button:hover {
-  //  color: $primary;
-    background-color: rgba(0, 0, 0, 1);
-  }
-
-  .zoom-control-button:active {
-    color: $primary;
-    background-color: rgb(55, 55, 55);
-  }
-
-  .round-border-top {
-    border-radius: 5px 5px 0px 0px;
-  }
-
-  .round-border-bottom {
-    border-radius: 0px 0px 5px 5px;
-  }
+export const clamp = (val: number, min: number, max: number): number => {
+    return Math.max(min, Math.min(max, val));
 }
 
+export const interpolate = (start: number, end: number, t: number): number => {
+    return start + t * (end - start);
+};
+
+export const shortestAngle = (a0: number, a1: number): number => {
+    const max = 360;
+    const da = Math.sign(a1 - a0) * (Math.abs(a1 - a0) % max);
+    return Math.sign(a1 - a0) * (2 * Math.abs(da) % max) - da;
+};
+
+export const interpolateAngle = (a: number, b: number, t: number): number => {
+    return a + shortestAngle(a, b) * t;
+};

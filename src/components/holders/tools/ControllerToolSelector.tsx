@@ -13,6 +13,7 @@ import PanToolAltIcon from '@mui/icons-material/PanToolAlt';
 import HighlightAltIcon from '@mui/icons-material/HighlightAlt';
 import StraightenIcon from '@mui/icons-material/Straighten';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
+import LandscapeIcon from '@mui/icons-material/Landscape';
 
 import {Divider, FormControl, Grid, InputLabel, OutlinedInput, Select, TextField} from "@mui/material";
 import Ruler3DController, {
@@ -25,6 +26,9 @@ import {ENUM_DISTANCE_UNIT} from "../../luciad/units/DistanceUnits";
 import Box from "@mui/material/Box";
 import {PanoramaActions} from "../../luciad/controllers/actions/PanoramaActions";
 import {CompositeController} from "../../luciad/controllers/CompositeController";
+import {PanoramicController} from "../../luciad/controllers/panocontroller/PanoramicController";
+import {LayerTreeVisitor} from "@luciad/ria/view/LayerTreeVisitor";
+import {LayerTreeNode} from "@luciad/ria/view/LayerTreeNode";
 
 interface Props {
     map: Map | null;
@@ -90,8 +94,37 @@ const ControllerToolSelector: React.FC<Props> = (props: Props) => {
             props.map.controller = rulerController;
 
             rulerController.formatUtil = new FormatUtil({units: ENUM_DISTANCE_UNIT.METRE});
+        }
+    }
 
+    function findClosesPanoLayer(map: Map) {
+            let panoLayer = null;
+            const layerTreeVisitor = {
+                visitLayer: (layer: any) => {
+                    if (layer.panoramaModel && layer.panoramaModel !== null) {
+                        panoLayer = layer;
+                    }
+                    return LayerTreeVisitor.ReturnValue.CONTINUE;
+                },
+                visitLayerGroup: (layerGroup: any) => {
+                    layerGroup.visitChildren(layerTreeVisitor, LayerTreeNode.VisitOrder.TOP_DOWN);
+                    return LayerTreeVisitor.ReturnValue.CONTINUE;
+                }
+            };
+            map.layerTree.visitChildren(layerTreeVisitor, LayerTreeNode.VisitOrder.TOP_DOWN);
+            return panoLayer;
+    }
 
+    const setPanoramics = () =>{
+        if (props.map) {
+            if (props.map && (props.map as any)._myPanoramaActions) {
+                const panoActions = (props.map as any)._myPanoramaActions as PanoramaActions;
+                const panoLayer = findClosesPanoLayer(props.map);
+                if (panoLayer) {
+                    const panoController = new PanoramicController(panoActions,panoLayer);
+                    props.map.controller = panoController;
+                }
+            }
         }
     }
 
@@ -183,6 +216,9 @@ const ControllerToolSelector: React.FC<Props> = (props: Props) => {
                     title="Ruler 2D"><StraightenIcon/></Button>
             <Button onClick={set3DRuler} variant={controllerName === Ruler3DController.name ? "contained" : "outlined"}
                     title="Ruler 3D"><DesignServicesIcon/></Button>
+
+            <Button onClick={setPanoramics} variant={controllerName === PanoramicController.name ? "contained" : "outlined"}
+                    title="Panoramics"><LandscapeIcon/></Button>
             {/*   <Button onClick={selectionController}
                     variant={controllerName === RectangleSelectController.name ? "contained" : "outlined"}
                     title="Select"><HighlightAltIcon/></Button> */}

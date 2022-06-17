@@ -27,7 +27,7 @@ import {GestureEvent} from "@luciad/ria/view/input/GestureEvent";
 import {KeyEvent} from "@luciad/ria/view/input/KeyEvent";
 import {GeoCanvas} from "@luciad/ria/view/style/GeoCanvas";
 import {LabelCanvas} from "@luciad/ria/view/style/LabelCanvas";
-import {CompositeController} from "./CompositeController";
+import {CompositeController} from "../CompositeController";
 import {LookFromPanController} from "./LookFromPanController";
 import {LookFromZoomMouseController, LookFromZoomTouchController} from "./LookFromZoomController";
 

@@ -27,6 +27,7 @@ import {Handle} from "@luciad/ria/util/Evented";
 import {CompositeController} from "./controllers/CompositeController";
 import Button from "@mui/material/Button";
 import {ZoomControlMini} from "../ZoomControlMini/ZoomControlMini";
+import {CompassButton} from "../CompassMini/CompassButton";
 
 interface Props {
     id?: string;
@@ -265,6 +266,7 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
 
     return <div id={props.id} className={className} ref={divEl}>
         <ZoomControlMini map={map.current} />
+        <CompassButton map={map.current}/>
         {<MouseCoordinateReadout map={map.current} reference={map.current?.reference}  />}
         {showLeaveButton &&
             <div style={{width:"100%", height:"100%", backgroundColor: "transparent", position: "absolute", top:0, left:0, padding:10, pointerEvents: "none",  textAlign: "center"}}>

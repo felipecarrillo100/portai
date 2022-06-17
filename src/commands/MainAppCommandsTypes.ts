@@ -20,6 +20,12 @@ interface MainAppShowAlert {
     }
 }
 
+interface MainAppToggleFullScreen {
+    action: ApplicationCommands.TOGGLE_FULL_SCREEN;
+    parameters: {
+        value?: boolean;
+    }
+}
 
 
-export type MainAppCommandsTypes = MainAppShowToast | MainAppShowAlert
+export type MainAppCommandsTypes = MainAppShowToast | MainAppShowAlert | MainAppToggleFullScreen

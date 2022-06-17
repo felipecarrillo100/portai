@@ -1,29 +1,23 @@
-import {CompositeController} from "./CompositeController";
-import {GestureEventType} from "@luciad/ria/view/input/GestureEventType";
-import {ENABLED_CHANGE_EVENT, LookFromNavigationController} from "./panocontroller/LookFromNavigationController";
-import {NoopController} from "./panocontroller/NoopController";
-import {
-    END_MOVE_TO_PANORAMA_EVENT,
-    ENTERED_PANORAMA_MODE_EVENT, LEFT_PANORAMA_MODE_EVENT,
-    PanoramaActions,
-    START_MOVE_TO_PANORAMA_EVENT
-} from "./actions/PanoramaActions";
-import {HoverFeatureController} from "./panocontroller/HoverFeatureController";
-import {FEATURE_CLICKED, FeatureClickController} from "./panocontroller/FeatureClickController";
+import {CompositeController} from "../CompositeController";
 import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer";
 import {Feature} from "@luciad/ria/model/feature/Feature";
-import {PanoramaFeaturePainter} from "../painters/PanoramaFeaturePainter";
-import {LeavePanoramaController} from "./panocontroller/LeavePanoramaController";
-import {PanoramicController} from "./panocontroller/PanoramicController";
+import {PanoramaFeaturePainter} from "../../painters/PanoramaFeaturePainter";
+import {ENABLED_CHANGE_EVENT, LookFromNavigationController} from "./LookFromNavigationController";
+import {LeavePanoramaController} from "./LeavePanoramaController";
+import {NoopController} from "./NoopController";
+import {GestureEventType} from "@luciad/ria/view/input/GestureEventType";
+import {
+    END_MOVE_TO_PANORAMA_EVENT,
+    ENTERED_PANORAMA_MODE_EVENT, LEFT_PANORAMA_MODE_EVENT, PanoramaActions,
+    START_MOVE_TO_PANORAMA_EVENT
+} from "../actions/PanoramaActions";
+import {HoverFeatureController} from "./HoverFeatureController";
+import {FEATURE_CLICKED, FeatureClickController} from "./FeatureClickController";
 
+class PanoramicController extends CompositeController {
+    constructor(panoActions: PanoramaActions, panoLayer: FeatureLayer) {
+        super();
 
-
-class DefaultMapController {
-    static getDefaultMapController() {
-        return null;
-    }
-/*
-    static getPanoramaConmtroller(panoActions: PanoramaActions, panoLayer: FeatureLayer) {
         const handlePanoramaHover = (layer: FeatureLayer, feature: Feature | null): void => {
             const painter = layer.painter as PanoramaFeaturePainter;
             painter.setHover(feature);
@@ -33,7 +27,7 @@ class DefaultMapController {
             panoActions.moveToPanorama(feature, panoLayer);
         };
 
-        const mainMapController = new CompositeController();
+        const compositeController = this;
         const lookFromController = new LookFromNavigationController({enabled: false});
         const leavePanoController = new LeavePanoramaController(panoActions);
         const noopController = new NoopController({
@@ -69,22 +63,17 @@ class DefaultMapController {
             noopController.enabled = enabled;
         });
 
-        mainMapController.appendController(hoverPanoController);
-        mainMapController.appendController(clickPanoController);
-        mainMapController.appendController(lookFromController);
-        mainMapController.appendController(leavePanoController);
-        mainMapController.appendController(noopController);
+        compositeController.appendController(hoverPanoController);
+        compositeController.appendController(clickPanoController);
+        compositeController.appendController(lookFromController);
+        compositeController.appendController(leavePanoController);
+        compositeController.appendController(noopController);
 
-        return mainMapController;
-    } */
-
-    static getPanoramaConmtroller(panoActions: PanoramaActions, panoLayer: FeatureLayer) {
-        const mainMapController = new PanoramicController(panoActions, panoLayer);
-        return mainMapController;
+        return compositeController;
     }
 
 }
 
 export {
-    DefaultMapController
+    PanoramicController
 }

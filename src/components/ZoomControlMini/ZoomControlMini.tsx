@@ -29,17 +29,20 @@ interface Props {
 }
 
 const ZoomControlMini = ({map}: Props) => {
-
-    return (
-        <div className="ZoomControlMini">
-            <ContinuousActionTrigger action={() => zoomIn(map as Map)}>
-                <div className="zoom-control-button round-border-top" >+</div>
-            </ContinuousActionTrigger>
-            <ContinuousActionTrigger action={() => zoomOut(map as Map)}>
-                <div className="zoom-control-button round-border-bottom" >-</div>
-            </ContinuousActionTrigger>
-        </div>
-    );
+    if (map) {
+        return (
+            <div className="ZoomControlMini">
+                <ContinuousActionTrigger action={() => zoomIn(map as Map)}>
+                    <div className="zoom-control-button round-border-top" >+</div>
+                </ContinuousActionTrigger>
+                <ContinuousActionTrigger action={() => zoomOut(map as Map)}>
+                    <div className="zoom-control-button round-border-bottom" >-</div>
+                </ContinuousActionTrigger>
+            </div>
+        );
+    } else {
+        return (<></>)
+    }
 }
 
 export {
