@@ -94,7 +94,7 @@ class VOrthophotoPanelPainter extends FeaturePainter {
         const Line2 = createPolyline(line.reference, [middle, p3]);
 
         geoCanvas.drawShape(shape, paintState.selected ? SELECTED_LINE_STYLE : DEFAULT_LINE_STYLE );
-        geoCanvas.drawShape(Line2, paintState.selected ? SELECTED_LINE_STYLE : DEFAULT_LINE_STYLE );
+      //  geoCanvas.drawShape(Line2, paintState.selected ? SELECTED_LINE_STYLE : DEFAULT_LINE_STYLE );
         geoCanvas.drawIcon3D(middle, paintState.selected ?  meshStyle.selected : meshStyle.normal) ;
     }
 

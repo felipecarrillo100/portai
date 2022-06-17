@@ -51,8 +51,16 @@ const AdvancedNavBar: React.FC = () => {
         {title: "WMTS", action: CommandCreateFormByName("ConnectWMTS")},
         {title: "LTS", action: CommandCreateFormByName("ConnectLTS")},
         {title: "Bingmaps", action: CommandCreateFormByName("ConnectBingmaps")},
-        {title: "BIM", action: CommandCreateFormByName("Connect3DTilesForm", {url: "http://localhost:8081/ogc/3dtiles/merged/tileset.json"})},
-        {title: "Point clouds", action: CommandCreateFormByName("Connect3DTilesForm", {url: "http://localhost:8081/ogc/3dtiles/uw_pw_gesamt_point_cloud_new/tileset.json"})},
+        {title: "BIM", action: CommandCreateFormByName("Connect3DTilesForm",
+                {
+                    url: "http://localhost:8081/ogc/3dtiles/merged/tileset.json",
+                    label: "BIM/IFC"
+                })},
+        {title: "Point clouds", action: CommandCreateFormByName("Connect3DTilesForm",
+                {
+                    url: "http://localhost:8081/ogc/3dtiles/uw_pw_gesamt_point_cloud_new/tileset.json",
+                    label: "POINT CLOUD"
+                })},
         {title: "Vertical Orthophoto", action: CommandCreateFormByName("ConnectVOrthophoto")},
         {title: "Drone photo", action: CommandCreateFormByName("DronePhoto")},
         {title: "Panorama", action: CommandCreateFormByName("ConnectPanorama")},

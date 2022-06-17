@@ -3,6 +3,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import {ListItem, ListItemAvatar, ListItemText, Menu, Switch} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
+import WallpaperIcon from '@mui/icons-material/Wallpaper';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TreeNodeInterface from "../../interfaces/TreeNodeInterface";
 import {Map} from "@luciad/ria/view/Map";
@@ -104,11 +105,11 @@ const DraggableLayerItem = ({ item, index , map}: DraggableListItemProps) => {
                         <ListItemAvatar>
                             <Avatar>
                                 <IconButton onClick={handleZoom(item)}>
-                                    <ZoomOutMapIcon />
+                                    <WallpaperIcon />
                                 </IconButton>
                             </Avatar>
                         </ListItemAvatar>
-                        <ListItemText primary={item.label} secondary={"Unknown source"} />
+                        <ListItemText primary={item.label} secondary={"Unknown source"} onDoubleClick={handleZoom(item)}/>
                         <IconButton onClick={handleContextMenu(item)}><MoreVertIcon/></IconButton>
                         <Switch
                             edge="end"

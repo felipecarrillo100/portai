@@ -35,6 +35,7 @@ import {ToolsHolder} from "./components/holders/ToolsHolder";
 import {ConnectPanoramicForm} from "./forms/connect/ConnectPanoramicForm";
 import {ConnectPanoramicPorstAIForm} from "./forms/connect/ConnectPanoramicPorstAIForm";
 import {FullScreen} from "./utils/fullscreen/FullScreen";
+import {LuciadLogo} from "./components/luciadlogo/LuciadLogo";
 
 
 interface StateProps {
@@ -47,7 +48,7 @@ const defaultFilename = "noname.wsp";
 
 const App: React.FC = () => {
     const dispatch = useDispatch();
-    const [toolbarVisible, setToolbarVisible] = useState(true);
+    const [toolbarVisible, setToolbarVisible] = useState(false);
     const [workspaceName, setWorkspaceName ] = useState(defaultFilename);
     const myContextMenu = useRef<FeatureContextmenuExports>(null);
     const contextMenuAnchorRef = useRef<HTMLDivElement>(null);
@@ -85,7 +86,7 @@ const App: React.FC = () => {
                 break;
             case "Connect3DTilesForm":
                 if (parameters.data){
-                    FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm default={parameters.data.url}/>)
+                    FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm default={parameters.data.url} label={parameters.data.label}/>)
                 } else {
                     FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm />)
                 }
@@ -158,6 +159,7 @@ const App: React.FC = () => {
             <div className="AppBody" >
                 <AppContent>
                     <LuciadMap proj={proj} onMapChange={storeMapToRedux} command={command}  onLayersChange={storeTreeNodeToRedux} onCurrentLayersChange={storeCurrentLayerToRedux} onSaveMap={onSaveMap}/>
+                    <LuciadLogo />
                 </AppContent>
                 <ToolsHolder visible={toolbarVisible} onClose={()=>setToolbarVisible(false)}/>
                 <FormHolder id={FormHolders.LEFT} />

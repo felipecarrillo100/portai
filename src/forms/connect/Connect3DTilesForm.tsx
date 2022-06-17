@@ -29,6 +29,7 @@ const DefaultLoadingStrategy = TileLoadingStrategy.OVERVIEW_FIRST;
 
 interface Props extends FormProps {
     default?: string;
+    label?: string;
 }
 
 const Connect3DTilesForm = (props: Props) =>{
@@ -37,7 +38,7 @@ const Connect3DTilesForm = (props: Props) =>{
 
     const [inputs, setInputs] = useState({
         url: url,
-        label: "Point cloud",
+        label: props.label ? props.label : "3D Mesh",
         qualityFactor: 0.6
     });
 
@@ -89,7 +90,6 @@ const Connect3DTilesForm = (props: Props) =>{
 
     return (
         <Box component="form" onSubmit={onSubmit}
-
              noValidate
              autoComplete="off"
         >
