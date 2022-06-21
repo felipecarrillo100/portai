@@ -49,6 +49,7 @@ const AdvancedNavBar: React.FC = () => {
         {title: "WMS", action: CommandCreateFormByName("ConnectWMS")},
         {title: "WFS", action: CommandCreateFormByName("ConnectWFS")},
         {title: "WMTS", action: CommandCreateFormByName("ConnectWMTS")},
+        {title: "TMS", action: CommandCreateFormByName("ConnectTMS")},
         {title: "LTS", action: CommandCreateFormByName("ConnectLTS")},
         {title: "Bingmaps", action: CommandCreateFormByName("ConnectBingmaps")},
         {title: "BIM", action: CommandCreateFormByName("Connect3DTilesForm",

@@ -36,6 +36,7 @@ import {ConnectPanoramicForm} from "./forms/connect/ConnectPanoramicForm";
 import {ConnectPanoramicPorstAIForm} from "./forms/connect/ConnectPanoramicPorstAIForm";
 import {FullScreen} from "./utils/fullscreen/FullScreen";
 import {LuciadLogo} from "./components/luciadlogo/LuciadLogo";
+import {ConnectTMSForm} from "./forms/connect/ConnectTMSForm";
 
 
 interface StateProps {
@@ -69,6 +70,9 @@ const App: React.FC = () => {
 
     const createForm = (parameters: { formName: string; data?: any }) => {
         switch (parameters.formName) {
+            case "ConnectTMS":
+                FormManager.openForm(FormHolders.LEFT, <ConnectTMSForm  />)
+                break;
             case "ConnectWMS":
                 FormManager.openForm(FormHolders.LEFT, <ConnectWMSForm  />)
                 break;
