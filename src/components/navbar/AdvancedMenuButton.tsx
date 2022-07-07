@@ -3,7 +3,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import {MenuEntry, MenuItemsArray, NavBarItem, NavBarSubMenu} from "./interfaces";
 import Button from "@mui/material/Button";
-import {Menu, Tooltip} from "@mui/material";
+import {Divider, Menu, Tooltip} from "@mui/material";
 import Box from "@mui/material/Box";
 import {SubMenuItem} from "../SubMenuItem";
 
@@ -43,7 +43,10 @@ const AdvancedMenuButton: React.FC<Props> = (props: Props) => {
             props.handleClose();
             handleCloseUserMenu();
         }
-        return items.map((item) => {
+        return items.map((item, index) => {
+            if ((item as any).separator) {
+                return <Divider key={"kdf_"+index} />
+            } else
             if ((item as any).items) {
                 const submenu = item as NavBarSubMenu;
                 return (<SubMenuItem key={submenu.title} text={submenu.title} icon={submenu.icon}>

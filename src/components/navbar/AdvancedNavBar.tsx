@@ -18,6 +18,7 @@ import {CreateCommand} from "../../commands/CreateCommand";
 import {ApplicationCommands} from "../../commands/ApplicationCommands";
 import {useDispatch} from "react-redux";
 import {SetAppCommand} from "../../reduxboilerplate/command/actions";
+import Divider from '@mui/material/Divider';
 
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -49,9 +50,11 @@ const AdvancedNavBar: React.FC = () => {
         {title: "WMS", action: CommandCreateFormByName("ConnectWMS")},
         {title: "WFS", action: CommandCreateFormByName("ConnectWFS")},
         {title: "WMTS", action: CommandCreateFormByName("ConnectWMTS")},
-        {title: "TMS", action: CommandCreateFormByName("ConnectTMS")},
         {title: "LTS", action: CommandCreateFormByName("ConnectLTS")},
+        {separator: true},
+        {title: "TMS", action: CommandCreateFormByName("ConnectTMS")},
         {title: "Bingmaps", action: CommandCreateFormByName("ConnectBingmaps")},
+        {separator: true},
         {title: "BIM", action: CommandCreateFormByName("Connect3DTilesForm",
                 {
                     url: "http://localhost:8081/ogc/3dtiles/merged/tileset.json",
@@ -64,12 +67,15 @@ const AdvancedNavBar: React.FC = () => {
                     label: "Point Cloud",
                     offsetTerrain: true
                 })},
+        {separator: true},
         {title: "Vertical Orthophoto", action: CommandCreateFormByName("ConnectVOrthophoto")},
         {title: "Drone photo", action: CommandCreateFormByName("DronePhoto")},
+        {separator: true},
         {title: "Panorama", action: CommandCreateFormByName("ConnectPanorama")},
         {title: "Panorama Port AI", action: CommandCreateFormByName("ConnectPanoramaProtAI")},
 
     //    {title: "Cancellable", action: CommandCreateFormByName("CancellablePromise")},
+        {separator: true},
         {title: "LayerGroup", action: CommandCreateFormByName("ConnectLayerGroup")},
     ];
 

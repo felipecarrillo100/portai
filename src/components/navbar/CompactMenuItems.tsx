@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import {SubMenuItem} from "../SubMenuItem";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
+import {Divider} from "@mui/material";
 
 interface Props {
     items: MenuEntry[];
@@ -27,7 +28,10 @@ const CompactMenuItems: React.FC<Props> = (props: Props) => {
             }
             props.handleClose();
         }
-        return items.map((item) => {
+        return items.map((item, index) => {
+            if ((item as any).separator) {
+                return <Divider key={"kdf_"+index} />
+            } else
             if ((item as any).items) {
                 const submenu = item as NavBarSubMenu;
                 return (<SubMenuItem key={submenu.title} text={submenu.title} icon={submenu.icon}>
@@ -51,7 +55,10 @@ const CompactMenuItems: React.FC<Props> = (props: Props) => {
             }
             props.handleClose();
         }
-        return itemsMain.map((itemMain) => {
+        return itemsMain.map((itemMain, index) => {
+            if ((itemMain as any).separator) {
+                return <Divider key={"kdf_"+index}/>
+            } else
             if ((itemMain as any).items) {
                 const submenu = itemMain as NavBarSubMenu;
                 return (<SubMenuItem key={submenu.title} text={submenu.title} icon={submenu.icon}>

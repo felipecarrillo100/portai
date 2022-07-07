@@ -1,4 +1,4 @@
-export type MenuItemsArray = (NavBarItem|NavBarSubMenu)[];
+export type MenuItemsArray = (NavBarItem|NavBarSubMenu|NanBarSeparator)[];
 export interface NavBarItem {
     title: string;
     icon?: JSX.Element;
@@ -17,4 +17,8 @@ export interface MenuEntry {
     title: string;
     items?: MenuItemsArray;
     action?: ()=>void;
+}
+
+export interface NanBarSeparator {
+    separator: boolean;
 }
