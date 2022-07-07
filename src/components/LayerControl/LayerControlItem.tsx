@@ -213,7 +213,7 @@ const LayerControlItem: React.FC<Props> = ({ item , map, setDraggedItem, dragged
                         </IconButton>
                     </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={item.label} secondary={"Unknown source"} onDoubleClick={handleZoom(item)}/>
+                <ListItemText primary={item.label} secondary={"Unknown source"} onDoubleClick={handleZoom(item)} />
                 <IconButton onClick={handleContextMenu(item)}><MoreVertIcon/></IconButton>
                 <Switch
                     edge="end"

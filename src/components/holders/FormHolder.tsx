@@ -76,22 +76,24 @@ const FormHolder: React.FC<Props> = ( props: Props ) => {
         };
     }, []);
 
+    const hasContent = () => {
+      return content.length > 0;
+    }
+
     useEffect(()=>{
         if (props.id) {
             FormManager.register(props.id, {
                 props,
                 formState: {form, setForm},
                 openState: {open, setOpen},
-                onClose
+                onClose,
             })
         }
     }, [props.id]);
 
     useEffect(()=>{
-        if (form === null) {
-            setContent([])
-        } else {
-            if (content.length===0){
+        const OpenNewForm = () => {
+            if (form){
                 // @ts-ignore
                 const signature = form.type.render ? form.type.render.length : 0;
                 if (signature===2) {
@@ -108,6 +110,21 @@ const FormHolder: React.FC<Props> = ( props: Props ) => {
                     );
                     setContentExtra([ClonedElementWithMoreProps]);
                 }
+            }
+            setOpen(true);
+        }
+        if (form === null) {
+            setContent([]);
+        } else {
+            if (hasContent()) {
+                if (canClose()) {
+                    onClose();
+                }
+                setTimeout(()=>{
+                    OpenNewForm();
+                }, 100);
+            } else {
+                OpenNewForm();
             }
         }
     }, [form]);
@@ -148,9 +165,7 @@ class FormManager {
 
         if (target) {
             const {setForm} = target.formState;
-            const {setOpen} = target.openState;
             setForm(aForm);
-            setOpen(true);
         }
     }
 

@@ -102,7 +102,6 @@ const ConnectBingmapsForm = (props: FormProps) =>{
     ));
 
     const token = inputs.token;
-    console.log("token:" + token);
 
     const handleChange = (event: any) => {
         const {name, value} = event.target;

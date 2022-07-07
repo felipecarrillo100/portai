@@ -27,7 +27,7 @@ const LayerControl: React.FC<Props> = (props: React.PropsWithChildren<Props>) =>
     const children = props.rootNode && props.map ? [...props.rootNode.nodes].reverse() : [];
     return (
         <List className="LayerControl list-group">
-            {children.map((item, index) => (
+            {children.map((item) => (
                 <LayerControlItem item={item} key={item.id} map={props.map} onLayerMove={onLayerMove} draggedItem={draggedItem} setDraggedItem={setDraggedItem}/>
             ))}
         </List>

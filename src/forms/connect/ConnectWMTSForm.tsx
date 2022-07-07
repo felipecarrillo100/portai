@@ -35,9 +35,9 @@ const ConnectWMTSForm = (props: FormProps) =>{
     const [inputs, setInputs] = useState({
         url: "https://sampleservices.luciad.com/wmts",
         label: "",
-        layer: "Press Get Layers Button",
-        format: "Press Get Layers Button",
-        tileMatrixSet: "Press Get Layers Button",
+        layer: "",
+        format: "",
+        tileMatrixSet: "",
     });
 
     const [layers, setLayers] = useState([] as WMTSCapabilitiesLayer[]);
