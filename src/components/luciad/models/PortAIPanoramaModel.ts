@@ -18,9 +18,11 @@ class PortAIPanoramaModel extends PanoramaModel {
             level0Rows: 8,
             //levelCount: 4,
              levelCount: 4,
+            tileWidth: 214,   //Level:Q 3
+            tileHeight: 214,  //Level:Q 3
 
-            tileWidth: 256,   //Level:Q 3
-             tileHeight: 256,  //Level:Q 3
+            //tileWidth: 256,   //Level:Q 3
+            // tileHeight: 256,  //Level:Q 3
            // tileWidth: 13664,   //Level:2
            // tileHeight: 6832,  //Level:2
            // tileWidth: 6832,   //Level:3
@@ -61,8 +63,10 @@ class PortAIPanoramaModel extends PanoramaModel {
         const name_noext = name.split('.').slice(0, -1).join('.');
      //   return `http://localhost/panoramics/?filename=${name}&service=GetTile&z=${request.level}&x=${request.x}&y=${correctedY}`;
         // return `http://localhost:8080/image?filename=${name}&service=GetTile&z=${request.level}&x=${request.x}&y=${correctedY}&format=png`
-     //   return `http://localhost/panoramics/tilesq168/${name_noext}/${request.level}/${request.x}_${correctedY}.jpg`
-          return `/pano/?filename=${name}&service=GetTile&z=${request.level}&x=${request.x}&y=${correctedY}`;
+        return `http://localhost/panoramics/tilesq168/${name_noext}/${request.level}/${request.x}_${correctedY}.jpg`
+          // return `/pano/?filename=${name}&service=GetTile&z=${request.level}&x=${request.x}&y=${correctedY}`;
+
+        return `/resources/tiles/tilesq168/${name_noext}/${request.level}/${request.x}_${request.y}.jpg`;
     }
 }
 
