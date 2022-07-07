@@ -63,10 +63,11 @@ class PortAIPanoramaModel extends PanoramaModel {
         const name_noext = name.split('.').slice(0, -1).join('.');
      //   return `http://localhost/panoramics/?filename=${name}&service=GetTile&z=${request.level}&x=${request.x}&y=${correctedY}`;
         // return `http://localhost:8080/image?filename=${name}&service=GetTile&z=${request.level}&x=${request.x}&y=${correctedY}&format=png`
-        return `http://localhost/panoramics/tilesq168/${name_noext}/${request.level}/${request.x}_${correctedY}.jpg`
+        // return `http://localhost/panoramics/tilesq168/${name_noext}/${request.level}/${request.x}_${correctedY}.jpg`
           // return `/pano/?filename=${name}&service=GetTile&z=${request.level}&x=${request.x}&y=${correctedY}`;
 
-        return `/resources/tiles/tilesq168/${name_noext}/${request.level}/${request.x}_${request.y}.jpg`;
+        // return `/resources/tiles/tilesq168/${name_noext}/${request.level}/${request.x}_${request.y}.jpg`;
+        return `/static-tiles/${name_noext}/${request.level}/${request.x}_${correctedY}.jpg`;
     }
 }
 
