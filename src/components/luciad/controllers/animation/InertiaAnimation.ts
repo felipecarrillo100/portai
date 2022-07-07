@@ -50,6 +50,7 @@ const createSplineEase = (inflexion: number): (t: number) => number => {
 
     let x_max = 1.0;
     let x, tx, coef;
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       x = x_min + (x_max - x_min) / 2.0;
       coef = 3.0 * x * (1.0 - x);

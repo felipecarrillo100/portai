@@ -5,7 +5,9 @@ import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer";
 import {LayerTreeNodeType} from "@luciad/ria/view/LayerTreeNodeType";
 import {getReference} from "@luciad/ria/reference/ReferenceProvider";
 import {createBounds} from "@luciad/ria/shape/ShapeFactory";
-import GeoTools from "../utils/GeoTools";
+import {ScreenMessage} from "../../../screen/ScreenMessage";
+import TreeNodeInterface from "../../../interfaces/TreeNodeInterface";
+
 
 class AdvanceLayerTools {
 
@@ -34,6 +36,97 @@ class AdvanceLayerTools {
             return node;
         } else {
             return null;
+        }
+    }
+
+    public static deleteNode(node: LayerTreeNode){
+        const layer = node;
+        const group = layer.parent;
+        if (group) group.removeChild(layer);
+    }
+
+    private static saveNodeLocation(tree: any, layer: LayerTreeNode) {
+        let loc: any;
+        if (tree.children.length === 1) {
+            loc = {position: "top", parent: tree, layer}
+        } else {
+            let index = 0;
+            for (let i = 0; i < tree.children.length; ++i) {
+                if (layer.id === tree.children[i].id) {
+                    index = i;
+                }
+            }
+            if (index === 0) {
+                loc = {position: "below", parent: tree, layer, reference: tree.children[index + 1]};
+            } else {
+                loc = {position: "above", parent: tree, layer, reference: tree.children[index - 1]};
+            }
+        }
+        return loc;
+    }
+
+    private static restoreNodeAtLocation(loc: any) {
+        if (loc.position === "top") {
+            loc.parent.addChild(loc.layer, "top");
+        } else {
+            loc.parent.addChild(loc.layer, loc.position, loc.reference);
+        }
+    }
+
+    public static moveLayers(map: Map, node: LayerTreeNode, referenceNode: LayerTreeNode, position: "top" | "below" | "above" | "bottom" | undefined) {
+        let groupLayer: any;
+        let location: any;
+        if (node.parent === referenceNode.parent) {
+            if (referenceNode.treeNodeType === LayerTreeNodeType.LAYER_GROUP && position === "below" && !(referenceNode as any).collapsed) {
+                if (node.id === 'Grid') {
+                    ScreenMessage.warning("Grid Layer must be in root");
+                    return;
+                }
+                groupLayer = node.parent as any;
+                const myreference = referenceNode as any;
+                location = this.saveNodeLocation(groupLayer, node);
+                try {
+                    myreference.moveChild(node, "top");
+                } catch (err) {
+                    let message = "Moving layer to this location is not allowed.";
+                    if ((node as any).type && (node as any).type === "BASE") {
+                        message += " Base layers must be at the bottom."
+                    }
+                    ScreenMessage.warning(message);
+
+                    (referenceNode as any).removeChild(node);
+                    this.restoreNodeAtLocation(location)
+                }
+            } else {
+                groupLayer = node.parent as any;
+                const canMove = groupLayer.canMoveChild(node, position, referenceNode);
+                if (canMove) {
+                    groupLayer.moveChild(node, position, referenceNode, false);
+                } else {
+                    ScreenMessage.warning("Moving layer to this location is not allowed.");
+                }
+            }
+        } else {
+            if (node.id === "Grid") {
+                return;
+            }
+            groupLayer = node.parent as any;
+            const newGroupLayer = referenceNode.parent;
+            location = this.saveNodeLocation(groupLayer, node);
+            if (newGroupLayer) {
+                try {
+                    newGroupLayer.moveChild(node, position, referenceNode, false);
+                    // console.log("--- moved to parent:" + newGroupLayer.label);
+                } catch (err) {
+                    let message = "Moving layer to this location is not allowed.";
+                    if ((node as any).type && (node as any).type === "BASE") {
+                        message += " Base layers must be at the bottom."
+                    }
+                    ScreenMessage.warning(message);
+                    newGroupLayer.removeChild(node);
+                    this.restoreNodeAtLocation(location)
+                }
+            }
         }
     }
 

@@ -60,8 +60,7 @@ class GeoFilter {
                 return this.Intersects(shape);
                 break;
             case GEOFILTER_OPERATOR.NEAR:
-                const radius = (this.shape2 as any).radius;
-                return this.Near(shape, this.min, radius);
+                return this.Near(shape, this.min, (this.shape2 as any).radius);
                 break;
         }
         return false;

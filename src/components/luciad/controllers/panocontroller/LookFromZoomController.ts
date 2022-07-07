@@ -78,8 +78,8 @@ abstract class LookFromZoomController extends Controller {
         const fovY = clamp(targetFOVy, this._minFOV, this._maxFOV);
         const anim = new LookFromZoomAnimation(this.map, fovY, gestureEvent.viewPoint);
         if (this._animated) {
-          AnimationManager.putAnimation(this.map.cameraAnimationKey, anim, false).catch(() => {
-          });
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          AnimationManager.putAnimation(this.map.cameraAnimationKey, anim, false).catch(() => {});
         } else {
           anim.onStart();
           anim.update(1.0);
@@ -125,7 +125,7 @@ export class LookFromZoomMouseController extends LookFromZoomController {
   determineTargetFovY(event: GestureEvent): number {
     let scrollAmount = -(event as any).amount;
     scrollAmount *= event.modifier === ModifierType.SHIFT ? ZOOM_PRECISION_MODIFIER : 1.0;
-    if (!this.map || !(this.map.camera instanceof PerspectiveCamera) || scrollAmount == 0) {
+    if (!this.map || !(this.map.camera instanceof PerspectiveCamera) || scrollAmount === 0) {
       return 0;
     }
     const switchedFromZoomInToZoomOut = !((this._zoomFactor >= 1.0 && scrollAmount > 0) ||

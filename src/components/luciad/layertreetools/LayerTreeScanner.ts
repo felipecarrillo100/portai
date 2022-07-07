@@ -6,14 +6,16 @@ import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer";
 import {RasterTileSetLayer} from "@luciad/ria/view/tileset/RasterTileSetLayer";
 import {WMSTileSetLayer} from "@luciad/ria/view/tileset/WMSTileSetLayer";
 import {WMSTileSetModel} from "@luciad/ria/model/tileset/WMSTileSetModel";
-import TreeNodeInterface from "../../../interfaces/TreeNodeInterface";
 import {EditSelectLayerTools} from "./EditSelectLayerTools";
 import {TileSet3DLayer} from "@luciad/ria/view/tileset/TileSet3DLayer";
+
+import {LayerTypes} from "../layertypes/LayerTypes";
+import {LayerConnectCommandsTypes} from "../../../commands/ConnectCommands";
 import {ApplicationCommandsTypes} from "../../../commands/ApplicationCommandsTypes";
 import {ApplicationCommands} from "../../../commands/ApplicationCommands";
-import {LayerTypes} from "../layertypes/LayerTypes";
 import {CreateCommand} from "../../../commands/CreateCommand";
-import {LayerConnectCommandsTypes} from "../../../commands/ConnectCommands";
+import TreeNodeInterface from "../../../interfaces/TreeNodeInterface";
+
 
 interface GetLayerTreeCommandOptions {
     withModels?: boolean;
@@ -65,7 +67,6 @@ class LayerTreeScanner {
                     newNode.treeNodeType = "LAYER_GRID";
                 }
 
-                const onTop = false;
                 const testLayer = l as any;
                 if ( testLayer && testLayer.restoreCommand && testLayer.restoreCommand.parameters && testLayer.restoreCommand.parameters.layer && testLayer.restoreCommand.parameters.layer.onTop) {
                     newNode.onTop = { value: !!testLayer.restoreCommand.parameters.layer.onTop, enabled: true };

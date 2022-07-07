@@ -13,7 +13,6 @@ import TreeNodeInterface from "./interfaces/TreeNodeInterface";
 import {LayerConnectCommandsTypes} from "./commands/ConnectCommands";
 import {FileUtils} from "./utils/FileUtils";
 import {ApplicationCommands} from "./commands/ApplicationCommands";
-import {TestForm} from "./forms/TestForm";
 import {ConnectWMSForm} from "./forms/connect/ConnectWMSForm";
 import {ConnectWFSForm} from "./forms/connect/ConnectWFSForm";
 import {ConnectBingmapsForm} from "./forms/connect/ConnectBingmapsForm";
@@ -23,7 +22,6 @@ import {
     FeatureContextmenuExports
 } from "./components/contextmenu/FeatureContextmenu";
 import {ContextmenuRecords} from "./components/contextmenu/ContextmenuRecords";
-import {SortableListForm} from "./forms/SortableListForm";
 import {LayerControlForm} from "./forms/layercontrol/LayerControlForm";
 import {CartesianMapForm} from "./forms/cartesian/CartesianMapForm";
 import {Connect3DTilesForm} from "./forms/connect/Connect3DTilesForm";
@@ -37,12 +35,13 @@ import {ConnectPanoramicPorstAIForm} from "./forms/connect/ConnectPanoramicPorst
 import {FullScreen} from "./utils/fullscreen/FullScreen";
 import {LuciadLogo} from "./components/luciadlogo/LuciadLogo";
 import {ConnectTMSForm} from "./forms/connect/ConnectTMSForm";
+import {CancelablePromiseForm} from "./forms/CancelablePromiseForm";
+import {ConnectLayerGroupForm} from "./forms/connect/ConnectLayerGroupForm";
 
 
 interface StateProps {
     proj: string;
     command: ApplicationCommandsTypes | null;
-    map: Map | null;
 }
 
 const defaultFilename = "noname.wsp";
@@ -54,11 +53,10 @@ const App: React.FC = () => {
     const myContextMenu = useRef<FeatureContextmenuExports>(null);
     const contextMenuAnchorRef = useRef<HTMLDivElement>(null);
 
-    const { proj, command, map} = useSelector<IAppState, StateProps>((state: IAppState) => {
+    const { proj, command} = useSelector<IAppState, StateProps>((state: IAppState) => {
         return {
             proj: state.luciadMap.proj,
             command: state.appCommand.command,
-            map: state.luciadMap.map,
         }
     });
 
@@ -119,6 +117,12 @@ const App: React.FC = () => {
                 break;
             case "ConnectPanoramaProtAI":
                 FormManager.openForm(FormHolders.LEFT, <ConnectPanoramicPorstAIForm />)
+                break;
+            case "CancellablePromise":
+                FormManager.openForm(FormHolders.LEFT, <CancelablePromiseForm />)
+                break;
+            case "ConnectLayerGroup":
+                FormManager.openForm(FormHolders.LEFT, <ConnectLayerGroupForm />)
                 break;
         }
     }

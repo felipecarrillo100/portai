@@ -57,7 +57,7 @@ export interface CreateRasterLayerBaseCommand {
     }
 }
 
-export  interface CreatRootLayerCommand extends CreateLayerBaseCommand {
+export interface CreateRootLayerCommand extends CreateLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER;
     parameters: {
         layerType: LayerTypes.Root;
@@ -71,7 +71,7 @@ export  interface CreatRootLayerCommand extends CreateLayerBaseCommand {
     }
 }
 
-export  interface CreatLayerGroupCommand extends CreateLayerBaseCommand {
+export interface CreateLayerGroupCommand extends CreateLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER;
     parameters: {
         layerType: LayerTypes.LayerGroup;
@@ -79,8 +79,11 @@ export  interface CreatLayerGroupCommand extends CreateLayerBaseCommand {
         model?: {
         };
         layer?: {
+            visible?: boolean;
+            label?: string;
+            id?: string;
         },
-        nodes: any[]
+        nodes?: any[]
         autoZoom?: boolean
     }
 }
@@ -122,7 +125,7 @@ export  interface CreateDronePhotoCommand extends CreateLayerBaseCommand {
 }
 
 
-export  interface CreatLayerFeaturesFileCommand extends CreateLayerBaseCommand {
+export  interface CreateLayerFeaturesFileCommand extends CreateLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER;
     parameters: {
         layerType: LayerTypes.FeaturesFileLayer;
@@ -143,7 +146,7 @@ export  interface CreatLayerFeaturesFileCommand extends CreateLayerBaseCommand {
     }
 }
 
-export  interface CreatLayerWFSCommand extends CreateLayerBaseCommand {
+export  interface CreateLayerWFSCommand extends CreateLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER;
     parameters: {
         layerType: LayerTypes.WFSLayer;
@@ -164,7 +167,7 @@ export  interface CreatLayerWFSCommand extends CreateLayerBaseCommand {
     }
 }
 
-export interface CreatLayerPanoramicCommand extends CreateLayerBaseCommand {
+export interface CreateLayerPanoramicCommand extends CreateLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER;
     parameters: {
         layerType: LayerTypes.PanoramicLayer;
@@ -183,7 +186,7 @@ export interface CreatLayerPanoramicCommand extends CreateLayerBaseCommand {
     }
 }
 
-export interface CreatLayerPanoramicPortAICommand extends CreateLayerBaseCommand {
+export interface CreateLayerPanoramicPortAICommand extends CreateLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER;
     parameters: {
         layerType: LayerTypes.PanoramicPortAILayer;
@@ -202,7 +205,7 @@ export interface CreatLayerPanoramicPortAICommand extends CreateLayerBaseCommand
     }
 }
 
-export interface CreatLayerWMSCommand extends CreateRasterLayerBaseCommand {
+export interface CreateLayerWMSCommand extends CreateRasterLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER,
     parameters: {
         layerType: LayerTypes.WMSLayer;
@@ -227,7 +230,7 @@ export interface CreatLayerWMSCommand extends CreateRasterLayerBaseCommand {
     }
 }
 
-export interface CreatLayerWMTSCommand extends CreateRasterLayerBaseCommand {
+export interface CreateLayerWMTSCommand extends CreateRasterLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER,
     parameters: {
         layerType: LayerTypes.WMTSLayer;
@@ -258,7 +261,7 @@ export interface CreatLayerWMTSCommand extends CreateRasterLayerBaseCommand {
     }
 }
 
-export interface CreatLayerLTSCommand extends CreateRasterLayerBaseCommand {
+export interface CreateLayerLTSCommand extends CreateRasterLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER,
     parameters: {
         layerType: LayerTypes.LTSLayer;
@@ -284,7 +287,7 @@ export interface CreatLayerLTSCommand extends CreateRasterLayerBaseCommand {
     }
 }
 
-export interface CreatLayerTMSCommand  extends CreateRasterLayerBaseCommand  {
+export interface CreateLayerTMSCommand extends CreateRasterLayerBaseCommand  {
     action: ApplicationCommands.CREATELAYER,
     parameters: {
         layerType: LayerTypes.TMSLayer;
@@ -305,7 +308,7 @@ export interface CreatLayerTMSCommand  extends CreateRasterLayerBaseCommand  {
     }
 }
 
-export interface CreatDatabaseRasterTilesetCommand  extends CreateRasterLayerBaseCommand  {
+export interface CreateDatabaseRasterTilesetCommand extends CreateRasterLayerBaseCommand  {
     action: ApplicationCommands.CREATELAYER,
     parameters: {
         layerType: LayerTypes.DatabaseRasterTileset;
@@ -327,7 +330,7 @@ export interface CreatDatabaseRasterTilesetCommand  extends CreateRasterLayerBas
     }
 }
 
-export interface CreatLayerOGC3DTilesCommand  extends CreateLayerBaseCommand  {
+export interface CreateLayerOGC3DTilesCommand extends CreateLayerBaseCommand  {
     action: ApplicationCommands.CREATELAYER,
     parameters: {
         layerType: LayerTypes.OGC3DTilesLayer;
@@ -349,7 +352,7 @@ export interface CreatLayerOGC3DTilesCommand  extends CreateLayerBaseCommand  {
     }
 }
 
-export interface CreatLayerBingMapsCommand  extends CreateRasterLayerBaseCommand  {
+export interface CreateLayerBingMapsCommand extends CreateRasterLayerBaseCommand  {
     action: ApplicationCommands.CREATELAYER,
     parameters: {
         layerType: LayerTypes.BingMapsLayer;
@@ -369,6 +372,6 @@ export interface CreatLayerBingMapsCommand  extends CreateRasterLayerBaseCommand
     }
 }
 
-export type LayerConnectCommandsTypes = CreatLayerWFSCommand | CreatLayerWMSCommand | CreatLayerTMSCommand | CreatRootLayerCommand |
-    CreatLayerGroupCommand | CreateVOrthophotoCommand | CreateDronePhotoCommand | CreatLayerPanoramicCommand | CreatLayerPanoramicPortAICommand |
-    CreatLayerBingMapsCommand | CreatLayerWMTSCommand | CreatLayerLTSCommand | CreatLayerOGC3DTilesCommand | CreatLayerFeaturesFileCommand | CreatDatabaseRasterTilesetCommand
+export type LayerConnectCommandsTypes = CreateLayerWFSCommand | CreateLayerWMSCommand | CreateLayerTMSCommand | CreateRootLayerCommand |
+    CreateLayerGroupCommand | CreateVOrthophotoCommand | CreateDronePhotoCommand | CreateLayerPanoramicCommand | CreateLayerPanoramicPortAICommand |
+    CreateLayerBingMapsCommand | CreateLayerWMTSCommand | CreateLayerLTSCommand | CreateLayerOGC3DTilesCommand | CreateLayerFeaturesFileCommand | CreateDatabaseRasterTilesetCommand

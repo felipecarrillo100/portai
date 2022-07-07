@@ -7,13 +7,13 @@ class UrlTileSetModelCartesian extends UrlTileSetModel {
     }
 
     getTileURL(baseURL: string, tile: TileCoordinate) {
-        return this.baseURL + "&service=GetTile&x=" + tile.x + "&y=" + tile.y;
+        return this.baseURL + "&service=GetVTile&x=" + tile.x + "&y=" + tile.y;
     }
 
    /* getImage(tile: TileCoordinate, onSuccess: (tile: TileCoordinate, image: HTMLImageElement) => void, onError: (tile: TileCoordinate, error?: any) => void, abortSignal: AbortSignal | null) {
         this.renderImageInCanvas(tile, onSuccess);
     }*/
-
+/*
     private renderImageInCanvas(tile: TileCoordinate, onSuccess: (tile: TileCoordinate, image: HTMLImageElement) => void) {
 
         const canvas = document.createElement("canvas");
@@ -48,6 +48,8 @@ class UrlTileSetModelCartesian extends UrlTileSetModel {
             }
         });
     }
+    */
+
 }
 
 export {

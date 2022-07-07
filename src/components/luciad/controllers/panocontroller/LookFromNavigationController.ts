@@ -111,7 +111,7 @@ export class LookFromNavigationController extends CompositeController {
   }
 
   set enabled(enabled: boolean) {
-    if (this._enabled != enabled) {
+    if (this._enabled !== enabled) {
       this._enabled = enabled;
       this.invalidate();
       this._eventedSupport.emit(ENABLED_CHANGE_EVENT, enabled);

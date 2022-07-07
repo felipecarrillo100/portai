@@ -61,8 +61,8 @@ export class HoverFeatureController extends Controller {
   onGestureEvent(gestureEvent: GestureEvent): HandleEventResult {
     if (this.map && gestureEvent.type === GestureEventType.MOVE) {
       const pick = this.map.pickClosestObject(gestureEvent.viewPoint.x, gestureEvent.viewPoint.y, PICK_SENSITIVITY);
-      if ((pick && this._layers.length == 0) || (pick && this._layers.indexOf(pick.layer as FeatureLayer) >= 0)) {
-        if (this._hoveredFeature != pick.objects[0]) {
+      if ((pick && this._layers.length === 0) || (pick && this._layers.indexOf(pick.layer as FeatureLayer) >= 0)) {
+        if (this._hoveredFeature !== pick.objects[0]) {
           if (this._hoveredFeature && this._hoveredLayer) {
             this._eventedSupport.emit("HoverFeature", this._hoveredLayer, null);
           }

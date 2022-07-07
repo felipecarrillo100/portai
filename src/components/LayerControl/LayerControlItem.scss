@@ -1,0 +1,44 @@
+.LayerControlItem{
+  .list-group {
+    padding: 0;
+    padding-left: 15px;
+  }
+
+  .item-draggable {
+
+    background-color: blue;
+
+
+    padding: 4px;
+    background-color: rgb(235,235,235);
+    &.active {
+      background-color: #6d9cd0;
+    }
+    &.drag-above:not(.drag-start){
+      background-color: lightgray;
+      border-top: 2px solid red;
+      color: black;
+    }
+
+    &.drag-below:not(.drag-start){
+      background-color: lightgray;
+      border-bottom: 2px solid red;
+      color: black;
+    }
+  }
+
+  .drag-enter {
+    border: 1px dashed red;
+    * {pointer-events: none;}
+  }
+
+  .noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+  }
+}

@@ -17,22 +17,29 @@ interface Props {
     getHeight?: (wgs84MouseLocation: Point) => Promise<number>;
 }
 
-export const MouseCoordinateReadout = ({
+interface PropsInternal {
+    map: Map ;
+    reference?: CoordinateReference;
+    formatter?: Formatter;
+    defaultReadout?: string;
+    getHeight?: (wgs84MouseLocation: Point) => Promise<number>;
+}
+
+const InternalMouseCoordinateReadout  = ({
                                            map,
                                            reference,
                                            formatter,
                                            defaultReadout,
                                            getHeight
-                                       }: Props) => {
+                                       }: PropsInternal) => {
     formatter = formatter ?? new LonLatPointFormat();
     reference = reference ?? getReference("CRS:84");
     defaultReadout = defaultReadout ?? "---°--'--\",----°--'--\"";
 
-    if (map) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const formattedMouseLocation = useFormattedMouseCoordinate(map, formatter, reference) ?? defaultReadout;
         let heightText = "";
-        if (reference.referenceType != ReferenceType.CARTESIAN) {
+        if (reference.referenceType !== ReferenceType.CARTESIAN) {
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const height = useMouseHeight(map, getHeight);
             heightText = `${height.toFixed(1)}m`;
@@ -48,6 +55,16 @@ export const MouseCoordinateReadout = ({
                 </div>
             </div>
         );
-    }
-    return (<></>)
+}
+
+export const MouseCoordinateReadout= ({
+                                          map,
+                                          reference,
+                                          formatter,
+                                          defaultReadout,
+                                          getHeight
+                                      }: Props) => {
+    return  <>
+        {map !== null && <InternalMouseCoordinateReadout map={map} reference={reference} formatter={formatter} defaultReadout={defaultReadout} getHeight={getHeight}  />}
+    </>
 }

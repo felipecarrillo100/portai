@@ -9,7 +9,11 @@ import {WMSTileSetLayer} from "@luciad/ria/view/tileset/WMSTileSetLayer";
 import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer";
 import {RasterTileSetLayer} from "@luciad/ria/view/tileset/RasterTileSetLayer";
 import {LayerTree} from "@luciad/ria/view/LayerTree";
-import {CreatRootLayerCommand, LayerConnectCommandsTypes} from "../../../commands/ConnectCommands";
+import {
+    CreateLayerGroupCommand,
+    CreateRootLayerCommand,
+    LayerConnectCommandsTypes
+} from "../../../commands/ConnectCommands";
 import {LayerGroup} from "@luciad/ria/view/LayerGroup";
 import {Layer} from "@luciad/ria/view/Layer";
 import {UrlTileSetModel} from "@luciad/ria/model/tileset/UrlTileSetModel";
@@ -44,6 +48,12 @@ class MapBuilder {
         return new Promise<Layer | LayerGroup | LayerTree>(resolve => {
             let layerPromise = null;
             switch (command.parameters.layerType) {
+                case LayerTypes.VOrthophotoAPILayer:
+                    layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createRestAPIModel, LayerFactory.createVOrthoRestAPILayer);
+                    break;
+                case LayerTypes.DronePhotoAPILayer:
+                    layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createRestAPIModel, LayerFactory.createDronePhotoRestAPILayer);
+                    break;
                 case LayerTypes.PanoramicPortAILayer:
                     layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createPanoramicPortAIModel, LayerFactory.createPanoramicPortAILayer);
                     break;
@@ -52,12 +62,6 @@ class MapBuilder {
                     break;
                 case LayerTypes.WFSLayer:
                     layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createWFSModel, LayerFactory.createWFSLayer);
-                    break;
-                case LayerTypes.DronePhotoAPILayer:
-                    layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createRestAPIModel, LayerFactory.createDronePhotoRestAPILayer);
-                    break;
-                case LayerTypes.VOrthophotoAPILayer:
-                    layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createRestAPIModel, LayerFactory.createVOrthoRestAPILayer);
                     break;
                 case LayerTypes.FeaturesFileLayer:
                     layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createFeaturesFileModel, LayerFactory.createFeaturesFileLayer);
@@ -80,24 +84,32 @@ class MapBuilder {
                 case LayerTypes.OGC3DTilesLayer:
                     layerPromise = MapBuilder.buildAnyLayer<OGC3DTilesModel, TileSet3DLayer>(command, ModelFactory.createOGC3DTilesModel, LayerFactory.createOGC3DTilesLayer);
                     break;
+                case LayerTypes.LayerGroup:
+                    layerPromise = MapBuilder.buildLayerGroup(command, map);
+                    break;
                 case LayerTypes.Root:
                     layerPromise = MapBuilder.buildRoot(command, map);
+                    break;
+                default:
+                    console.log("Unknown LayerType: " + command.parameters.layerType);
+                    break;
+
             }
             layerPromise?.then(layer=> {
                 if (command.parameters.layerType === LayerTypes.Root ) {
                     // Do nothing
                 } else {
                     if (command.parameters.layerType === LayerTypes.LayerGroup) {
-                        if (command.parameters.nodes) { // @ts-ignore
+                        if (command.parameters.nodes) {
                             delete command.parameters.nodes;
-                            const restoreCommand = MapBuilder.clone(command);
-                            if (restoreCommand.reusableModel) delete restoreCommand.reusableModel;
-                            (layer as any).restoreCommand = restoreCommand;
-                            if (restoreCommand.parameters.autoZoom) {
-                                restoreCommand.parameters.autoZoom = false;
-                                delete restoreCommand.parameters.autoZoom;
-                                AdvanceLayerTools.fitToLayer(map, layer);
-                            }
+                        }
+                        const restoreCommand = MapBuilder.clone(command);
+                        if (restoreCommand.reusableModel) delete restoreCommand.reusableModel;
+                        (layer as any).restoreCommand = restoreCommand;
+                        if (restoreCommand.parameters.autoZoom) {
+                            restoreCommand.parameters.autoZoom = false;
+                            delete restoreCommand.parameters.autoZoom;
+                            AdvanceLayerTools.fitToLayer(map, layer);
                         }
                     } else {
                         const restoreCommand = MapBuilder.clone(command);
@@ -129,8 +141,35 @@ class MapBuilder {
         return JSON.parse(JSON.stringify(command));
     }
 
+    private static buildLayerGroup(commandInput: ApplicationCommandsTypes, map: Map) {
+        const command = commandInput as CreateLayerGroupCommand;
+        const layerTree = LayerFactory.createLayerGroup(command.parameters.layer);
+        return new Promise<LayerTree>((resolve => {
+            if (layerTree && typeof command.parameters.nodes !== "undefined"){
+                const promises = [];
+                for (const node of command.parameters.nodes) {
+                    promises.push(MapBuilder.createAnyLayer(node, map));
+                }
+                Promise.all(promises).then(layers=>{
+                    for(const layer of layers){
+                        layerTree.addChild(layer);
+                    }
+                    resolve(layerTree);
+                }, (status) => {
+                    // Just to catch the error 8989
+                    if (typeof status !== "undefined"){
+                        MapBuilder.logMessage(status);
+                    } else {
+                        MapBuilder.logError("Failed to create layer");
+                    }
+                })
+            }
+            resolve(layerTree)
+        }))
+    }
+
     private static buildRoot(commandInput: ApplicationCommandsTypes, map: Map) {
-        const command = commandInput as CreatRootLayerCommand;
+        const command = commandInput as CreateRootLayerCommand;
         const layerTree = map.layerTree;
         return new Promise<LayerTree>((resolve => {
             layerTree.removeAllChildren();

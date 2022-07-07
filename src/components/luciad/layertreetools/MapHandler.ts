@@ -6,9 +6,8 @@ import {PaintRepresentation} from "@luciad/ria/view/PaintRepresentation";
 import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer";
 import {LayerTreeVisitor} from "@luciad/ria/view/LayerTreeVisitor";
 import {LayerTreeScanner} from "./LayerTreeScanner";
-import TreeNodeInterface from "../../../interfaces/TreeNodeInterface";
-import * as stream from "stream";
 import {AdvanceLayerTools} from "../layerutils/AdvanceLayerTools";
+import TreeNodeInterface from "../../../interfaces/TreeNodeInterface";
 
 
 interface LayerTreeListeners  {

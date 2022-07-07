@@ -7,26 +7,19 @@ import {Layer} from "@luciad/ria/view/Layer";
 import {LabelCanvas} from "@luciad/ria/view/style/LabelCanvas";
 import {OnPathLabelStyle} from "@luciad/ria/view/style/OnPathLabelStyle";
 
-import image from './moon_1k.jpg';
 import {Icon3DStyle} from "@luciad/ria/view/style/Icon3DStyle";
-import {create3DSphere, createVPlane} from "./simple3DMeshes/Simple3DMeshFactory";
+import {createVPlane} from "./simple3DMeshes/Simple3DMeshFactory";
 import {Polyline} from "@luciad/ria/shape/Polyline";
 import {getReference} from "@luciad/ria/reference/ReferenceProvider";
 import {createEllipsoidalGeodesy} from "@luciad/ria/geodesy/GeodesyFactory";
 import {createPoint, createPolyline} from "@luciad/ria/shape/ShapeFactory";
 import {LineType} from "@luciad/ria/geodesy/LineType";
 
-/*
-const texture = document.createElement('img');
-// texture.src = image;
-texture.crossOrigin = "Anonymous";
-texture.src = "http://localhost/tiff/thumb.php";
-*/
-
 const styleVPlaneNormal = (width: number, height: number, rotation: number, filename: string) => {
     const texture = document.createElement('img');
     texture.crossOrigin = "Anonymous";
-    texture.src = `http://localhost/ortho/?filename=${filename}&service=GetThumb`;
+   // texture.src = `http://localhost/ortho/?filename=${filename}&service=GetThumb`;
+    texture.src = `/tiff/?filename=${filename}&service=GetThumb`;
     return ({
         mesh: createVPlane(width, height, texture),
         color: 'rgba(255, 255, 255, 1)',
@@ -39,7 +32,8 @@ const styleVPlaneNormal = (width: number, height: number, rotation: number, file
 const styleVPlaneSelected = (width: number, height: number, rotation: number, filename: string) => {
     const texture = document.createElement('img');
     texture.crossOrigin = "Anonymous";
-    texture.src = `http://localhost/ortho/?filename=${filename}&service=GetThumb`;
+    // texture.src = `http://localhost/ortho/?filename=${filename}&service=GetThumb`;
+    texture.src = `/tiff/?filename=${filename}&service=GetThumb`;
     return ({
         mesh: createVPlane(width, height, texture),
         color: 'rgba(255, 0, 0, 1)',

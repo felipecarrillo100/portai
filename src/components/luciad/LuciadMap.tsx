@@ -24,7 +24,6 @@ import {
     PanoramaActions
 } from "./controllers/actions/PanoramaActions";
 import {Handle} from "@luciad/ria/util/Evented";
-import {CompositeController} from "./controllers/CompositeController";
 import Button from "@mui/material/Button";
 import {ZoomControlMini} from "../ZoomControlMini/ZoomControlMini";
 import {CompassButton} from "../CompassMini/CompassButton";
@@ -166,7 +165,6 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
         }
     }
 
-
     const createMap = () => {
         if (divEl.current !== null) {
             const newMap = new WebGLMap(divEl.current, { reference: getReference(proj.current) });
@@ -189,7 +187,7 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
             newMap.controller = DefaultMapController.getDefaultMapController();
             map.current = newMap;
             notifyMapChange();
-            mapLayerCreate();
+            mapCreateLayers();
             mapInitialize();
         }
     }
@@ -231,26 +229,27 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
 
     }
 
-    const mapLayerCreate = () => {
+    const mapCreateLayers = () => {
         if (map.current) {
-            const command = CreateCommand({
-                action: ApplicationCommands.CREATELAYER,
-                parameters: {
-                    layerType: LayerTypes.WMSLayer,
-                    model: {
-                        getMapRoot: "https://sampleservices.luciad.com/wms",
-                        version: "1.3.0",
-                        referenceText: "EPSG:3857",
-                        layers: ["4ceea49c-3e7c-4e2d-973d-c608fb2fb07e"],
-                        transparent: false,
-                    },
-                    layer: {
-                        label: "Los angeles",
-                        visible: true,
-                    },
-                    autoZoom: false
-                }
-            })
+            //  Create here initial layers if needed
+            // const command = CreateCommand({
+            //     action: ApplicationCommands.CREATELAYER,
+            //     parameters: {
+            //         layerType: LayerTypes.WMSLayer,
+            //         model: {
+            //             getMapRoot: "https://sampleservices.luciad.com/wms",
+            //             version: "1.3.0",
+            //             referenceText: "EPSG:3857",
+            //             layers: ["4ceea49c-3e7c-4e2d-973d-c608fb2fb07e"],
+            //             transparent: false,
+            //         },
+            //         layer: {
+            //             label: "Los angeles",
+            //             visible: true,
+            //         },
+            //         autoZoom: false
+            //     }
+            // })
            // executeCommand(command);
         }
     }
@@ -267,7 +266,7 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
     return <div id={props.id} className={className} ref={divEl}>
         <ZoomControlMini map={map.current} />
         <CompassButton map={map.current}/>
-        {<MouseCoordinateReadout map={map.current} reference={map.current?.reference}  />}
+        <MouseCoordinateReadout map={map.current} reference={map.current?.reference}  />
         {showLeaveButton &&
             <div style={{width:"100%", height:"100%", backgroundColor: "transparent", position: "absolute", top:0, left:0, padding:10, pointerEvents: "none",  textAlign: "center"}}>
                 <Button variant="contained" onClick={closePanorama}  size="small" sx={{margin: "0 auto", pointerEvents: "all"}}>Close Panorama</Button>

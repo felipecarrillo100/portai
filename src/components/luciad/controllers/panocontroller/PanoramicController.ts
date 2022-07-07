@@ -27,6 +27,7 @@ class PanoramicController extends CompositeController {
             panoActions.moveToPanorama(feature, panoLayer);
         };
 
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const compositeController = this;
         const lookFromController = new LookFromNavigationController({enabled: false});
         const leavePanoController = new LeavePanoramaController(panoActions);

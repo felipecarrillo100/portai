@@ -38,7 +38,6 @@ GeoToolsUnitsMappingFactor[GeoToolsUnitsEnum.NAUTICALMILES] = 1852;
 GeoToolsUnitsMappingFactor[GeoToolsUnitsEnum.YARDS] = 0.91440000028; // 0.91407678245;
 
 class GeoTools {
-    constructor() {}
 
     public createDiscreteCircle_SHORTEST_DISTANCE(point: Point, radius: number, slices: number) {
         const delta = 360 / slices;

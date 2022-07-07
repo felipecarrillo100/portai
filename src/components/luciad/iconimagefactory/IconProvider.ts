@@ -43,6 +43,7 @@ class IconProvider {
     public listIcons() {
         const list = [];
         for (const key in this.icons) {
+            // eslint-disable-next-line no-prototype-builtins
             if (this.icons.hasOwnProperty(key)) {
                 list.push(this.icons[key]);
             }
@@ -113,7 +114,7 @@ class IconProvider {
         }
     }
 
-    private registerIcon(name: IconProviderShapes, label: string, canvasProvider: CanvasProviderFunction, options: {}) {
+    private registerIcon(name: IconProviderShapes, label: string, canvasProvider: CanvasProviderFunction, options: any) {
         const newIcon = {
             label,
             name,

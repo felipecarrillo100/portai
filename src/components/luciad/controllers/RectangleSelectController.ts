@@ -26,8 +26,8 @@ class RectangleSelectController extends Controller {
     public myMapToModel : any;
 
     private callbackOnCompleted: any;
-    private inverted: boolean = false;
-    private prevCursorValue: string = "";
+    private inverted = false;
+    private prevCursorValue = "";
 
     constructor(callbackOnCompleted?: (polygon:Polygon, inverted: boolean)=>void) {
         super();

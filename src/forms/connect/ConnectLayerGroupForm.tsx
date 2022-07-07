@@ -1,19 +1,17 @@
 import {useDispatch} from "react-redux";
-import React, {useEffect, useState} from "react";
+import React, { useState} from "react";
 import {CreateCommand} from "../../commands/CreateCommand";
 import {ApplicationCommands} from "../../commands/ApplicationCommands";
 import {LayerTypes} from "../../components/luciad/layertypes/LayerTypes";
 import {SetAppCommand} from "../../reduxboilerplate/command/actions";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Divider, FormControl, Grid, InputLabel, OutlinedInput, Select, Slider, TextField} from "@mui/material";
+import {Divider, Grid, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {FormProps} from "../interfaces";
 import styled from "@emotion/styled";
-import {TileLoadingStrategy} from "@luciad/ria/view/tileset/TileSet3DLayer";
 
-//const url = "http://localhost/panoramics/json/features.json";
-const url = "/pano/features.json";
+const defaultLabel = "Layer Group";
 
 const DivButtons = styled('div')`
   float: right;
@@ -25,29 +23,13 @@ const styles = {
     }
 }
 
-const DefaultOffsetTerrain = false;
-const DefaultLoadingStrategy = TileLoadingStrategy.OVERVIEW_FIRST;
-
-interface Props extends FormProps {
-    default?: string;
-}
-
-const ConnectPanoramicPorstAIForm = (props: Props) =>{
+const ConnectLayerGroupForm = (props: FormProps) =>{
     const dispatch = useDispatch();
     const {closeForm} = props;
 
     const [inputs, setInputs] = useState({
-        url: url,
-        label: "Panoramas",
+        label: defaultLabel,
     });
-
-    useEffect(()=>{
-        if (props.default) {
-            setInputs({...inputs, url: props.default});
-        }
-    }, [props.default])
-
-    const pageTitle = "Connect to Bingmaps";
 
 
     const onSubmit = (event: any) => {
@@ -57,14 +39,11 @@ const ConnectPanoramicPorstAIForm = (props: Props) =>{
         const command = CreateCommand({
             action: ApplicationCommands.CREATELAYER,
             parameters: {
-                layerType: LayerTypes.PanoramicPortAILayer,
-                model: {
-                    target: inputs.url,
-                },
+                layerType: LayerTypes.LayerGroup,
+                model: {},
                 layer: {
-                    visible: true,
                     label: inputs.label,
-                    selectable: true,
+                    visible: true,
                 },
                 autoZoom: true
             }
@@ -85,28 +64,13 @@ const ConnectPanoramicPorstAIForm = (props: Props) =>{
 
     return (
         <Box component="form" onSubmit={onSubmit}
-
              noValidate
              autoComplete="off"
         >
             <Typography variant="h6" align="center" margin="dense">
-                Connect to Panorama
+                Create Layer Group
             </Typography>
             <Grid container spacing={1}>
-                <Grid item xs={12} sm={12}>
-                    <TextField
-                        value={inputs.url}
-                        name="url"
-                        size="small"
-                        required
-                        id="fullname"
-                        label="URL Endpoint"
-                        fullWidth
-                        margin="dense"
-                        onChange={handleChange}
-                    />
-                </Grid>
-
                 <Grid item xs={12} sm={12}>
                     <TextField
                         value={inputs.label}
@@ -135,5 +99,5 @@ const ConnectPanoramicPorstAIForm = (props: Props) =>{
 
 
 export {
-    ConnectPanoramicPorstAIForm
+    ConnectLayerGroupForm
 }

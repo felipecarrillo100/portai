@@ -61,7 +61,7 @@ export class CompositeController extends Controller {
         this._eventSupport.emit("Invalidated");
       }));
     }
-  };
+  }
 
   onDeactivate(map: Map): Promise<any> {
     const superPromise = super.onDeactivate(map);
@@ -74,7 +74,7 @@ export class CompositeController extends Controller {
     }
     this._invalidationListeners = [];
     return Promise.all([superPromise].concat(delegatePromises));
-  };
+  }
 
   onGestureEvent(gestureEvent: GestureEvent): HandleEventResult {
     let result = EVENT_IGNORED;
@@ -85,7 +85,7 @@ export class CompositeController extends Controller {
       }
     }
     return result;
-  };
+  }
 
   onKeyEvent(keyEvent: KeyEvent): HandleEventResult {
     let result = EVENT_IGNORED;
@@ -96,19 +96,19 @@ export class CompositeController extends Controller {
       }
     }
     return result;
-  };
+  }
 
   onDraw(geocanvas: GeoCanvas): void {
     for (const delegate of this._delegates) {
       delegate.onDraw(geocanvas);
     }
-  };
+  }
 
   onDrawLabel(labelCanvas: LabelCanvas): void {
     for (const delegate of this._delegates) {
       delegate.onDrawLabel(labelCanvas);
     }
-  };
+  }
 
   appendController(controller: Controller): void {
     if (this.map) {
@@ -116,7 +116,7 @@ export class CompositeController extends Controller {
                       "Remove the controller from map before appending a controller to it.");
     }
     this._delegates.push(controller);
-  };
+  }
 
   on(event: "Invalidated" | "Activated" | "Deactivated", callback: (...args: any[]) => void, context?: any): Handle {
     if (event === "Invalidated") {

@@ -82,13 +82,14 @@ const CartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) =>
     const createRasterlayer = (map: Map) => {
         const photo = props.feature.properties.photo;
       //  const fileOrFileName = `http://localhost/ortho/?filename=${photo}`;
-        let fileOrFileName = `http://localhost/ortho/?filename=${photo}`;
+        let fileOrFileName = "";
         switch (props.type) {
             case "tiff":
-                fileOrFileName = `http://localhost/ortho/?filename=${photo}`;
+                // fileOrFileName = `http://localhost/ortho/?filename=${photo}`;
+                fileOrFileName = `/tiff/?filename=${photo}`;
                 break;
             case "drone":
-                fileOrFileName = `http://localhost/drone/?filename=${photo}`;
+                fileOrFileName = `/drone/?filename=${photo}`;
                 break;
         }
 
@@ -123,8 +124,10 @@ const CartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) =>
                         levelCount: 1,
                         level0Columns: imageInfo.columns,
                         level0Rows: imageInfo.rows,
-                        tileWidth: imageInfo.tileWidth / 2,
-                        tileHeight: imageInfo.tileHeight /2,
+                        // tileWidth: imageInfo.tileWidth / 2,
+                        // tileHeight: imageInfo.tileHeight /2,
+                        tileWidth: imageInfo.tileWidth ,
+                        tileHeight: imageInfo.tileHeight,
                         credentials: false
                     });
 

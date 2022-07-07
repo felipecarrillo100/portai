@@ -68,6 +68,9 @@ const AdvancedNavBar: React.FC = () => {
         {title: "Drone photo", action: CommandCreateFormByName("DronePhoto")},
         {title: "Panorama", action: CommandCreateFormByName("ConnectPanorama")},
         {title: "Panorama Port AI", action: CommandCreateFormByName("ConnectPanoramaProtAI")},
+
+    //    {title: "Cancellable", action: CommandCreateFormByName("CancellablePromise")},
+        {title: "LayerGroup", action: CommandCreateFormByName("ConnectLayerGroup")},
     ];
 
     const ViewMenu: MenuItemsArray = [
@@ -154,7 +157,7 @@ const AdvancedNavBar: React.FC = () => {
                             {/*menuItems.map((item) => (
                                 <AdvancedMenuItem key={item.title} handleClose={handleCloseNavMenu} item={item} />
                             ))*/}
-                            <CompactMenuItems items={menuItems} handleClose={handleCloseNavMenu} />
+                                <CompactMenuItems items={menuItems} handleClose={handleCloseNavMenu} />
                         </Menu>
                     </Box>
                     <DirectionsBoatIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />

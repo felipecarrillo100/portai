@@ -808,6 +808,7 @@ class IconImageFactory {
             "VV": 2 * Math.PI
         };
 
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const angle = MAP[options.clouds];
 
