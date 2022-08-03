@@ -6,13 +6,24 @@ import {LayerTypes} from "../../components/luciad/layertypes/LayerTypes";
 import {SetAppCommand} from "../../reduxboilerplate/command/actions";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Divider, FormControl, Grid, InputLabel, OutlinedInput, Select, Slider, TextField} from "@mui/material";
+import {
+    Checkbox,
+    Divider,
+    FormControl,
+    FormControlLabel,
+    Grid,
+    InputLabel,
+    OutlinedInput,
+    Select,
+    Slider,
+    TextField
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import {FormProps} from "../interfaces";
 import styled from "@emotion/styled";
 import {TileLoadingStrategy} from "@luciad/ria/view/tileset/TileSet3DLayer";
 
-const url = "http://localhost:8081/ogc/3dtiles/uw_pw_gesamt_point_cloud_new/tileset.json\n";
+const url = "http://localhost:8081/ogc/3dtiles/uw_pw_gesamt_point_cloud_new/tileset.json";
 
 const DivButtons = styled('div')`
   float: right;
@@ -24,7 +35,7 @@ const styles = {
     }
 }
 
-const DefaultOffsetTerrain = false;
+const DefaultOffsetTerrain = true;
 const DefaultLoadingStrategy = TileLoadingStrategy.OVERVIEW_FIRST;
 
 interface Props extends FormProps {
@@ -40,7 +51,8 @@ const Connect3DTilesForm = (props: Props) =>{
     const [inputs, setInputs] = useState({
         url: url,
         label: props.label ? props.label : "3D Mesh",
-        qualityFactor: 0.6
+        qualityFactor: 0.6,
+        offsetTerrain: typeof props.offsetTerrain !== "undefined" ? props.offsetTerrain : DefaultOffsetTerrain
     });
 
     useEffect(()=>{
@@ -49,7 +61,7 @@ const Connect3DTilesForm = (props: Props) =>{
         }
     }, [props.default])
 
-    const pageTitle = "Connect to Bingmaps";
+    const pageTitle = "Connect to 3D";
 
 
     const onSubmit = (event: any) => {
@@ -69,7 +81,7 @@ const Connect3DTilesForm = (props: Props) =>{
                     loadingStrategy: DefaultLoadingStrategy,
                     label: inputs.label,
                     visible: true,
-                    offsetTerrain: typeof props.offsetTerrain !== "undefined" ? props.offsetTerrain: DefaultOffsetTerrain,
+                    offsetTerrain: inputs.offsetTerrain,
                     qualityFactor: inputs.qualityFactor
                 },
                 autoZoom: true
@@ -140,6 +152,9 @@ const Connect3DTilesForm = (props: Props) =>{
                         aria-label="Small"
                         valueLabelDisplay="auto"
                     />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                    <FormControlLabel control={<Checkbox checked={inputs.offsetTerrain} onChange={handleChange} />} label="Offset Terrain" />
                 </Grid>
                 <Grid item xs={12} sm={12}>
                     <Divider variant="middle" />

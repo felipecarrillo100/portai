@@ -59,7 +59,7 @@ const AdvancedNavBar: React.FC = () => {
                 {
                     url: "http://localhost:8081/ogc/3dtiles/merged/tileset.json",
                     label: "BIM/IFC",
-                    offsetTerrain: false
+                    offsetTerrain: true
                 })},
         {title: "Point clouds", action: CommandCreateFormByName("Connect3DTilesForm",
                 {
