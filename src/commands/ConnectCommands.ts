@@ -337,6 +337,7 @@ export interface CreateLayerOGC3DTilesCommand extends CreateLayerBaseCommand  {
         reusableModel?: Model;
         model: {
             url: string;
+            featuresUrl?: string,
         };
         layer: {
             transparency?: boolean,

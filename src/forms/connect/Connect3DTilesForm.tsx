@@ -52,7 +52,8 @@ const Connect3DTilesForm = (props: Props) =>{
         url: url,
         label: props.label ? props.label : "3D Mesh",
         qualityFactor: 0.6,
-        offsetTerrain: typeof props.offsetTerrain !== "undefined" ? props.offsetTerrain : DefaultOffsetTerrain
+        offsetTerrain: typeof props.offsetTerrain !== "undefined" ? props.offsetTerrain : DefaultOffsetTerrain,
+        features: ""
     });
 
     useEffect(()=>{
@@ -61,7 +62,7 @@ const Connect3DTilesForm = (props: Props) =>{
         }
     }, [props.default])
 
-    const pageTitle = "Connect to 3D";
+    const pageTitle = "Connect to 3D Tiles";
 
 
     const onSubmit = (event: any) => {
@@ -74,6 +75,7 @@ const Connect3DTilesForm = (props: Props) =>{
                 layerType: LayerTypes.OGC3DTilesLayer,
                 model: {
                     url: inputs.url,
+                    featuresUrl: inputs.features.length>0 ? inputs.features : undefined,
                 },
                 layer: {
                     transparency: true,
@@ -156,6 +158,21 @@ const Connect3DTilesForm = (props: Props) =>{
                 <Grid item xs={12} sm={12}>
                     <FormControlLabel control={<Checkbox checked={inputs.offsetTerrain} onChange={handleChange} />} label="Offset Terrain" />
                 </Grid>
+                {props.label!=="Point Cloud" &&
+                <Grid item xs={12} sm={12}>
+                    <TextField
+                    value={inputs.features}
+                    name="features"
+                    size="small"
+                    required
+                    id="featuresStore"
+                    label="Features Endpoint"
+                    fullWidth
+                    margin="dense"
+                    onChange={handleChange}
+                    />
+                    </Grid>
+                }
                 <Grid item xs={12} sm={12}>
                     <Divider variant="middle" />
                 </Grid>
