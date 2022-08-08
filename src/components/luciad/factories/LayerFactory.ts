@@ -32,6 +32,9 @@ import {ApplicationCommands} from "../../../commands/ApplicationCommands";
 import {SetAppCommand} from "../../../reduxboilerplate/command/actions";
 import {store} from "../../../reduxboilerplate/store";
 import {VOrthophotoPanelPainter} from "../painters/VOrthophotoPanelPainter";
+import {WFSFeatureStore} from "@luciad/ria/model/store/WFSFeatureStore";
+import {WFSCapabilities} from "@luciad/ria/model/capabilities/WFSCapabilities";
+import {eq, gt, identifiers, literal, property} from "@luciad/ria/ogc/filter/FilterFactory";
 
 class LayerFactory {
 
@@ -45,6 +48,36 @@ class LayerFactory {
             }
         });
         store.dispatch(SetAppCommand(command));
+    }
+
+    static ShowBimIFCDFeatureInfo(map: Map, layer: TileSet3DLayer, feature: Feature) {
+        console.log(feature);
+        const l = layer as any;
+        if (l.restoreCommand.parameters.model.featuresUrl && l.restoreCommand.parameters.model.featuresUrl.length>0) {
+            const featuresUrl = l.restoreCommand.parameters.model.featuresUrl;
+            WFSCapabilities.fromURL(featuresUrl).then((wfsCapabilities) => {
+                const typeName = wfsCapabilities.featureTypes[0].name;
+                const featureStore = WFSFeatureStore.createFromCapabilities(wfsCapabilities, typeName, {outputFormat: "json"});
+                const cu = featureStore.query({filter: identifiers([feature.properties.FeatureID])});
+                if (typeof cu ==='object' && typeof (cu as any).then === "function") {
+                    (cu as any).then((cursor: any) => {
+                        if (cursor.hasNext()) {
+                            const f = cursor.next()
+                            console.log(f);
+                            const command = CreateCommand({
+                                action: ApplicationCommands.CREATE_APP_FORM,
+                                parameters: {
+                                    formName: "FeatureInfoWindow",
+                                    data: {feature: f}
+                                }
+                            });
+                            store.dispatch(SetAppCommand(command));
+                        }
+                    })
+                }
+            });
+
+        }
     }
 
     static createDronePhotoRestAPILayer(model: FeatureModel, layerOptions: any) {
@@ -230,6 +263,11 @@ class LayerFactory {
                     }
                     LayerFactory.applyVisualProperties(layer, (layer as any).restoreCommand.layer.visualProperties);
                 }
+                const CreateContextMenuBIM = (layer: TileSet3DLayer) => (contextMenu: ContextMenu, map: Map, contextMenuInfo: any) => {
+                    const feature = contextMenuInfo.objects[0];
+                    contextMenu.addItem({label:"Show Feature Info", action: ()=>{LayerFactory.ShowBimIFCDFeatureInfo(map, layer, feature)}});
+                };
+                layer.onCreateContextMenu = CreateContextMenuBIM(layer);
                 resolve(layer);
             } else {
                 reject();

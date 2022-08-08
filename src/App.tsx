@@ -37,6 +37,7 @@ import {LuciadLogo} from "./components/luciadlogo/LuciadLogo";
 import {ConnectTMSForm} from "./forms/connect/ConnectTMSForm";
 import {CancelablePromiseForm} from "./forms/CancelablePromiseForm";
 import {ConnectLayerGroupForm} from "./forms/connect/ConnectLayerGroupForm";
+import {DisplayBIMIFCFeature} from "./forms/bimifc/DisplayBIMIFCFeature";
 
 
 interface StateProps {
@@ -123,6 +124,12 @@ const App: React.FC = () => {
                 break;
             case "ConnectLayerGroup":
                 FormManager.openForm(FormHolders.LEFT, <ConnectLayerGroupForm />)
+                break;
+            case "FeatureInfoWindow":
+                if (parameters.data) {
+                    const feature = parameters.data.feature as Feature;
+                    FormManager.openForm(FormHolders.LEFT, <DisplayBIMIFCFeature feature={feature}/>)
+                }
                 break;
         }
     }

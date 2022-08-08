@@ -160,7 +160,7 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
                 clientY: position[1],
                 menuItems: contextMenu.items.map(item=>({title:item.label, action: item.action}))
             }
-            console.log(o)
+          //  console.log(o)
             menu.openMenu(o);
         }
     }

@@ -52,6 +52,9 @@ const FeatureContextmenu = forwardRef((props: Props, ref:ForwardedRef<FeatureCon
     const renderItems = items.map((item, index)=>(<MenuItem key={index} onClick={handleAction(item)}>{item.title}</MenuItem>))
     return (
          <Menu
+             onContextMenu={event => {
+                 event.preventDefault();
+             }}
             id="demo-positioned-menu" aria-labelledby="demo-positioned-button"
             anchorEl={props.anchorEl}
             open={open}

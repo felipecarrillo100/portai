@@ -75,7 +75,7 @@ const Connect3DTilesForm = (props: Props) =>{
                 layerType: LayerTypes.OGC3DTilesLayer,
                 model: {
                     url: inputs.url,
-                    featuresUrl: inputs.features.length>0 ? inputs.features : undefined,
+                    featuresUrl: inputs.features.length > 0 ? inputs.features : undefined,
                 },
                 layer: {
                     transparency: true,
@@ -98,9 +98,21 @@ const Connect3DTilesForm = (props: Props) =>{
     const handleChange = (event: any) => {
         const {name, value} = event.target;
         const newInputs = {...inputs};
-        // @ts-ignore
-        newInputs[name] = value;
-        setInputs(newInputs);
+        if (name==="url") {
+            if (props.label !== "Point Cloud"){
+                if (value.indexOf("/ogc/3dtiles/") >-1 && value.indexOf("_geometry/tileset.json")>-1) {
+                    const featureUrl = value.replace("/ogc/3dtiles/", "/ogc/wfs/").replace("_geometry/tileset.json", "_features") ;
+                    newInputs.features = featureUrl;
+                }
+            }
+            // @ts-ignore
+            newInputs[name] = value;
+            setInputs(newInputs);
+        } else {
+            // @ts-ignore
+            newInputs[name] = value;
+            setInputs(newInputs);
+        }
     }
 
     return (
