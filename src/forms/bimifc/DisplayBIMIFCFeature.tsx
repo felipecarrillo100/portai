@@ -27,6 +27,8 @@ const DisplayBIMIFCFeature = (props: Props) => {
     const {closeForm} = props;
 
     const onSubmit = (event: any) => {
+        event.preventDefault();
+        event.stopPropagation();
         if(closeForm) closeForm();
     }
 
@@ -41,15 +43,14 @@ const DisplayBIMIFCFeature = (props: Props) => {
 
             <Grid item xs={12} sm={12}>
                 <TextField
+                    variant="standard"
                     value={props.feature.id}
                     name="url"
                     size="small"
-                    required
                     id="idname"
                     label="FeatureID"
                     fullWidth
                     margin="dense"
-                    aria-readonly={true}
                     inputProps={
                         { readOnly: true, }
                     }
