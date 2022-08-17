@@ -1,6 +1,4 @@
-import React, {ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef} from "react";
-import {FormControl, InputLabel, Select, SelectChangeEvent, Switch} from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
+import React, {ForwardedRef, forwardRef, useImperativeHandle, useRef} from "react";
 import Button from "@mui/material/Button";
 import {FormProps} from "./interfaces";
 import Typography from "@mui/material/Typography";

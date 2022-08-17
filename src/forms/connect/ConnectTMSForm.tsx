@@ -6,13 +6,10 @@ import {LayerTypes} from "../../components/luciad/layertypes/LayerTypes";
 import {SetAppCommand} from "../../reduxboilerplate/command/actions";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Divider, FormControl, Grid, InputLabel, OutlinedInput, Select, Slider, TextField} from "@mui/material";
+import {Divider, Grid, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {FormProps} from "../interfaces";
 import styled from "@emotion/styled";
-import {TileLoadingStrategy} from "@luciad/ria/view/tileset/TileSet3DLayer";
-import {RasterDataType} from "@luciad/ria/model/tileset/RasterDataType";
-import {RasterSamplingMode} from "@luciad/ria/model/tileset/RasterSamplingMode";
 import MenuItem from "@mui/material/MenuItem";
 
 const url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{-y}.png";
@@ -26,9 +23,6 @@ const styles = {
         marginLeft: "10px"
     }
 }
-
-const DefaultOffsetTerrain = false;
-const DefaultLoadingStrategy = TileLoadingStrategy.OVERVIEW_FIRST;
 
 interface Props extends FormProps {
     default?: string;
@@ -52,9 +46,6 @@ const ConnectTMSForm = (props: Props) =>{
             setInputs({...inputs, url: props.default});
         }
     }, [props.default])
-
-    const pageTitle = "Connect to Bingmaps";
-
 
     const onSubmit = (event: any) => {
         event.preventDefault();

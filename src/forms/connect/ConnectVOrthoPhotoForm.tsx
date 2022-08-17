@@ -1,18 +1,14 @@
 import {useDispatch} from "react-redux";
 import React, {useEffect, useState} from "react";
-import {WFSCapabilitiesFeatureType} from "@luciad/ria/model/capabilities/WFSCapabilitiesFeatureType";
-import {WFSCapabilities} from "@luciad/ria/model/capabilities/WFSCapabilities";
 import {CreateCommand} from "../../commands/CreateCommand";
 import {ApplicationCommands} from "../../commands/ApplicationCommands";
 import {LayerTypes} from "../../components/luciad/layertypes/LayerTypes";
 import {SetAppCommand} from "../../reduxboilerplate/command/actions";
-import MenuItem from "@mui/material/MenuItem";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Divider, FormControl, Grid, InputLabel, OutlinedInput, Select, TextField} from "@mui/material";
+import {Divider,Grid,TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {FormProps} from "../interfaces";
-import {BingMapsImagerySet} from "../../commands/ConnectCommands";
 import styled from "@emotion/styled";
 
 const defaultURI = "/apisimulation/vortho.json";

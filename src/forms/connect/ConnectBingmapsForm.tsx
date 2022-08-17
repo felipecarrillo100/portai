@@ -1,7 +1,5 @@
 import {useDispatch} from "react-redux";
 import React, {useEffect, useState} from "react";
-import {WFSCapabilitiesFeatureType} from "@luciad/ria/model/capabilities/WFSCapabilitiesFeatureType";
-import {WFSCapabilities} from "@luciad/ria/model/capabilities/WFSCapabilities";
 import {CreateCommand} from "../../commands/CreateCommand";
 import {ApplicationCommands} from "../../commands/ApplicationCommands";
 import {LayerTypes} from "../../components/luciad/layertypes/LayerTypes";

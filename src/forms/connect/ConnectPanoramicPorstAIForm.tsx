@@ -6,11 +6,10 @@ import {LayerTypes} from "../../components/luciad/layertypes/LayerTypes";
 import {SetAppCommand} from "../../reduxboilerplate/command/actions";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Divider, FormControl, Grid, InputLabel, OutlinedInput, Select, Slider, TextField} from "@mui/material";
+import {Divider, Grid, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {FormProps} from "../interfaces";
 import styled from "@emotion/styled";
-import {TileLoadingStrategy} from "@luciad/ria/view/tileset/TileSet3DLayer";
 
 //const url = "http://localhost/panoramics/json/features.json";
 const url = "/pano/features.json";
@@ -24,9 +23,6 @@ const styles = {
         marginLeft: "10px"
     }
 }
-
-const DefaultOffsetTerrain = false;
-const DefaultLoadingStrategy = TileLoadingStrategy.OVERVIEW_FIRST;
 
 interface Props extends FormProps {
     default?: string;
