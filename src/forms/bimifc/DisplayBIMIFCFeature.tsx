@@ -5,7 +5,8 @@ import {Divider, Grid, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {FormProps} from "../interfaces";
 import styled from "@emotion/styled";
-import ReactJson from 'react-json-view'
+// import ReactJson from 'react-json-view'
+import ReactJSONEditor from "react-jsoneditor-wrapper";
 
 
 const DivButtons = styled('div')`
@@ -59,7 +60,8 @@ const DisplayBIMIFCFeature = (props: Props) => {
 
             <Grid container spacing={1}>
                 <Grid item xs={12} sm={12}>
-                     <ReactJson src={props.feature.properties} />
+                    {/* <ReactJson src={props.feature.properties} /> */}
+                    <ReactJSONEditor json={props.feature.properties} name="Properties" mode="view" modes={["view"]}/>
                 </Grid>
 
                 <Grid item xs={12} sm={12}>

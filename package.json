@@ -19,7 +19,7 @@
     "@types/react-dom": "^18.0.5",
     "react": "^18.0.2",
     "react-dom": "^18.0.2",
-    "react-json-view": "^1.21.3",
+    "react-jsoneditor-wrapper": "^1.1.0",
     "react-redux": "^8.0.2",
     "react-scripts": "5.0.1",
     "redux": "^4.2.0",
