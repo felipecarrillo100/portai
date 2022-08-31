@@ -10,6 +10,11 @@ import {AdvanceLayerTools} from "../luciad/layerutils/AdvanceLayerTools";
 import {Map} from "@luciad/ria/view/Map";
 
 import "./LayerControlItem.scss";
+import {useDispatch} from "react-redux";
+import {SetAppCommand} from "../../reduxboilerplate/command/actions";
+import {CreateCommand} from "../../commands/CreateCommand";
+import {ApplicationCommands} from "../../commands/ApplicationCommands";
+import {LayerTypes} from "../luciad/layertypes/LayerTypes";
 
 interface Props {
     map: Map | null;
@@ -26,6 +31,8 @@ const styles = {
 };
 
 const LayerControlItem: React.FC<Props> = ({ item , map, setDraggedItem, draggedItem, onLayerMove}: React.PropsWithChildren<Props>) => {
+    const dispatch = useDispatch();
+
     const clone = useRef(null as HTMLElement | null);
     // const dragOver = useRef(null as HTMLElement | null);
 
@@ -95,6 +102,34 @@ const LayerControlItem: React.FC<Props> = ({ item , map, setDraggedItem, dragged
             const targetNode = AdvanceLayerTools.getLayerTreeNodeByID(map, item.id);
             if (targetNode) {
                 AdvanceLayerTools.deleteNode(targetNode);
+            }
+            handleClose();
+        }
+    }
+
+    const settingsLayer = (layer: TreeNodeInterface) => () => {
+        if (map && contextMenu) {
+            // const item = contextMenu.item;
+            const item = layer;
+            const targetNode = AdvanceLayerTools.getLayerTreeNodeByID(map, item.id);
+            if (targetNode) {
+                const layer = targetNode as any;
+                if (layer.restoreCommand.parameters.layerType==="OGC3DTilesLayer" ) {
+                    // model.isPointCloud
+                    const command = CreateCommand({
+                        action: ApplicationCommands.CREATE_APP_FORM,
+                        parameters: {
+                            formName: "Change3DTilesLayerForm",
+                            data: {
+                                map: map,
+                                layer: targetNode
+                            }
+                        }
+                    });
+                    dispatch(SetAppCommand(command));
+                } else {
+                    console.log("It is NOT point cloud!!");
+                }
             }
             handleClose();
         }
@@ -241,6 +276,7 @@ const LayerControlItem: React.FC<Props> = ({ item , map, setDraggedItem, dragged
                 }
             >
                 <MenuItem onClick={deleteLayer(item)}>Delete</MenuItem>
+                <MenuItem onClick={settingsLayer(item)}>Settings</MenuItem>
             </Menu>
         </div>
     )

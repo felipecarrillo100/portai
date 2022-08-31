@@ -8,9 +8,7 @@ import {MapHandler} from "./layertreetools/MapHandler";
 import TreeNodeInterface from "../../interfaces/TreeNodeInterface";
 import {ApplicationCommandsTypes} from "../../commands/ApplicationCommandsTypes";
 import {MapBuilder} from "./factories/MapBuilder";
-import {CreateCommand} from "../../commands/CreateCommand";
 import {ApplicationCommands} from "../../commands/ApplicationCommands";
-import {LayerTypes} from "./layertypes/LayerTypes";
 import {LayerTreeScanner} from "./layertreetools/LayerTreeScanner";
 import {LayerConnectCommandsTypes} from "../../commands/ConnectCommands";
 import {ScreenMessage} from "../../screen/ScreenMessage";
@@ -185,6 +183,10 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
             mapHandler.onCurrentLayerChange = notifyCurrentLayerChange;
             (newMap as any).mapHandler = mapHandler;
             newMap.controller = DefaultMapController.getDefaultMapController();
+            newMap.effects.ambientOcclusion = {
+                radius: 30,
+                power: 1.2
+            }
             map.current = newMap;
             notifyMapChange();
             mapCreateLayers();

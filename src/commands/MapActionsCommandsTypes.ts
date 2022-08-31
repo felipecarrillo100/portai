@@ -41,7 +41,6 @@ interface WorkSpaceNew {
     action: ApplicationCommands.WORKSPACENEW;
 }
 
-
 interface CreateForm {
     action: ApplicationCommands.CREATE_APP_FORM;
     parameters: {

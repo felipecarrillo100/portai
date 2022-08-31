@@ -348,6 +348,7 @@ export interface CreateLayerOGC3DTilesCommand extends CreateLayerBaseCommand  {
             id?: string;
             offsetTerrain?: boolean;
             qualityFactor: number;
+            isPointCloud?: boolean,
         };
         autoZoom?: boolean
     }
@@ -375,4 +376,5 @@ export interface CreateLayerBingMapsCommand extends CreateRasterLayerBaseCommand
 
 export type LayerConnectCommandsTypes = CreateLayerWFSCommand | CreateLayerWMSCommand | CreateLayerTMSCommand | CreateRootLayerCommand |
     CreateLayerGroupCommand | CreateVOrthophotoCommand | CreateDronePhotoCommand | CreateLayerPanoramicCommand | CreateLayerPanoramicPortAICommand |
-    CreateLayerBingMapsCommand | CreateLayerWMTSCommand | CreateLayerLTSCommand | CreateLayerOGC3DTilesCommand | CreateLayerFeaturesFileCommand | CreateDatabaseRasterTilesetCommand
+    CreateLayerBingMapsCommand | CreateLayerWMTSCommand | CreateLayerLTSCommand | CreateLayerOGC3DTilesCommand | CreateLayerFeaturesFileCommand |
+    CreateDatabaseRasterTilesetCommand

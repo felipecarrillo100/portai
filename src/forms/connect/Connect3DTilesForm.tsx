@@ -1,5 +1,5 @@
 import {useDispatch} from "react-redux";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {CreateCommand} from "../../commands/CreateCommand";
 import {ApplicationCommands} from "../../commands/ApplicationCommands";
 import {LayerTypes} from "../../components/luciad/layertypes/LayerTypes";
@@ -9,12 +9,8 @@ import Typography from "@mui/material/Typography";
 import {
     Checkbox,
     Divider,
-    FormControl,
     FormControlLabel,
     Grid,
-    InputLabel,
-    OutlinedInput,
-    Select,
     Slider,
     TextField
 } from "@mui/material";
@@ -41,6 +37,7 @@ const DefaultLoadingStrategy = TileLoadingStrategy.OVERVIEW_FIRST;
 interface Props extends FormProps {
     default?: string;
     label?: string;
+    isPointCloud?: boolean;
     offsetTerrain?: boolean;
 }
 
@@ -50,17 +47,18 @@ const Connect3DTilesForm = (props: Props) =>{
 
     const [inputs, setInputs] = useState({
         url: url,
-        label: props.label ? props.label : "3D Mesh",
+        label: props.label ? props.label : props.isPointCloud ? "Point Cloud" :"3D Mesh",
         qualityFactor: 0.6,
         offsetTerrain: typeof props.offsetTerrain !== "undefined" ? props.offsetTerrain : DefaultOffsetTerrain,
-        features: ""
+        features: "",
+        isPointCloud: props.isPointCloud ? true : false
     });
 
     useEffect(()=>{
         if (props.default) {
             setInputs({...inputs, url: props.default});
         }
-    }, [props.default])
+    }, [props])
 
     const pageTitle = "Connect to 3D Tiles";
 
@@ -84,7 +82,8 @@ const Connect3DTilesForm = (props: Props) =>{
                     label: inputs.label,
                     visible: true,
                     offsetTerrain: inputs.offsetTerrain,
-                    qualityFactor: inputs.qualityFactor
+                    qualityFactor: inputs.qualityFactor,
+                    isPointCloud: inputs.isPointCloud,
                 },
                 autoZoom: true
             }
@@ -93,13 +92,13 @@ const Connect3DTilesForm = (props: Props) =>{
         if(closeForm) closeForm();
     }
 
-
-
     const handleChange = (event: any) => {
         const {name, value} = event.target;
+        const realValue = event.target.type === 'checkbox' ? event.target.checked : value;
+
         const newInputs = {...inputs};
         if (name==="url") {
-            if (props.label !== "Point Cloud"){
+            if (newInputs.isPointCloud === false){
                 if (value.indexOf("/ogc/3dtiles/") >-1 && value.indexOf("_geometry/tileset.json")>-1) {
                     const featureUrl = value.replace("/ogc/3dtiles/", "/ogc/wfs/").replace("_geometry/tileset.json", "_features") ;
                     newInputs.features = featureUrl;
@@ -110,11 +109,12 @@ const Connect3DTilesForm = (props: Props) =>{
             setInputs(newInputs);
         } else {
             // @ts-ignore
-            newInputs[name] = value;
+            newInputs[name] = realValue;
             setInputs(newInputs);
         }
     }
 
+    console.log("Point Cloud: " + inputs.isPointCloud)
     return (
         <Box component="form" onSubmit={onSubmit}
              noValidate
@@ -168,21 +168,28 @@ const Connect3DTilesForm = (props: Props) =>{
                     />
                 </Grid>
                 <Grid item xs={12} sm={12}>
-                    <FormControlLabel control={<Checkbox checked={inputs.offsetTerrain} onChange={handleChange} />} label="Offset Terrain" />
+                    <FormControlLabel control={<Checkbox checked={inputs.offsetTerrain} onChange={handleChange} name="offsetTerrain"/>} label="Offset Terrain" />
                 </Grid>
-                {props.label!=="Point Cloud" &&
-                <Grid item xs={12} sm={12}>
-                    <TextField
-                    value={inputs.features}
-                    name="features"
-                    size="small"
-                    required
-                    id="featuresStore"
-                    label="Features Endpoint"
-                    fullWidth
-                    margin="dense"
-                    onChange={handleChange}
-                    />
+                {/*
+                     <Grid item xs={12} sm={12}>
+                    <FormControlLabel control={<Checkbox checked={inputs.isPointCloud} onChange={handleChange}  name="isPointCloud"/>} label="Is Pointcloud" />
+                </Grid>
+                */}
+
+                {inputs.isPointCloud! ?
+                    <></> :
+                    <Grid item xs={12} sm={12}>
+                        <TextField
+                        value={inputs.features}
+                        name="features"
+                        size="small"
+                        required
+                        id="featuresStore"
+                        label="Features Endpoint"
+                        fullWidth
+                        margin="dense"
+                        onChange={handleChange}
+                        />
                     </Grid>
                 }
                 <Grid item xs={12} sm={12}>

@@ -35,6 +35,8 @@ import {VOrthophotoPanelPainter} from "../painters/VOrthophotoPanelPainter";
 import {WFSFeatureStore} from "@luciad/ria/model/store/WFSFeatureStore";
 import {WFSCapabilities} from "@luciad/ria/model/capabilities/WFSCapabilities";
 import {eq, gt, identifiers, literal, property} from "@luciad/ria/ogc/filter/FilterFactory";
+import {ScalingMode} from "@luciad/ria/view/style/ScalingMode";
+import {PointCloudPointShape} from "@luciad/ria/view/style/PointCloudPointShape";
 
 class LayerFactory {
 
@@ -220,6 +222,31 @@ class LayerFactory {
         })
     }
 
+    static createOGC3DTilesPointCloudProperties(model:OGC3DTilesModel | HSPCTilesModel) {
+        const settings = {
+            scale: {
+                range: {minimum: 0.2, maximum: 2},
+                value: 1,
+            },
+            scalingMode: ScalingMode.ADAPTIVE_WORLD_SIZE,
+            pointShape: PointCloudPointShape.SPHERE as (PointCloudPointShape)
+        }
+        return settings;
+    }
+
+    static mergeOGC3DTilesPointCloudProperties(newProperties: any, oldProperties: any) {
+        const settings = {...oldProperties};
+        if (typeof newProperties === "undefined") return settings;
+        if (typeof newProperties.scalingMode !== "undefined") settings.scalingMode = newProperties.scalingMode;
+        if (newProperties.scale && typeof newProperties.scale.range !== "undefined") settings.scale.range = newProperties.scale.range;
+        if (newProperties.scale && typeof newProperties.scale.value !== "undefined") {
+            if (settings.scale.range.minimum <= newProperties.scale.value && newProperties.scale.value <= settings.scale.range.maximum)
+                settings.scale.value = newProperties.scale.value;
+        }
+        if ( typeof newProperties.pointShape !== "undefined") settings.pointShape = newProperties.pointShape;
+        return settings;
+    }
+
     static createOGC3DTilesLayer(model: OGC3DTilesModel | HSPCTilesModel, layerOptions: any) {
         let options = {...layerOptions};
 
@@ -237,8 +264,8 @@ class LayerFactory {
             const layer:TileSet3DLayer = new TileSet3DLayer(model, options);
 
             if (layer) {
-                if ((layer as any).restoreCommand) {
-                    const layerAny = (layer as any).restoreCommand.parameters.layer;
+                if (layerOptions) {
+                    const layerAny = layerOptions;
                     let meshStyle = {
                         pbrSettings: {
                             imageBasedLighting: true,
@@ -261,7 +288,11 @@ class LayerFactory {
                         lightIntensity: meshStyle.pbrSettings.lightIntensity,
                         material: meshStyle.pbrSettings.material
                     }
-                    LayerFactory.applyVisualProperties(layer, (layer as any).restoreCommand.layer.visualProperties);
+                    if (layerOptions.isPointCloud) {
+                        const pointCloudStyle = LayerFactory.createOGC3DTilesPointCloudProperties(model);
+                        layerOptions.pointCloudStyle = LayerFactory.mergeOGC3DTilesPointCloudProperties(layerOptions.pointCloudStyle, pointCloudStyle);
+                        LayerFactory.applyPointCloudStyle(layer, layerOptions.pointCloudStyle);
+                    }
                 }
                 const CreateContextMenuBIM = (layer: TileSet3DLayer) => (contextMenu: ContextMenu, map: Map, contextMenuInfo: any) => {
                     const feature = contextMenuInfo.objects[0];
@@ -275,41 +306,17 @@ class LayerFactory {
         });
     }
 
-    private static applyVisualProperties(layer: any, visualProperties: any, updateRestoreCommand?: boolean) {
-        updateRestoreCommand = typeof updateRestoreCommand !== "undefined" ? updateRestoreCommand : true;
-
-        if (layer && layer.restoreCommand && layer.restoreCommand.layer) {
-            if (updateRestoreCommand) {
-                layer.restoreCommand.layer.visualProperties = visualProperties;
-            }
+    public static applyPointCloudStyle(layer: any, pointCloudStyle: any) {
+        if (layer && pointCloudStyle) {
             layer.currentExpression = {};
-            if (visualProperties.type === "PointCloud") {
-                if (visualProperties.filterActive && visualProperties.filters.length > 0) {
-                    const expression = ExpressionBuilder.visibilityExpression(visualProperties.filters[visualProperties.currentFilter]);
-                    layer.pointCloudStyle.visibilityExpression = expression.expression();
-                    layer.currentExpression.visibilityExpression = expression;
-                }
-                if (!visualProperties.filterActive) {
-                    layer.pointCloudStyle.visibilityExpression = undefined;
-                }
-                if (visualProperties.styleActive && visualProperties.styles.length > 0) {
-                    const expression = ExpressionBuilder.colorExpression(visualProperties.styles[visualProperties.currentStyle]);
-                    layer.pointCloudStyle.colorExpression = expression.expression();
-                    layer.currentExpression.colorExpression = expression;
-                }
-                if (!visualProperties.styleActive) {
-                    layer.pointCloudStyle.colorExpression = undefined;
-                }
-                if (visualProperties.scale) {
-                    const expression = ExpressionBuilder.scaleExpression(visualProperties.scale);
-                    layer.pointCloudStyle.scaleExpression = expression.expression();
-                    layer.currentExpression.scaleExpression = expression;
-                }
-                if (typeof visualProperties.scalingMode !== "undefined") {
-                    const expression = ExpressionBuilder.scalingMode(visualProperties.scalingMode);
-                    layer.pointCloudStyle.scalingMode = expression.expression();
-                    layer.currentExpression.scalingMode = expression;
-                }
+            if (pointCloudStyle.scale) {
+                const expression = ExpressionBuilder.scaleExpression(pointCloudStyle.scale);
+                layer.pointCloudStyle.scaleExpression = expression.expression();
+                layer.currentExpression.scaleExpression = expression;
+            }
+            if (typeof pointCloudStyle.scalingMode !== "undefined") {
+                layer.pointCloudStyle.pointSize = {mode: pointCloudStyle.scalingMode};
+                // layer.pointCloudStyle.scalingMode =  pointCloudStyle.scalingMode;
             }
         }
     }

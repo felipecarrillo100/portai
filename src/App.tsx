@@ -38,6 +38,7 @@ import {ConnectTMSForm} from "./forms/connect/ConnectTMSForm";
 import {CancelablePromiseForm} from "./forms/CancelablePromiseForm";
 import {ConnectLayerGroupForm} from "./forms/connect/ConnectLayerGroupForm";
 import {DisplayBIMIFCFeature} from "./forms/bimifc/DisplayBIMIFCFeature";
+import {ChangeOGC3DTileslayerSettings} from "./forms/changelayer/ChangeOGC3DTileslayerSettings";
 
 
 interface StateProps {
@@ -69,6 +70,11 @@ const App: React.FC = () => {
 
     const createForm = (parameters: { formName: string; data?: any }) => {
         switch (parameters.formName) {
+            case "Change3DTilesLayerForm":
+                if (parameters.data) {
+                    FormManager.openForm(FormHolders.LEFT, <ChangeOGC3DTileslayerSettings map={parameters.data.map} layer={parameters.data.layer}/>)
+                }
+                break;
             case "ConnectTMS":
                 FormManager.openForm(FormHolders.LEFT, <ConnectTMSForm  />)
                 break;
@@ -89,7 +95,11 @@ const App: React.FC = () => {
                 break;
             case "Connect3DTilesForm":
                 if (parameters.data){
-                    FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm default={parameters.data.url} label={parameters.data.label} offsetTerrain={parameters.data.offsetTerrain}/>)
+                    FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm default={parameters.data.url}
+                                                                               label={parameters.data.label}
+                                                                               offsetTerrain={parameters.data.offsetTerrain}
+                                                                               isPointCloud={parameters.data.isPointCloud}
+                    />)
                 } else {
                     FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm />)
                 }

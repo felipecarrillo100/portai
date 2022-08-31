@@ -7,7 +7,16 @@ import {getReference} from "@luciad/ria/reference/ReferenceProvider";
 import {createBounds} from "@luciad/ria/shape/ShapeFactory";
 import {ScreenMessage} from "../../../screen/ScreenMessage";
 import TreeNodeInterface from "../../../interfaces/TreeNodeInterface";
+import {TileSet3DLayer} from "@luciad/ria/view/tileset/TileSet3DLayer";
 
+function isObjectEmpty(obj: any) {
+    for (const prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+            return false;
+        }
+    }
+    return JSON.stringify(obj) === JSON.stringify({});
+}
 
 class AdvanceLayerTools {
 
@@ -249,6 +258,7 @@ class AdvanceLayerTools {
         }
         return editable;
     }
+
 }
 
 export {
