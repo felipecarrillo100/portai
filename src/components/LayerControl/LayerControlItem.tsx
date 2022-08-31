@@ -1,5 +1,16 @@
 import React, {useRef} from "react";
-import {Avatar, IconButton, List, ListItem, ListItemAvatar, ListItemText, Menu, MenuItem, Switch} from "@mui/material";
+import {
+    Avatar,
+    Divider,
+    IconButton,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    Menu,
+    MenuItem,
+    Switch
+} from "@mui/material";
 import TreeNodeInterface from "../../interfaces/TreeNodeInterface";
 import WallpaperIcon from '@mui/icons-material/Wallpaper';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -275,8 +286,9 @@ const LayerControlItem: React.FC<Props> = ({ item , map, setDraggedItem, dragged
                         : undefined
                 }
             >
-                <MenuItem onClick={deleteLayer(item)}>Delete</MenuItem>
-                <MenuItem onClick={settingsLayer(item)}>Settings</MenuItem>
+                <MenuItem onClick={settingsLayer(item)}>Layer Settings</MenuItem>
+                <Divider />
+                <MenuItem onClick={deleteLayer(item)}>Delete Layer</MenuItem>
             </Menu>
         </div>
     )
