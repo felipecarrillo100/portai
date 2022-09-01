@@ -306,7 +306,8 @@ class LayerFactory {
         });
     }
 
-    public static applyPointCloudStyle(layer: any, pointCloudStyle: any) {
+    public static applyPointCloudStyle(tileSet3DLayer: TileSet3DLayer, pointCloudStyle: any) {
+        const layer = tileSet3DLayer as any;
         if (layer && pointCloudStyle) {
             layer.currentExpression = {};
             if (pointCloudStyle.scale) {

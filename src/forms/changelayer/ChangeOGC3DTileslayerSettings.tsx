@@ -29,12 +29,43 @@ interface Props extends FormProps {
     layer: TileSet3DLayer;
 }
 
-const ChangeOGC3DTileslayerSettings = forwardRef((props: Props, ref:ForwardedRef<any>) =>{
+function debounce(func: any, wait: number, immediate?: boolean) {
+    // @ts-ignore
+    let timeout: any;
 
+    return function executedFunction() {
+        // @ts-ignore
+        let context = this;
+        let args = arguments;
+
+        const later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+
+        var callNow = immediate && !timeout;
+
+        clearTimeout(timeout);
+
+        timeout = setTimeout(later, wait);
+
+        if (callNow) func.apply(context, args);
+    };
+};
+const ChangeOGC3DTileslayerSettings = forwardRef((props: Props, ref:ForwardedRef<any>) =>{
+    const layer = props.layer as any;
+    const scaleFactorUpdate = (value: number)=>{
+        layer.currentExpression.scaleExpression.update(Number(value));
+    }
+
+    const qualityFactorUpdate = (value: number)=>{
+        layer.qualityFactor = value;
+    }
     const restoreValues = useRef<boolean>(true);
+    const scaleFactorDebounce = useRef<any>(debounce(scaleFactorUpdate, 100));
+    const qualityFactorDebounce = useRef<any>(debounce(qualityFactorUpdate, 100));
     const {closeForm} = props;
 
-    const layer = props.layer as any;
     const [inputs, setInputs] = useState({
         label: props.layer.label,
         qualityFactor: layer.restoreCommand.parameters.layer.qualityFactor,
@@ -43,14 +74,15 @@ const ChangeOGC3DTileslayerSettings = forwardRef((props: Props, ref:ForwardedRef
         scaleFactor: layer.restoreCommand.parameters.layer.pointCloudStyle.scale.value as number
     });
 
-    useEffect(() => {
-        return ()=>{}
-    }, []);
+    // useEffect(() => {
+    //     return ()=>{}
+    // }, []);
 
     const canClose = () => {
         if (restoreValues.current) {
             console.log("Cancelling on going changes!");
             LayerFactory.applyPointCloudStyle(layer, layer.restoreCommand.parameters.layer.pointCloudStyle);
+            props.layer.qualityFactor = layer.restoreCommand.parameters.layer.qualityFactor;
         }
         return true;
     }
@@ -88,13 +120,17 @@ const ChangeOGC3DTileslayerSettings = forwardRef((props: Props, ref:ForwardedRef
             // @ts-ignore
             newInputs[name] = value;
             setInputs(newInputs);
-            layer.currentExpression.scaleExpression.update(Number(value));
+            if (scaleFactorDebounce.current) {
+                scaleFactorDebounce.current(value);
+            }
         } else
         if (name==="qualityFactor") {
             // @ts-ignore
             newInputs[name] = value;
             setInputs(newInputs);
-            props.layer.qualityFactor = value;
+            if (qualityFactorDebounce.current) {
+                qualityFactorDebounce.current(value);
+            }
         } else {
             // @ts-ignore
             newInputs[name] = value;
