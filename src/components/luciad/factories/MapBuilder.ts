@@ -48,6 +48,9 @@ class MapBuilder {
         return new Promise<Layer | LayerGroup | LayerTree>(resolve => {
             let layerPromise = null;
             switch (command.parameters.layerType) {
+                case LayerTypes.PortOrthophotoLayer:
+                    layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createRestAPIModel, LayerFactory.createPortOrthophotoLayer);
+                    break;
                 case LayerTypes.VOrthophotoAPILayer:
                     layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createRestAPIModel, LayerFactory.createVOrthoRestAPILayer);
                     break;

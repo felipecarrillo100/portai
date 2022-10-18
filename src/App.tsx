@@ -39,6 +39,7 @@ import {CancelablePromiseForm} from "./forms/CancelablePromiseForm";
 import {ConnectLayerGroupForm} from "./forms/connect/ConnectLayerGroupForm";
 import {DisplayBIMIFCFeature} from "./forms/bimifc/DisplayBIMIFCFeature";
 import {ChangeOGC3DTileslayerSettings} from "./forms/changelayer/ChangeOGC3DTileslayerSettings";
+import {ConnectPortOrthophotoForm} from "./forms/connect/ConnectPortOrthophotoForm";
 
 
 interface StateProps {
@@ -103,6 +104,9 @@ const App: React.FC = () => {
                 } else {
                     FormManager.openForm(FormHolders.LEFT, <Connect3DTilesForm />)
                 }
+                break;
+            case "ConnectPortorthophoto":
+                FormManager.openForm(FormHolders.LEFT, <ConnectPortOrthophotoForm />)
                 break;
             case "ConnectVOrthophoto":
                 FormManager.openForm(FormHolders.LEFT, <ConnectVOrthoPhotoForm />)

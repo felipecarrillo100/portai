@@ -15,6 +15,8 @@ export enum LayerTypes {
     FeaturesFileLayer = "FeaturesFileLayer",
     DatabaseRasterTileset = "DatabaseRasterTileset",
     VOrthophotoAPILayer = "VOrthophotoAPILayer",
+    PortOrthophotoLayer = "PortOrthophotoLayer",
+
     DronePhotoAPILayer = "DronePhotoAPILayer",
     PanoramicLayer = "PanoramicLayer",
     PanoramicPortAILayer = "PanoramicPortAILayer"

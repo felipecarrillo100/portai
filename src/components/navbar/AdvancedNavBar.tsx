@@ -70,6 +70,7 @@ const AdvancedNavBar: React.FC = () => {
                     offsetTerrain: true
                 })},
         {separator: true},
+        {title: "Port Orthophoto", action: CommandCreateFormByName("ConnectPortorthophoto")},
         {title: "Vertical Orthophoto", action: CommandCreateFormByName("ConnectVOrthophoto")},
         {title: "Drone photo", action: CommandCreateFormByName("DronePhoto")},
         {separator: true},

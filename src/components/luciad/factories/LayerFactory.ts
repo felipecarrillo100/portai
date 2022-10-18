@@ -37,6 +37,7 @@ import {WFSCapabilities} from "@luciad/ria/model/capabilities/WFSCapabilities";
 import {eq, gt, identifiers, literal, property} from "@luciad/ria/ogc/filter/FilterFactory";
 import {ScalingMode} from "@luciad/ria/view/style/ScalingMode";
 import {PointCloudPointShape} from "@luciad/ria/view/style/PointCloudPointShape";
+import {PortOrthophotoPainter} from "../painters/PortOrthophotoPainter";
 
 class LayerFactory {
 
@@ -113,6 +114,23 @@ class LayerFactory {
         })
     }
 
+    static createPortOrthophotoLayer(model: FeatureModel, layerOptions: any) {
+        return new Promise<FeatureLayer>((resolve)=>{
+            const layer = new FeatureLayer(model, layerOptions);
+            layer.painter = new PortOrthophotoPainter();
+
+            // const CreateContextMenu = (layer: FeatureLayer) => (contextMenu: ContextMenu, map: Map, contextMenuInfo: any) => {
+            //     const feature = contextMenuInfo.objects[0];
+            //     contextMenu.addItem({label:"Edit", action: ()=>{LayerFactory.EditVOrtho(map, feature, "tiff")}});
+            //     contextMenu.addItem({label:"Flag", action: ()=>{console.log("Flag", feature)}});
+            //     contextMenu.addItem({label:"Look from", action: ()=>{LayerFactory.LookFrom(map, feature)}});
+            // };
+
+          //  layer.onCreateContextMenu = CreateContextMenu(layer);
+            resolve(layer);
+        })
+    }
+
     static createPanoramicPortAILayer(model: FeatureModel, layerOptions: any) {
         return new Promise<FeatureLayer>((resolve)=>{
             const store = model.store as UrlStore;
@@ -158,6 +176,13 @@ class LayerFactory {
     }
 
     static createWFSLayer(model: FeatureModel, layerOptions: any) {
+        return new Promise<FeatureLayer>((resolve)=>{
+            const layer = new FeatureLayer(model, layerOptions);
+            resolve(layer);
+        })
+    }
+
+    static createFeatureLayer(model: FeatureModel, layerOptions: any) {
         return new Promise<FeatureLayer>((resolve)=>{
             const layer = new FeatureLayer(model, layerOptions);
             resolve(layer);

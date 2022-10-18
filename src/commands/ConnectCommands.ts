@@ -106,6 +106,24 @@ export  interface CreateVOrthophotoCommand extends CreateLayerBaseCommand {
     }
 }
 
+export  interface CreatePortOrthophotoLayer extends CreateLayerBaseCommand {
+    action: ApplicationCommands.CREATELAYER;
+    parameters: {
+        layerType: LayerTypes.PortOrthophotoLayer;
+        reusableModel?: Model;
+        model: {
+            url: string;
+        };
+        layer: {
+            visible?: boolean;
+            label?: string;
+            id?: string;
+            selectable?: boolean;
+        },
+        autoZoom?: boolean
+    }
+}
+
 export  interface CreateDronePhotoCommand extends CreateLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER;
     parameters: {
@@ -377,4 +395,4 @@ export interface CreateLayerBingMapsCommand extends CreateRasterLayerBaseCommand
 export type LayerConnectCommandsTypes = CreateLayerWFSCommand | CreateLayerWMSCommand | CreateLayerTMSCommand | CreateRootLayerCommand |
     CreateLayerGroupCommand | CreateVOrthophotoCommand | CreateDronePhotoCommand | CreateLayerPanoramicCommand | CreateLayerPanoramicPortAICommand |
     CreateLayerBingMapsCommand | CreateLayerWMTSCommand | CreateLayerLTSCommand | CreateLayerOGC3DTilesCommand | CreateLayerFeaturesFileCommand |
-    CreateDatabaseRasterTilesetCommand
+    CreateDatabaseRasterTilesetCommand | CreatePortOrthophotoLayer
