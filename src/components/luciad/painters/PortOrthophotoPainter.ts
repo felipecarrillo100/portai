@@ -82,34 +82,6 @@ class PortOrthophotoPainter extends FeaturePainter {
     }
 
     paintBody(geoCanvas: GeoCanvas, feature: Feature, shape: Shape, layer: Layer, map: Map, paintState: PaintState) {
-        // const p0 = line.getPoint(0);
-        // const p1 = line.getPoint(1);
-        // const azimuth = PortOrthophotoPainter.pvGeodesy.forwardAzimuth(p0, p1);
-        // const distance = PortOrthophotoPainter.pvGeodesy.distance(p0, p1, LineType.SHORTEST_DISTANCE);
-        // const middle = PortOrthophotoPainter.pvGeodesy.interpolate(p0, distance/2, azimuth, LineType.SHORTEST_DISTANCE)
-        //
-        // const p =  createPoint(p0.reference, [middle.x, middle.y, middle.z + 100]);
-        //
-        // let meshStyle;
-        // if (feature.properties._meshstyle) {
-        //     meshStyle = feature.properties._meshstyle
-        // } else {
-        //     const height = (feature.properties.max - feature.properties.min) ;
-        //     const width = distance;
-        //     feature.properties._meshstyle = {
-        //         normal: styleVPlaneNormal(width,height, 270 - azimuth, feature.properties.photo ),
-        //         selected: styleVPlaneSelected(width, height, 270 - azimuth, feature.properties.photo)
-        //     }
-        //     meshStyle = feature.properties._meshstyle
-        // }
-        //
-        // const p3 = PortOrthophotoPainter.pvGeodesy.interpolate(middle, distance, azimuth - 90, LineType.SHORTEST_DISTANCE);
-        // const Line2 = createPolyline(line.reference, [middle, p3]);
-
-//        geoCanvas.drawShape(shape, paintState.selected ? SELECTED_LINE_STYLE : DEFAULT_LINE_STYLE );
-      //  geoCanvas.drawShape(Line2, paintState.selected ? SELECTED_LINE_STYLE : DEFAULT_LINE_STYLE );
-      //  geoCanvas.drawIcon3D(middle, paintState.selected ?  meshStyle.selected : meshStyle.normal) ;
-
         if (shape && shape.type === ShapeType.SHAPE_LIST && (shape as ShapeList).shapeCount === 2 ) {
             const list = shape as ShapeList;
             const p0 = list.getShape(0) as Point;
@@ -120,10 +92,9 @@ class PortOrthophotoPainter extends FeaturePainter {
             }
             const azimuth = PortOrthophotoPainter.pvGeodesy.forwardAzimuth(p0, p3);
             const distance = PortOrthophotoPainter.pvGeodesy.distance(p0, p3, LineType.SHORTEST_DISTANCE);
-          //  const middle = PortOrthophotoPainter.pvGeodesy.interpolate(p0, distance/2, azimuth, LineType.SHORTEST_DISTANCE)
             const middle = PortOrthophotoPainter.pvGeodesy.interpolate(p0, p1, 0.5, LineType.SHORTEST_DISTANCE)
-            geoCanvas.drawIcon(p0, paintState.selected ? selectedIconStyle: normalIconStyle);
-            geoCanvas.drawIcon(p1, paintState.selected ? selectedIconStyle: normalIconStyle);
+          //  geoCanvas.drawIcon(p0, paintState.selected ? selectedIconStyle: normalIconStyle);
+            //geoCanvas.drawIcon(p1, paintState.selected ? selectedIconStyle: normalIconStyle);
 
             let meshStyle;
             if (feature.properties._meshstyle) {

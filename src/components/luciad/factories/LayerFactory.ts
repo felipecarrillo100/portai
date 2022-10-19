@@ -34,10 +34,21 @@ import {store} from "../../../reduxboilerplate/store";
 import {VOrthophotoPanelPainter} from "../painters/VOrthophotoPanelPainter";
 import {WFSFeatureStore} from "@luciad/ria/model/store/WFSFeatureStore";
 import {WFSCapabilities} from "@luciad/ria/model/capabilities/WFSCapabilities";
-import {eq, gt, identifiers, literal, property} from "@luciad/ria/ogc/filter/FilterFactory";
+import {identifiers} from "@luciad/ria/ogc/filter/FilterFactory";
 import {ScalingMode} from "@luciad/ria/view/style/ScalingMode";
 import {PointCloudPointShape} from "@luciad/ria/view/style/PointCloudPointShape";
 import {PortOrthophotoPainter} from "../painters/PortOrthophotoPainter";
+import {ShapeType} from "@luciad/ria/shape/ShapeType";
+import {Point} from "@luciad/ria/shape/Point";
+import {ShapeList} from "@luciad/ria/shape/ShapeList";
+
+
+enum LookFromReferenceType {
+  FULL=0,
+  START=1,
+  END=2,
+  CENTER=3,
+}
 
 class LayerFactory {
 
@@ -119,14 +130,17 @@ class LayerFactory {
             const layer = new FeatureLayer(model, layerOptions);
             layer.painter = new PortOrthophotoPainter();
 
-            // const CreateContextMenu = (layer: FeatureLayer) => (contextMenu: ContextMenu, map: Map, contextMenuInfo: any) => {
-            //     const feature = contextMenuInfo.objects[0];
-            //     contextMenu.addItem({label:"Edit", action: ()=>{LayerFactory.EditVOrtho(map, feature, "tiff")}});
-            //     contextMenu.addItem({label:"Flag", action: ()=>{console.log("Flag", feature)}});
-            //     contextMenu.addItem({label:"Look from", action: ()=>{LayerFactory.LookFrom(map, feature)}});
-            // };
+            const CreateContextMenu = (layer: FeatureLayer) => (contextMenu: ContextMenu, map: Map, contextMenuInfo: any) => {
+                const feature = contextMenuInfo.objects[0];
+               // contextMenu.addItem({label:"Edit", action: ()=>{LayerFactory.EditVOrtho(map, feature, "tiff")}});
+                contextMenu.addItem({label:"Flag", action: ()=>{console.log("Flag", feature)}});
+                contextMenu.addItem({label:"Look from", action: ()=>{LayerFactory.LookFrom(map, feature)}});
+                contextMenu.addItem({label:"Look from start", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.START)}});
+                contextMenu.addItem({label:"Look from end", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.END)}});
+                contextMenu.addItem({label:"Look from center", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.CENTER)}});
+            };
 
-          //  layer.onCreateContextMenu = CreateContextMenu(layer);
+            layer.onCreateContextMenu = CreateContextMenu(layer);
             resolve(layer);
         })
     }
@@ -196,19 +210,60 @@ class LayerFactory {
         })
     }
 
-    static LookFrom(map: Map, feature: Feature) {
+    static LookFrom(map: Map, feature: Feature, reference?: LookFromReferenceType) {
         const pvShapeReference = getReference("CRS:84");
         const pvGeodesy = createEllipsoidalGeodesy(pvShapeReference);
-        const line = feature.shape as Polyline;
-        const p0 = line.getPoint(0);
-        const p1 = line.getPoint(1);
-        const distance = pvGeodesy.distance(p1, p0);
-        const azimuth = pvGeodesy.forwardAzimuth(p1, p0);
-        const center = line.focusPoint;
-        const viewPoint = pvGeodesy.interpolate(center, distance *1.0, azimuth + 90, LineType.SHORTEST_DISTANCE);
-        const h = feature.properties.max - feature.properties.min;
-        const viewPointElevated = createPoint(viewPoint.reference, [viewPoint.x, viewPoint.y, h]);
-        map.mapNavigator.lookFrom(viewPointElevated, azimuth-90,0,0, {animate: true})
+
+        let p0: Point | null =  null;
+        let p1: Point | null= null;
+        let center: Point | null = null;
+        switch (feature.shape?.type) {
+            case ShapeType.POLYLINE:{
+                const line = feature.shape as Polyline;
+                center = line.focusPoint;
+                p0 = line.getPoint(0);
+                p1 = line.getPoint(1);
+            }
+                break
+            case ShapeType.SHAPE_LIST:
+                const line = feature.shape as ShapeList;
+                center = line.focusPoint as Point;
+                p0 = line.getShape(0) as Point;
+                p1 = line.getShape(1) as Point;
+                break
+        }
+        if (p0 && p1 && center) {
+            const distance = pvGeodesy.distance(p1, p0);
+            const azimuth = pvGeodesy.forwardAzimuth(p1, p0);
+            const height = p0.z;
+            const proximity = 0.1;
+            switch (reference) {
+                case LookFromReferenceType.START: {
+                    const viewPoint = pvGeodesy.interpolate(p0, distance * proximity, azimuth + 270, LineType.SHORTEST_DISTANCE);
+                    const viewPointElevated = createPoint(viewPoint.reference, [viewPoint.x, viewPoint.y, height]);
+                    map.mapNavigator.lookFrom(viewPointElevated, azimuth - 270, 0, 0, {animate: true})
+                 }
+                    break;
+                case LookFromReferenceType.END:{
+                    const viewPoint = pvGeodesy.interpolate(p1, distance * proximity, azimuth + 270, LineType.SHORTEST_DISTANCE);
+                    const viewPointElevated = createPoint(viewPoint.reference, [viewPoint.x, viewPoint.y, height]);
+                    map.mapNavigator.lookFrom(viewPointElevated, azimuth - 270, 0, 0, {animate: true})
+                }
+                    break;
+                case LookFromReferenceType.CENTER:{
+                    const viewPoint = pvGeodesy.interpolate(center, distance * proximity, azimuth + 270, LineType.SHORTEST_DISTANCE);
+                    const viewPointElevated = createPoint(viewPoint.reference, [viewPoint.x, viewPoint.y, height]);
+                    map.mapNavigator.lookFrom(viewPointElevated, azimuth-270,0,0, {animate: true})
+                }
+                    break;
+                default: {
+                    const viewPoint = pvGeodesy.interpolate(center, distance * 1.0, azimuth + 270, LineType.SHORTEST_DISTANCE);
+                    const viewPointElevated = createPoint(viewPoint.reference, [viewPoint.x, viewPoint.y, height]);
+                    map.mapNavigator.lookFrom(viewPointElevated, azimuth-270,0,0, {animate: true})
+                }
+            }
+
+        }
     }
 
 
