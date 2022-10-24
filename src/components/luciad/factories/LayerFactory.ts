@@ -41,6 +41,9 @@ import {PortOrthophotoPainter} from "../painters/PortOrthophotoPainter";
 import {ShapeType} from "@luciad/ria/shape/ShapeType";
 import {Point} from "@luciad/ria/shape/Point";
 import {ShapeList} from "@luciad/ria/shape/ShapeList";
+import {GeoLocatedPhotosPainter} from "../painters/GeoLocatedPhotosPainter";
+import {Shape} from "@luciad/ria/shape/Shape";
+import {FullScreen} from "../../../utils/fullscreen/FullScreen";
 
 
 enum LookFromReferenceType {
@@ -59,6 +62,18 @@ class LayerFactory {
             parameters: {
                 formName: "CartesianMapForm",
                 data: {feature: feature, type: type}
+            }
+        });
+        store.dispatch(SetAppCommand(command));
+    }
+
+    static EditPortOrtho(map: Map, layer: FeatureLayer, feature: Feature, type: string) {
+        const pvShapeReference = getReference("CRS:84");
+        const command = CreateCommand({
+            action: ApplicationCommands.CREATE_APP_FORM,
+            parameters: {
+                formName: "PortCartesianMapForm",
+                data: {feature: feature, type: type, layer: layer}
             }
         });
         store.dispatch(SetAppCommand(command));
@@ -125,6 +140,52 @@ class LayerFactory {
         })
     }
 
+    static createGeoLocatedPhotosLayer(model: FeatureModel, layerOptions: any) {
+        return new Promise<FeatureLayer>((resolve)=>{
+            const layer = new FeatureLayer(model, layerOptions);
+            layer.painter = new GeoLocatedPhotosPainter();
+
+            // const CreateContextMenu = (layer: FeatureLayer) => (contextMenu: ContextMenu, map: Map, contextMenuInfo: any) => {
+            //      const feature = contextMenuInfo.objects[0];
+            //      contextMenu.addItem({label:"Edit", action: ()=>{LayerFactory.EditVOrtho(map, feature, "tiff")}});
+            //  };
+            // layer.onCreateContextMenu = CreateContextMenu(layer);
+            const balloonProvider = (layer: FeatureLayer) => (o: Feature | Shape): string | HTMLElement => {
+                const myProps = (o as Feature).properties;
+                let node;
+                node = document.createElement("ul", {});
+                for (const key in myProps) {
+                    if (myProps.hasOwnProperty(key) && key !== "uid") {
+                        const item = document.createElement("li");
+                        item.innerHTML = `${key}: ${myProps[key]}`;
+                        node.appendChild(item);
+                    }
+                }
+                const img = document.createElement("img");
+                const div = document.createElement("div");
+                const button = document.createElement("button");
+                const url = (layer.model.store as any).url;
+                const baseUrl = url.substring(0, url.lastIndexOf("/"));
+                img.src =  baseUrl + myProps.filename;
+                img.className="fade-in"
+                div.className = "small-image";
+                button.innerText=""
+                button.onclick = ()=>{
+                    console.log(layer)
+                    const elem = div;
+                    const fullScreen = !FullScreen.isFullscreen();
+                    fullScreen ? FullScreen.requestFullscreen(elem) : FullScreen.cancelFullscreen();
+                }
+                div.appendChild(img)
+                div.appendChild(button)
+                node.appendChild(div);
+                return node;
+            };
+            layer.balloonContentProvider = balloonProvider(layer);
+            resolve(layer);
+        })
+    }
+
     static createPortOrthophotoLayer(model: FeatureModel, layerOptions: any) {
         return new Promise<FeatureLayer>((resolve)=>{
             const layer = new FeatureLayer(model, layerOptions);
@@ -132,9 +193,10 @@ class LayerFactory {
 
             const CreateContextMenu = (layer: FeatureLayer) => (contextMenu: ContextMenu, map: Map, contextMenuInfo: any) => {
                 const feature = contextMenuInfo.objects[0];
-               // contextMenu.addItem({label:"Edit", action: ()=>{LayerFactory.EditVOrtho(map, feature, "tiff")}});
-                contextMenu.addItem({label:"Flag", action: ()=>{console.log("Flag", feature)}});
-                contextMenu.addItem({label:"Look from", action: ()=>{LayerFactory.LookFrom(map, feature)}});
+                console.log("ContextMenu");
+                console.log(layer);
+                contextMenu.addItem({label:"Edit", action: ()=>{LayerFactory.EditPortOrtho(map, layer, feature, "png")}});
+                contextMenu.addItem({label:"Look from", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.FULL)}});
                 contextMenu.addItem({label:"Look from start", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.START)}});
                 contextMenu.addItem({label:"Look from end", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.END)}});
                 contextMenu.addItem({label:"Look from center", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.CENTER)}});
@@ -235,7 +297,8 @@ class LayerFactory {
         if (p0 && p1 && center) {
             const distance = pvGeodesy.distance(p1, p0);
             const azimuth = pvGeodesy.forwardAzimuth(p1, p0);
-            const height = p0.z;
+         //   const middle = pvGeodesy.interpolate(p0, p1, 0.5);
+            const height = p1.z;
             const proximity = 0.1;
             switch (reference) {
                 case LookFromReferenceType.START: {

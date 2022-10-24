@@ -40,6 +40,8 @@ import {ConnectLayerGroupForm} from "./forms/connect/ConnectLayerGroupForm";
 import {DisplayBIMIFCFeature} from "./forms/bimifc/DisplayBIMIFCFeature";
 import {ChangeOGC3DTileslayerSettings} from "./forms/changelayer/ChangeOGC3DTileslayerSettings";
 import {ConnectPortOrthophotoForm} from "./forms/connect/ConnectPortOrthophotoForm";
+import {PortCartesianMapForm} from "./forms/cartesian/PortCartesianMapForm";
+import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer";
 
 
 interface StateProps {
@@ -125,6 +127,14 @@ const App: React.FC = () => {
                     const feature = parameters.data.feature as Feature;
                     const type = parameters.data.type as string;
                     FormManager.openForm(FormHolders.BOTTOM, <CartesianMapForm feature={feature} type={type}/>)
+                }
+                break;
+            case "PortCartesianMapForm":
+                if (parameters.data) {
+                    const layer = parameters.data.layer as FeatureLayer;
+                    const feature = parameters.data.feature as Feature;
+                    const type = parameters.data.type as string;
+                    FormManager.openForm(FormHolders.BOTTOM, <PortCartesianMapForm layer={layer} feature={feature} type={type}/>)
                 }
                 break;
             case "ConnectPanorama":

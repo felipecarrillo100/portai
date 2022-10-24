@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 //import ReactDOM from 'react-dom';
 
 import './index.scss';
+import './styles/LuciadBalloon.scss';
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {Provider} from "react-redux";

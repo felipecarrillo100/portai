@@ -88,6 +88,24 @@ export interface CreateLayerGroupCommand extends CreateLayerBaseCommand {
     }
 }
 
+export interface CreateFeaturesGeoJSONPhotosCommand extends CreateLayerBaseCommand {
+    action: ApplicationCommands.CREATELAYER;
+    parameters: {
+        layerType: LayerTypes.FeaturesGeoJSONPhotos;
+        reusableModel?: Model;
+        model: {
+            url: string;
+        };
+        layer: {
+            visible?: boolean;
+            label?: string;
+            id?: string;
+            selectable?: boolean;
+        },
+        autoZoom?: boolean
+    }
+}
+
 export  interface CreateVOrthophotoCommand extends CreateLayerBaseCommand {
     action: ApplicationCommands.CREATELAYER;
     parameters: {
@@ -395,4 +413,4 @@ export interface CreateLayerBingMapsCommand extends CreateRasterLayerBaseCommand
 export type LayerConnectCommandsTypes = CreateLayerWFSCommand | CreateLayerWMSCommand | CreateLayerTMSCommand | CreateRootLayerCommand |
     CreateLayerGroupCommand | CreateVOrthophotoCommand | CreateDronePhotoCommand | CreateLayerPanoramicCommand | CreateLayerPanoramicPortAICommand |
     CreateLayerBingMapsCommand | CreateLayerWMTSCommand | CreateLayerLTSCommand | CreateLayerOGC3DTilesCommand | CreateLayerFeaturesFileCommand |
-    CreateDatabaseRasterTilesetCommand | CreatePortOrthophotoLayer
+    CreateDatabaseRasterTilesetCommand | CreatePortOrthophotoLayer | CreateFeaturesGeoJSONPhotosCommand

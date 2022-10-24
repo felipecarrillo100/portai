@@ -20,13 +20,15 @@ import {boolean} from "@luciad/ria/util/expression/ExpressionFactory";
 import {Feature} from "@luciad/ria/model/feature/Feature";
 
 interface Props {
+    layer: FeatureLayer;
     onVisibilityChange?: (v: boolean) => void;
     onMapChange?: (map: Map) => void;
-    featureID: string;
     className?: string;
     id?: string;
     feature: Feature;
     type: string;
+    navigation?: number;
+    setNavigation?: (navigation:number)=>void;
 }
 
 interface StateProps {
@@ -37,8 +39,7 @@ export const CARTESIAN_RASTER_LAYER_ID = "raster-layer-id";
 export const CARTESIAN_LAYER_FEATURES_ID = "features-layer-id";
 const crs1Reference = getReference("CRS:1");
 
-
-const CartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
+const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
     const divEl = useRef(null);
     const map = useRef(null as Map | null);
     const className = "CartesianMap"+ (typeof props.className !== "undefined" ? " " + props.className : "");
@@ -50,7 +51,8 @@ const CartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) =>
     });
 
     const initializeMap = (map: Map) => {
-        createRasterlayer(map);
+        createListener(map);
+        createRasterLayer(map);
         createFeatureLayer(map);
         if (typeof props.onMapChange === "function") props.onMapChange(map);
     }
@@ -79,22 +81,49 @@ const CartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) =>
         map.layerTree.addChild(layer, "top");
     }
 
-    const createRasterlayer = (map: Map) => {
-        const photo = props.feature.properties.photo;
+    const createListener = (map: Map) => {
+      // @ts-ignore
+        map.on('MapChange', ()=>{
+            const layerImage = map.layerTree.findLayerById(CARTESIAN_RASTER_LAYER_ID) as any;
+            if (layerImage && typeof props.navigation !== "undefined") {
+                    const myMap = map;
+                    const layerImage = myMap.layerTree.findLayerById(CARTESIAN_RASTER_LAYER_ID) as any;
+                    if (layerImage && typeof props.navigation !== "undefined") {
+                        const step = layerImage.model.bounds.width/100;
+                        let returnValue = 0;
+                        if (myMap.mapBounds.x===0) {
+                            returnValue = 0;
+                        } else
+                        if (myMap.mapBounds.x + myMap.mapBounds.width >= layerImage.model.bounds.width)  {
+                            returnValue = 100;
+                        } else {
+                            returnValue = Math.round(myMap.mapBounds.x  / step );
+                        }
+                        // console.log("Accuracy 2: " + returnValue)
+                        if (typeof props.setNavigation === "function" && props.navigation !== returnValue) {
+                            //   console.log("Internal call: " + returnValue)
+                            props.setNavigation(returnValue);
+                        }
+                    }
+            }
+      })
+    }
+    const createRasterLayer = (map: Map) => {
+       // const photo = props.feature.properties.photo;
+        console.log(props.feature.properties);
+        console.log(props.type);
         let fileOrFileName = "";
         switch (props.type) {
-            case "tiff":
-                // fileOrFileName = `http://localhost/ortho/?filename=${photo}`;
-                fileOrFileName = `/tiff/?filename=${photo}`;
-                break;
-            case "drone":
-                fileOrFileName = `/drone/?filename=${photo}`;
+            case "png":
+                console.log("PortCartesian");
+                console.log(props.layer)
+                const store = props.layer.model.store as any;
+                const url = store.url;
+                const baseUrl = url.substring(0, url.lastIndexOf("/"));
+                const image = props.feature.properties.image;
+                fileOrFileName = `${baseUrl}${image}`;
                 break;
         }
-
-       // const fileOrFileName = "http://localhost/ortho/?filename=GEOTIFF_Orthofoto_Hachmannkai_Sued_1.tif";
-        //  const fileOrFileName = "http://localhost/ortho/?filename=GEOTIFF_Orthofoto_Rollbo.tif";
-
         createLayer("Photo", fileOrFileName, crs1Reference).then(layer => {
             setCRS1ImageLayer(map, layer);
         }).catch(error => console.log(`Cannot add layer: ${error.message}`, error))
@@ -107,11 +136,42 @@ const CartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) =>
         }
     }, [divEl.current]);
 
+    useEffect(()=>{
+        console.log("Needs update: " + props.navigation);
+        if (map.current){
+            const layerImage = map.current.layerTree.findLayerById(CARTESIAN_RASTER_LAYER_ID) as any;
+            if (layerImage && typeof props.navigation !== "undefined") {
+                const step = layerImage.model.bounds.width/100;
+                const bounds = createBounds(crs1Reference, [step * props.navigation, map.current?.mapBounds.width, 0, layerImage.model.bounds.height]);
+                const a =props.navigation;
+                map.current.mapNavigator.fit({bounds: bounds, animate: {duration: 250}}).then(()=>{
+                    console.log("requested: "+ a);
+                    if (map.current) {
+                        const myMap = map.current;
+                        const layerImage = myMap.layerTree.findLayerById(CARTESIAN_RASTER_LAYER_ID) as any;
+                        if (layerImage && typeof props.navigation !== "undefined") {
+                            const step = layerImage.model.bounds.width/100;
+                            let returnValue = 0;
+                            if (myMap.mapBounds.x===0) {
+                                returnValue = 0;
+                            } else
+                            if (myMap.mapBounds.x + myMap.mapBounds.width >= layerImage.model.bounds.width)  {
+                                returnValue = 100;
+                            } else {
+                                returnValue = Math.round(myMap.mapBounds.x  / step );
+                            }
+                            // console.log("Accuracy: " + returnValue)
+                        }
+                    }
+                });
+            }
+        }
+    }, [props.navigation]);
 
 
     const createLayer = (layerName: string, fileOrURL: string, reference: CoordinateReference): Promise<RasterTileSetLayer> => {
         return new Promise((resolve, reject) => {
-            fetch(fileOrURL+"&service=GetInfo")
+            fetch(fileOrURL+"?service=GetInfo")
                 .then(response => {
                     return response.json();
                 })
@@ -169,13 +229,11 @@ const CartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) =>
         }
     }
 
-        const formatter = {
-            format: (point: Point): string => {
-                return "(x:" + point.x.toFixed(0) + ", y:" + point.y.toFixed(0) + ")"
-            }
+    const formatter = {
+        format: (point: Point): string => {
+            return "(x:" + point.x.toFixed(0) + ", y:" + point.y.toFixed(0) + ")"
         }
-
-
+    }
 
     return <div id={props.id} className={className} ref={divEl}>
         {props.children}
@@ -184,5 +242,5 @@ const CartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) =>
 }
 
 export {
-    CartesianMap
+    PortCartesianMap
 }

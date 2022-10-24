@@ -14,13 +14,7 @@ import {ApplicationCommands} from "../../commands/ApplicationCommands";
 import {LayerTypes} from "../../components/luciad/layertypes/LayerTypes";
 import {SetAppCommand} from "../../reduxboilerplate/command/actions";
 import {useDispatch} from "react-redux";
-import {WFSCapabilities} from "@luciad/ria/model/capabilities/WFSCapabilities";
-import {WFSCapabilitiesFeatureType} from "@luciad/ria/model/capabilities/WFSCapabilitiesFeatureType";
 import {FormProps} from "../interfaces";
-import {UrlTileSetModelCartesian} from "../../components/luciad/models/UrlTileSetModelCartesian";
-import {createBounds} from "@luciad/ria/shape/ShapeFactory";
-import {RasterTileSetLayer} from "@luciad/ria/view/tileset/RasterTileSetLayer";
-import {CARTESIAN_RASTER_LAYER_ID} from "../../components/luciad/cartesianmap/CartesianMap";
 
 
 const DivButtons = styled('div')`
@@ -114,7 +108,6 @@ const ConnectPortOrthophotoForm = (props: FormProps) =>{
         const dataset = datasets.find(l=>l.name === inputs.dataset);
 
         if (dataset) {
-
             const command = CreateCommand({
                 action: ApplicationCommands.CREATELAYER,
                 parameters: {
@@ -123,7 +116,7 @@ const ConnectPortOrthophotoForm = (props: FormProps) =>{
                         url: inputs.targetJSON
                     },
                     layer: {
-                        label: inputs.label,
+                        label: inputs.label+ "(Orthophoto)",
                         visible: true,
                         selectable: true
                     },
@@ -131,6 +124,24 @@ const ConnectPortOrthophotoForm = (props: FormProps) =>{
                 }
             });
             dispatch(SetAppCommand(command));
+            const command2 = CreateCommand({
+                action: ApplicationCommands.CREATELAYER,
+                parameters: {
+                    layerType: LayerTypes.FeaturesGeoJSONPhotos,
+                    model: {
+                        url: inputs.photoJSON,
+                    },
+                    layer: {
+                        label: inputs.label + "(Geotagged Photos)",
+                        visible: true,
+                        selectable: true
+                    },
+                    autoZoom: true,
+                }
+            });
+            setTimeout(()=>{
+                dispatch(SetAppCommand(command2));
+            }, 100)
             if(closeForm) closeForm();
         }
     }
