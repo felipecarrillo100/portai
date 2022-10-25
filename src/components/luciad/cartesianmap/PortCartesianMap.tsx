@@ -19,6 +19,11 @@ import {CartesianAnnotationsPainter} from "./CartesianAnnotationsPainter";
 import {boolean} from "@luciad/ria/util/expression/ExpressionFactory";
 import {Feature} from "@luciad/ria/model/feature/Feature";
 import {FeaturesRestAPIStore} from "../stores/FeaturesRestAPIStore";
+import {ContextMenu} from "@luciad/ria/view/ContextMenu";
+import {ContextmenuRecords} from "../../contextmenu/ContextmenuRecords";
+import {EditSelectLayerTools} from "../layertreetools/EditSelectLayerTools";
+import {Shape} from "@luciad/ria/shape/Shape";
+import {FullScreen} from "../../../utils/fullscreen/FullScreen";
 
 interface Props {
     layer: FeatureLayer;
@@ -52,6 +57,8 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
     });
 
     const initializeMap = (map: Map) => {
+        map.onShowContextMenu = onShowContextMenu;
+
         createListener(map);
         createRasterLayer(map);
         createRestAPIFeatureLayer(map);
@@ -81,7 +88,75 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
             }
         });
         layer.painter = new CartesianAnnotationsPainter();
+        const CreateContextMenu = (layer: FeatureLayer) => (contextMenu: ContextMenu, map: Map, contextMenuInfo: any) => {
+            const feature = contextMenuInfo.objects[0];
+            contextMenu.addItem({label:"Edit shape", action: ()=>{
+                console.log("Edit shape");
+                EditSelectLayerTools.editFeature(layer, map,contextMenuInfo, undefined );
+            }});
+            contextMenu.addItem({label:"Delete", action: ()=>{
+                    console.log("Edit shape");
+                    EditSelectLayerTools.deleteFeature(layer, map, contextMenuInfo );
+                }});
+        };
+
+        const balloonProvider = (layer: FeatureLayer, map:Map) => (o: Feature | Shape): string | HTMLElement => {
+            const myProps = (o as Feature).properties;
+            let inputForm = document.createElement("form", {});
+            inputForm.id = "my-props-editor-form";
+            inputForm.className="my-props-editor"
+            for (const key in myProps) {
+                if (myProps.hasOwnProperty(key) && key !== "uid") {
+                    const group = document.createElement("div");
+                    group.className="my-input-group"
+                    const label = document.createElement("label");
+                    label.innerText = key + ":";
+                    const input = document.createElement("input");
+                    input.value = myProps[key];
+                    input.name = key;
+                    group.appendChild(label);
+                    group.appendChild(input);
+                    inputForm.appendChild(group);
+                }
+            }
+            const button = document.createElement("button");
+            button.innerText="Save"
+            button.onclick = ()=>{
+                const inputs  = inputForm.getElementsByTagName("input");
+                if (inputs) {
+                    const newProperties = {} as any;
+                    for (let i=0; i<inputs.length; ++i) {
+                        const input = inputs[i];
+                        newProperties[input.name] = input.value;
+                    }
+                    console.log(newProperties);
+                    const store = layer.model.store as FeaturesRestAPIStore;
+                    const feature = o as Feature;
+                    feature.properties = newProperties;
+                    store.put(feature);
+                }
+                map.hideBalloon();
+            }
+            inputForm.appendChild(button);
+            return inputForm;
+        };
+        layer.balloonContentProvider = balloonProvider(layer, map);
+
+        layer.onCreateContextMenu = CreateContextMenu(layer);
         map.layerTree.addChild(layer, "top");
+    }
+
+    const onShowContextMenu = (position: number[], contextMenu: ContextMenu) => {
+        const menu = ContextmenuRecords.getMapContextmenu();
+        if (menu) {
+            const o = {
+                clientX: position[0],
+                clientY: position[1],
+                menuItems: contextMenu.items.map(item=>({title:item.label, action: item.action}))
+            }
+            //  console.log(o)
+            menu.openMenu(o);
+        }
     }
 
     const createListener = (map: Map) => {

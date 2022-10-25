@@ -175,6 +175,26 @@ $dark-background: #2E3748;
 }
 
 .lcdBalloon {
+  .my-props-editor {
+    .my-input-group {
+      margin: 5px;
+      position: relative;
+      width: 92%;
+      label {
+        display: block;
+        width: 100%;
+      }
+      input {
+        display: block;
+        width: 100%;
+      }
+    }
+    button {
+      float: right;
+      margin: 6px;
+    }
+  }
+
   .form-control {
     height: 30px;
     padding: 5px 10px;
