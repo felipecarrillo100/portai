@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import { Slider} from "@mui/material";
 import {Map} from "@luciad/ria/view/Map";
 import Button from "@mui/material/Button";
 import {FormProps} from "../interfaces";
@@ -18,6 +17,7 @@ import {sampledata} from './sampledata';
 import {Feature} from "@luciad/ria/model/feature/Feature";
 import {PortCartesianMap} from "../../components/luciad/cartesianmap/PortCartesianMap";
 import {FeaturesRestAPIStore} from "../../components/luciad/stores/FeaturesRestAPIStore";
+import {CartesianNavigationHelper} from "../../components/luciad/cartesianmap/CartesianNavigationHelper";
 
 const geojsoncodec = new GeoJsonCodec({generateIDs:true});
 
@@ -45,7 +45,9 @@ const PortCartesianMapForm = (props: Props) =>{
 
    const debouncedFunction = useRef(null as any)
    const [layerVisibility,setLayerVisibility] = useState(true);
-   const [navigationScrollerValue,setNavigationScrollerValue] = useState(props.initialRatio ? props.initialRatio: 0);
+    const [linkedMap,setLinkedMap] = useState(null as Map | null);
+
+    const [navigationScrollerValue,setNavigationScrollerValue] = useState(props.initialRatio ? props.initialRatio: 0);
 
     const map = useRef<Map|null>(null);
 
@@ -162,6 +164,10 @@ const PortCartesianMapForm = (props: Props) =>{
     
     console.log("Current Value:" + navigationScrollerValue)
 
+    const setPArentMap = (map: Map) => {
+        setLinkedMap(map);
+    }
+
     return (
         <div >
             <div style={{padding:5,left:0, right:0, bottom: 50, top: 0, position:"absolute", backgroundColor: "black"}}>
@@ -180,25 +186,11 @@ const PortCartesianMapForm = (props: Props) =>{
                 <PortCartesianMap layer={props.layer} onMapChange={onMapChange}
                                   onVisibilityChange={onVisibilityChange}
                                   feature={props.feature} type={props.type}
-                                  navigation={navigationScrollerValue} setNavigation={setNavigationMap}
+                                  setMap={setPArentMap}
                 />
             </div>
-            <div style={{left:0, right:0, bottom: 0, height: 50, position: "absolute", paddingLeft:10, paddingRight: 10}}>
-                <div style={{margin: "10px"}}>
-                    <Slider
-                        name="navigation"
-                        track={false}
-                        aria-label="Navigation"
-                        value={navigationScrollerValue}
-                        valueLabelDisplay="auto"
-                        step={1}
-                        marks
-                        min={0}
-                        max={100}
-                        onChange={updateNavigation}
-                    />
-                </div>
-
+            <div style={{left:0, right:0, bottom: 0, height: 50, position: "absolute"}}>
+                    <CartesianNavigationHelper map={linkedMap} feature={props.feature}/>
             </div>
         </div>
     )

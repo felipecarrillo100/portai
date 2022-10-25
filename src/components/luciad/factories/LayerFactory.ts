@@ -73,6 +73,7 @@ class LayerFactory {
     }
 
     static EditPortOrtho(map: Map, layer: FeatureLayer, feature: Feature, type: string, viewPosition?: number[]) {
+        let ratio = undefined;
         if (viewPosition) {
             console.log(viewPosition);
             if (feature.shape) {
@@ -88,21 +89,19 @@ class LayerFactory {
                         const distance = pvGeodesy.shortestDistanceToLine(points.modelPoint, p1, p2Corrected,{}, p3);
                         const w = pvGeodesy.distance(p1,p2);
                         const s = pvGeodesy.distance(p1,p3);
-                        const ratio = Math.round(s/w * 100);
-
-                        const command = CreateCommand({
-                            action: ApplicationCommands.CREATE_APP_FORM,
-                            parameters: {
-                                formName: "PortCartesianMapForm",
-                                data: {feature: feature, type: type, layer: layer, ratio}
-                            }
-                        });
-                        store.dispatch(SetAppCommand(command));
+                        ratio = Math.round(s/w * 100);
                     }
                 }
             }
         }
-
+        const command = CreateCommand({
+            action: ApplicationCommands.CREATE_APP_FORM,
+            parameters: {
+                formName: "PortCartesianMapForm",
+                data: {feature: feature, type: type, layer: layer, ratio}
+            }
+        });
+        store.dispatch(SetAppCommand(command));
     }
 
     static ShowBimIFCDFeatureInfo(map: Map, layer: TileSet3DLayer, feature: Feature) {

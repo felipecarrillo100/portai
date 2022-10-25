@@ -33,8 +33,7 @@ interface Props {
     id?: string;
     feature: Feature;
     type: string;
-    navigation?: number;
-    setNavigation?: (navigation:number)=>void;
+    setMap: (map:Map) => void;
 }
 
 interface StateProps {
@@ -57,9 +56,9 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
     });
 
     const initializeMap = (map: Map) => {
+        if (typeof props.setMap === "function") props.setMap(map);
         map.onShowContextMenu = onShowContextMenu;
 
-        createListener(map);
         createRasterLayer(map);
         createRestAPIFeatureLayer(map);
         if (typeof props.onMapChange === "function") props.onMapChange(map);
@@ -159,34 +158,6 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
         }
     }
 
-    const createListener = (map: Map) => {
-      // @ts-ignore
-        map.on('MapChange', ()=>{
-            const layerImage = map.layerTree.findLayerById(CARTESIAN_RASTER_LAYER_ID) as any;
-            if (layerImage && typeof props.navigation !== "undefined") {
-                    const myMap = map;
-                    const layerImage = myMap.layerTree.findLayerById(CARTESIAN_RASTER_LAYER_ID) as any;
-                    if (layerImage && typeof props.navigation !== "undefined") {
-                        const step = layerImage.model.bounds.width/100;
-                        let returnValue = 0;
-                        if (myMap.mapBounds.x===0) {
-                            returnValue = 0;
-                        } else
-                        if (myMap.mapBounds.x + myMap.mapBounds.width >= layerImage.model.bounds.width)  {
-                            returnValue = 100;
-                        } else {
-                            returnValue = Math.round(myMap.mapBounds.x  / step );
-                        }
-                        // console.log("Accuracy 2: " + returnValue)
-                        if (typeof props.setNavigation === "function" && props.navigation !== returnValue) {
-                            //   console.log("Internal call: " + returnValue)
-                            props.setNavigation(returnValue);
-                        }
-                    }
-            }
-      })
-    }
-
     const getFilename = () => {
         let fileOrFileName = "";
         const store = props.layer.model.store as any;
@@ -210,38 +181,6 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
             initializeMap(map.current);
         }
     }, [divEl.current]);
-
-    useEffect(()=>{
-        console.log("Needs update: " + props.navigation);
-        if (map.current){
-            const layerImage = map.current.layerTree.findLayerById(CARTESIAN_RASTER_LAYER_ID) as any;
-            if (layerImage && typeof props.navigation !== "undefined") {
-                const step = layerImage.model.bounds.width/100;
-                const bounds = createBounds(crs1Reference, [step * props.navigation, map.current?.mapBounds.width, 0, layerImage.model.bounds.height]);
-                const a =props.navigation;
-                map.current.mapNavigator.fit({bounds: bounds, animate: {duration: 250}}).then(()=>{
-                    console.log("requested: "+ a);
-                    if (map.current) {
-                        const myMap = map.current;
-                        const layerImage = myMap.layerTree.findLayerById(CARTESIAN_RASTER_LAYER_ID) as any;
-                        if (layerImage && typeof props.navigation !== "undefined") {
-                            const step = layerImage.model.bounds.width/100;
-                            let returnValue = 0;
-                            if (myMap.mapBounds.x===0) {
-                                returnValue = 0;
-                            } else
-                            if (myMap.mapBounds.x + myMap.mapBounds.width >= layerImage.model.bounds.width)  {
-                                returnValue = 100;
-                            } else {
-                                returnValue = Math.round(myMap.mapBounds.x  / step );
-                            }
-                            // console.log("Accuracy: " + returnValue)
-                        }
-                    }
-                });
-            }
-        }
-    }, [props.navigation]);
 
 
     const createLayer = (layerName: string, fileOrURL: string, reference: CoordinateReference): Promise<RasterTileSetLayer> => {
