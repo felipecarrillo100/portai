@@ -134,7 +134,8 @@ const App: React.FC = () => {
                     const layer = parameters.data.layer as FeatureLayer;
                     const feature = parameters.data.feature as Feature;
                     const type = parameters.data.type as string;
-                    FormManager.openForm(FormHolders.BOTTOM, <PortCartesianMapForm layer={layer} feature={feature} type={type}/>)
+                    const ratio = parameters.data.ratio as number;
+                    FormManager.openForm(FormHolders.BOTTOM, <PortCartesianMapForm layer={layer} feature={feature} type={type} initialRatio={ratio}/>)
                 }
                 break;
             case "ConnectPanorama":

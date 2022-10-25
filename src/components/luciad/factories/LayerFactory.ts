@@ -16,7 +16,7 @@ import ExpressionBuilder from "../expressions/ExpressionBuilder";
 import {Feature} from "@luciad/ria/model/feature/Feature";
 import {Polyline} from "@luciad/ria/shape/Polyline";
 import {getReference} from "@luciad/ria/reference/ReferenceProvider";
-import {createEllipsoidalGeodesy} from "@luciad/ria/geodesy/GeodesyFactory";
+import {createCartesianGeodesy, createEllipsoidalGeodesy} from "@luciad/ria/geodesy/GeodesyFactory";
 import {LineType} from "@luciad/ria/geodesy/LineType";
 import {createPoint} from "@luciad/ria/shape/ShapeFactory";
 import {PanoramaFeaturePainter} from "../painters/PanoramaFeaturePainter";
@@ -44,6 +44,10 @@ import {ShapeList} from "@luciad/ria/shape/ShapeList";
 import {GeoLocatedPhotosPainter} from "../painters/GeoLocatedPhotosPainter";
 import {Shape} from "@luciad/ria/shape/Shape";
 import {FullScreen} from "../../../utils/fullscreen/FullScreen";
+import {OutOfBoundsError} from "@luciad/ria/error/OutOfBoundsError";
+import {ScreenMessage} from "../../../screen/ScreenMessage";
+import {createTransformation} from "@luciad/ria/transformation/TransformationFactory";
+import {LocationMode} from "@luciad/ria/transformation/LocationMode";
 
 
 enum LookFromReferenceType {
@@ -55,7 +59,8 @@ enum LookFromReferenceType {
 
 class LayerFactory {
 
-    static EditVOrtho(map: Map, feature: Feature, type: string) {
+    static EditVOrtho(map: Map, feature: Feature, type: string, viewPosition?: number[]) {
+
         const pvShapeReference = getReference("CRS:84");
         const command = CreateCommand({
             action: ApplicationCommands.CREATE_APP_FORM,
@@ -67,16 +72,37 @@ class LayerFactory {
         store.dispatch(SetAppCommand(command));
     }
 
-    static EditPortOrtho(map: Map, layer: FeatureLayer, feature: Feature, type: string) {
-        const pvShapeReference = getReference("CRS:84");
-        const command = CreateCommand({
-            action: ApplicationCommands.CREATE_APP_FORM,
-            parameters: {
-                formName: "PortCartesianMapForm",
-                data: {feature: feature, type: type, layer: layer}
+    static EditPortOrtho(map: Map, layer: FeatureLayer, feature: Feature, type: string, viewPosition?: number[]) {
+        if (viewPosition) {
+            console.log(viewPosition);
+            if (feature.shape) {
+                const points = LayerFactory.getMeasurePoint(map, viewPosition, feature.shape.reference);
+                if (points && feature.shape.reference) {
+                    if (feature.shape.type===ShapeType.SHAPE_LIST) {
+                        const shape = feature.shape as ShapeList;
+                        const p1 = shape.getShape(0) as Point;
+                        const p2 = shape.getShape(1) as Point;
+                        const p2Corrected = createPoint(feature.shape.reference, [p2.x, p1.y]);
+                        const p3 = createPoint(feature.shape.reference, [0, 0,]);
+                        const pvGeodesy = createEllipsoidalGeodesy(feature.shape.reference);
+                        const distance = pvGeodesy.shortestDistanceToLine(points.modelPoint, p1, p2Corrected,{}, p3);
+                        const w = pvGeodesy.distance(p1,p2);
+                        const s = pvGeodesy.distance(p1,p3);
+                        const ratio = Math.round(s/w * 100);
+
+                        const command = CreateCommand({
+                            action: ApplicationCommands.CREATE_APP_FORM,
+                            parameters: {
+                                formName: "PortCartesianMapForm",
+                                data: {feature: feature, type: type, layer: layer, ratio}
+                            }
+                        });
+                        store.dispatch(SetAppCommand(command));
+                    }
+                }
             }
-        });
-        store.dispatch(SetAppCommand(command));
+        }
+
     }
 
     static ShowBimIFCDFeatureInfo(map: Map, layer: TileSet3DLayer, feature: Feature) {
@@ -195,7 +221,8 @@ class LayerFactory {
                 const feature = contextMenuInfo.objects[0];
                 console.log("ContextMenu");
                 console.log(layer);
-                contextMenu.addItem({label:"Edit", action: ()=>{LayerFactory.EditPortOrtho(map, layer, feature, "png")}});
+                contextMenu.addItem({label:"Edit", action: ((position:any)=>{LayerFactory.EditPortOrtho(map, layer, feature, "png") }) as any});
+                // contextMenu.addItem({label:"Edit here", action: ((position:any)=>{LayerFactory.EditPortOrtho(map, layer, feature, "png", position) }) as any});
                 contextMenu.addItem({label:"Look from", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.FULL)}});
                 contextMenu.addItem({label:"Look from start", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.START)}});
                 contextMenu.addItem({label:"Look from end", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.END)}});
@@ -469,6 +496,32 @@ class LayerFactory {
         const layerGroup = new LayerGroup(options);
         (layerGroup as any).collapsed = options.collapsed
         return layerGroup;
+    }
+
+    private static getMeasurePoint(map: Map, viewPosition: number[], reference: any) {
+        const shapeReference = reference ? reference : getReference("EPSG:4326"); // 3D WGS:84
+        const mapReference = map.reference;
+        const geoContext = {
+            geodesy: createCartesianGeodesy(mapReference),
+            modelToWorldTx: createTransformation(shapeReference, mapReference),
+            shapeReference,
+            viewToWorldTx: map.getViewToMapTransformation(LocationMode.CLOSEST_SURFACE),
+            worldToModelTx: createTransformation(mapReference, shapeReference),
+        };
+
+        try {
+            const viewPoint = createPoint(null, viewPosition);
+            const worldPoint = geoContext.viewToWorldTx.transform(viewPoint);
+            const modelPoint = geoContext.worldToModelTx.transform(worldPoint);
+            return {
+                modelPoint,
+                worldPoint,
+            }
+        } catch (e) {
+            if (!(e instanceof OutOfBoundsError)) {
+                ScreenMessage.error("Error occurred: " + e);
+            }
+        }
     }
 }
 

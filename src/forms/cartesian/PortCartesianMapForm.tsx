@@ -25,6 +25,7 @@ interface Props extends FormProps {
     layer: FeatureLayer;
     feature: Feature;
     type: string;
+    initialRatio: number;
 }
 
 function debounce(cb: any, delay = 250) {
@@ -44,7 +45,7 @@ const PortCartesianMapForm = (props: Props) =>{
 
    const debouncedFunction = useRef(null as any)
    const [layerVisibility,setLayerVisibility] = useState(true);
-   const [navigationScrollerValue,setNavigationScrollerValue] = useState(0);
+   const [navigationScrollerValue,setNavigationScrollerValue] = useState(props.initialRatio ? props.initialRatio: 0);
 
     const map = useRef<Map|null>(null);
 

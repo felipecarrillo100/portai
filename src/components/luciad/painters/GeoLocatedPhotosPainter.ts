@@ -39,7 +39,8 @@ class GeoLocatedPhotosPainter extends FeaturePainter{
 
     paintLabel(labelCanvas: LabelCanvas, feature: Feature, shape: Shape, layer: Layer, map: Map, paintState: PaintState) {
         const labelHTML = `<span style="font-size: 14px;color: white;text-shadow: 0.07em 0 black, 0 0.07em black, -0.07em 0 black, 0 -0.07em black;">${feature.id}</span>`;
-        labelCanvas.drawLabel(labelHTML, shape, {} );
+        if (paintState.selected)
+            labelCanvas.drawLabel(labelHTML, shape, {} );
     }
 }
 
