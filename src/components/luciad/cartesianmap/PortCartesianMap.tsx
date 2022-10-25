@@ -18,6 +18,7 @@ import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer";
 import {CartesianAnnotationsPainter} from "./CartesianAnnotationsPainter";
 import {boolean} from "@luciad/ria/util/expression/ExpressionFactory";
 import {Feature} from "@luciad/ria/model/feature/Feature";
+import {FeaturesRestAPIStore} from "../stores/FeaturesRestAPIStore";
 
 interface Props {
     layer: FeatureLayer;
@@ -53,13 +54,15 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
     const initializeMap = (map: Map) => {
         createListener(map);
         createRasterLayer(map);
-        createFeatureLayer(map);
+        createRestAPIFeatureLayer(map);
         if (typeof props.onMapChange === "function") props.onMapChange(map);
     }
 
-    const createFeatureLayer = (map: Map) => {
+    const createRestAPIFeatureLayer = (map: Map) => {
         const createAnnotationsLayer = () =>{
-            const featureStore = new MemoryStore();
+            const filename = getFilename();
+            const url = "./annotations/" + filename.replace(/\//g, "_").replace(/\./g, "_");
+            const featureStore = new FeaturesRestAPIStore({url, reference: crs1Reference});
             const featureModel = new FeatureModel(featureStore, {
                 reference: crs1Reference
             });
@@ -108,22 +111,19 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
             }
       })
     }
-    const createRasterLayer = (map: Map) => {
-       // const photo = props.feature.properties.photo;
-        console.log(props.feature.properties);
-        console.log(props.type);
+
+    const getFilename = () => {
         let fileOrFileName = "";
-        switch (props.type) {
-            case "png":
-                console.log("PortCartesian");
-                console.log(props.layer)
-                const store = props.layer.model.store as any;
-                const url = store.url;
-                const baseUrl = url.substring(0, url.lastIndexOf("/"));
-                const image = props.feature.properties.image;
-                fileOrFileName = `${baseUrl}${image}`;
-                break;
-        }
+        const store = props.layer.model.store as any;
+        const url = store.url;
+        const baseUrl = url.substring(0, url.lastIndexOf("/"));
+        const image = props.feature.properties.image;
+        fileOrFileName = `${baseUrl}${image}`;
+        return fileOrFileName;
+    }
+    const createRasterLayer = (map: Map) => {
+        const fileOrFileName = getFilename();
+
         createLayer("Photo", fileOrFileName, crs1Reference).then(layer => {
             setCRS1ImageLayer(map, layer);
         }).catch(error => console.log(`Cannot add layer: ${error.message}`, error))

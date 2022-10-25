@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
-import {SelectChangeEvent, Slider} from "@mui/material";
+import { Slider} from "@mui/material";
 import {Map} from "@luciad/ria/view/Map";
 import Button from "@mui/material/Button";
 import {FormProps} from "../interfaces";
@@ -11,13 +11,13 @@ import CreateFeatureInLayerController from "../../components/luciad/controllers/
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import PolylineIcon from '@mui/icons-material/Polyline';
 import PentagonIcon from '@mui/icons-material/Pentagon';
-import {MemoryStore} from "@luciad/ria/model/store/MemoryStore";
 import {GeoJsonCodec} from "@luciad/ria/model/codec/GeoJsonCodec";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 // @ts-ignore
 import {sampledata} from './sampledata';
 import {Feature} from "@luciad/ria/model/feature/Feature";
 import {PortCartesianMap} from "../../components/luciad/cartesianmap/PortCartesianMap";
+import {FeaturesRestAPIStore} from "../../components/luciad/stores/FeaturesRestAPIStore";
 
 const geojsoncodec = new GeoJsonCodec({generateIDs:true});
 
@@ -104,7 +104,7 @@ const PortCartesianMapForm = (props: Props) =>{
         if (map.current) {
             const featureLayer = map.current?.layerTree.findLayerById(CARTESIAN_LAYER_FEATURES_ID) as FeatureLayer;
             if (featureLayer) {
-                const store = (featureLayer.model as any).store as MemoryStore;
+                const store = (featureLayer.model as any).store as FeaturesRestAPIStore;
                 store.clear();
             }
         }
@@ -114,10 +114,15 @@ const PortCartesianMapForm = (props: Props) =>{
         if (map.current) {
             const featureLayer = map.current?.layerTree.findLayerById(CARTESIAN_LAYER_FEATURES_ID) as FeatureLayer;
             if (featureLayer) {
-                const store = (featureLayer.model as any).store as MemoryStore;
-                const features = store.query();
-                const text = geojsoncodec.encode(features);
-                console.log(text);
+                const store = (featureLayer.model as any).store as FeaturesRestAPIStore;
+                 store.query().then((features:any)=>{
+                    const text = geojsoncodec.encode(features);
+                    console.log(text);
+                });
+
+                store.get(1).then((feature)=>{
+                    console.log(feature)
+                })
             }
         }
     }
@@ -125,17 +130,17 @@ const PortCartesianMapForm = (props: Props) =>{
     const onMapChange = (aMap: Map) => {
         if (aMap && map.current !== aMap) {
             map.current = aMap;
-            const featureLayer = map.current?.layerTree.findLayerById(CARTESIAN_LAYER_FEATURES_ID) as FeatureLayer;
-            if (featureLayer && featureLayer.model) {
-                const store = (featureLayer.model as any).store as MemoryStore;
-                store.clear();
-                const cursor = geojsoncodec.decode({content:sampledata, contentType: "application/json", reference: featureLayer.model.reference});
-                while (cursor.hasNext()) {
-                    const feature = cursor.next();
-                    store.add(feature);
-                    console.log(feature);
-                }
-            }
+            // const featureLayer = map.current?.layerTree.findLayerById(CARTESIAN_LAYER_FEATURES_ID) as FeatureLayer;
+            // if (featureLayer && featureLayer.model) {
+            //     const store = (featureLayer.model as any).store as MemoryStore;
+            //     store.clear();
+            //     const cursor = geojsoncodec.decode({content:sampledata, contentType: "application/json", reference: featureLayer.model.reference});
+            //     while (cursor.hasNext()) {
+            //         const feature = cursor.next();
+            //         store.add(feature);
+            //         console.log(feature);
+            //     }
+            // }
         }
     }
 
