@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, { useRef, useState} from "react";
 import {Map} from "@luciad/ria/view/Map";
 import Button from "@mui/material/Button";
 import {FormProps} from "../interfaces";
@@ -28,20 +28,8 @@ interface Props extends FormProps {
     initialRatio: number;
 }
 
-function debounce(cb: any, delay = 250) {
-    let timeout: any;
-
-    // @ts-ignore
-    return (...args) => {
-        clearTimeout(timeout)
-        timeout = setTimeout(() => {
-            cb(...args)
-        }, delay)
-    }
-}
 
 const PortCartesianMapForm = (props: Props) =>{
-    const {closeForm} = props;
 
     const [layerVisibility,setLayerVisibility] = useState(true);
     const [linkedMap,setLinkedMap] = useState(null as Map | null);
@@ -117,13 +105,17 @@ const PortCartesianMapForm = (props: Props) =>{
         setLayerVisibility(v);
     }
 
-
-    const setPArentMap = (map: Map) => {
-        setLinkedMap(map);
+    const setCurrentMap = (aMap:Map) => {
+        map.current = aMap
+        setLinkedMap(aMap);
     }
+
 
     return (
         <div >
+            <Button color="primary" variant="outlined" onClick={addShape(ShapeType.POINT)}><ControlPointIcon /></Button>
+            <Button color="primary" variant="outlined" onClick={addShape(ShapeType.POLYLINE)}><PolylineIcon/></Button>
+            <Button color="primary" variant="outlined" onClick={addShape(ShapeType.POLYGON)}><PentagonIcon/></Button>
             <div style={{padding:5,left:0, right:0, bottom: 50, top: 0, position:"absolute", backgroundColor: "black"}}>
                 <div style={{display: "inline"}}>
                     <Button color="primary" variant="outlined" onClick={addShape(ShapeType.POINT)}><ControlPointIcon /></Button>
@@ -140,7 +132,7 @@ const PortCartesianMapForm = (props: Props) =>{
                 <PortCartesianMap layer={props.layer}
                                   onVisibilityChange={onVisibilityChange}
                                   feature={props.feature} type={props.type}
-                                  setMap={setPArentMap}
+                                  setMap={setCurrentMap}
                                   initialPosition={[props.initialRatio, 0.5]}
                 />
             </div>
