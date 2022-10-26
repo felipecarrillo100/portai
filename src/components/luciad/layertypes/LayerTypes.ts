@@ -19,5 +19,6 @@ export enum LayerTypes {
     FeaturesGeoJSONPhotos = "FeaturesGeoJSONPhotos",
     DronePhotoAPILayer = "DronePhotoAPILayer",
     PanoramicLayer = "PanoramicLayer",
-    PanoramicPortAILayer = "PanoramicPortAILayer"
+    PanoramicPortAILayer = "PanoramicPortAILayer",
+    FeaturesVerticalAnnotations = "FeaturesVerticalAnnotations",
 }

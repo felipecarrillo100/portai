@@ -48,6 +48,9 @@ class MapBuilder {
         return new Promise<Layer | LayerGroup | LayerTree>(resolve => {
             let layerPromise = null;
             switch (command.parameters.layerType) {
+                case LayerTypes.FeaturesVerticalAnnotations:
+                    layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createVerticalModel, LayerFactory.createVerticalFeatureLayer);
+                    break;
                 case LayerTypes.FeaturesGeoJSONPhotos:
                     layerPromise = MapBuilder.buildAnyLayer<FeatureModel, FeatureLayer>(command, ModelFactory.createRestAPIModel, LayerFactory.createGeoLocatedPhotosLayer);
                     break;

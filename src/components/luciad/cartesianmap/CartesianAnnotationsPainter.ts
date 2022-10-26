@@ -52,11 +52,11 @@ const selectedIconStyle: IconStyle = {
 }
 class CartesianAnnotationsPainter extends FeaturePainter {
     paintBody(geoCanvas: GeoCanvas, feature: Feature, shape: Shape, layer: Layer, map: Map, paintState: PaintState) {
-        if (feature.shape) {
-            if (feature.shape?.type === ShapeType.POINT) {
-                geoCanvas.drawIcon(feature.shape, paintState.selected ? selectedIconStyle: normalIconStyle);
+        if (shape) {
+            if (shape?.type === ShapeType.POINT) {
+                geoCanvas.drawIcon(shape, paintState.selected ? selectedIconStyle: normalIconStyle);
             } else {
-                geoCanvas.drawShape(feature.shape, paintState.selected ? selectedStyle: normalStyle);
+                geoCanvas.drawShape(shape, paintState.selected ? selectedStyle: normalStyle);
             }
         }
     }
@@ -64,14 +64,14 @@ class CartesianAnnotationsPainter extends FeaturePainter {
         if (feature.shape) {
             const label = feature.properties.name;
             const template = `<span style="color:white; text-shadow: 1px 1px 2px black, 0 0 1px black, 0 0 0.2px black;">${label}</span>`;
-            if (feature.shape.type === ShapeType.POINT) {
-                labelCanvas.drawLabel(template, feature.shape, {} as LabelStyle);
+            if (shape.type === ShapeType.POINT) {
+                labelCanvas.drawLabel(template, shape, {} as LabelStyle);
             } else
-            if (feature.shape.type === ShapeType.POLYGON)
+            if (shape.type === ShapeType.POLYGON)
             {
-                labelCanvas.drawLabelInPath(template, feature.shape, {} as LabelStyle);
+                labelCanvas.drawLabelInPath(template, shape, {} as LabelStyle);
             } else {
-                labelCanvas.drawLabelOnPath(template, feature.shape, {} as LabelStyle);
+                labelCanvas.drawLabelOnPath(template, shape, {} as LabelStyle);
             }
         }
     }

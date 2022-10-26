@@ -48,6 +48,11 @@ import {OutOfBoundsError} from "@luciad/ria/error/OutOfBoundsError";
 import {ScreenMessage} from "../../../screen/ScreenMessage";
 import {createTransformation} from "@luciad/ria/transformation/TransformationFactory";
 import {LocationMode} from "@luciad/ria/transformation/LocationMode";
+import {LayerTypes} from "../layertypes/LayerTypes";
+import {Cursor} from "@luciad/ria/model/Cursor";
+import {getFilenameFromModel} from "../cartesianmap/PortCartesianMap";
+import {VerticalFeaturesShapeProvider} from "../shapeproviders/VerticalFeaturesShapeProvider";
+import {CartesianAnnotationsPainter} from "../cartesianmap/CartesianAnnotationsPainter";
 
 
 enum LookFromReferenceType {
@@ -227,6 +232,37 @@ class LayerFactory {
                 contextMenu.addItem({label:"Look from end", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.END)}});
                 contextMenu.addItem({label:"Look from center", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.CENTER)}});
             };
+            (model.query() as Promise<Cursor>).then((cursor: any)=>{
+                const loopMe = () => {
+                    const feature = cursor.next();
+                    const filename = getFilenameFromModel(model, feature);
+                    const url = "./annotations/" + filename.replace(/\//g, "_").replace(/\./g, "_");
+                    if (feature.shape.type===ShapeType.SHAPE_LIST) {
+                        const p0 = (feature.shape as ShapeList).getShape(0) as Point;
+                        const p1 = (feature.shape as ShapeList).getShape(1) as Point;
+                        const command3 = CreateCommand({
+                            action: ApplicationCommands.CREATELAYER,
+                            parameters: {
+                                layerType: LayerTypes.FeaturesVerticalAnnotations,
+                                model: {
+                                    url,
+                                    coordinates: [[p0.x, p0.y, p0.z], [p1.x, p1.y, p1.z]],
+                                    image: filename
+                                },
+                                layer: {
+                                    label: layerOptions.label.split("(")[0] + "(Annotations)",
+                                    visible: true,
+                                    selectable: true
+                                },
+                                autoZoom: true,
+                            }
+                        });
+                        store.dispatch(SetAppCommand(command3));
+                    }
+                    if (cursor.hasNext()) setTimeout(loopMe, 50);
+                }
+                if (cursor.hasNext()) loopMe();
+            })
 
             layer.onCreateContextMenu = CreateContextMenu(layer);
             resolve(layer);
@@ -287,6 +323,15 @@ class LayerFactory {
     static createFeatureLayer(model: FeatureModel, layerOptions: any) {
         return new Promise<FeatureLayer>((resolve)=>{
             const layer = new FeatureLayer(model, layerOptions);
+            resolve(layer);
+        })
+    }
+
+    static createVerticalFeatureLayer(model: FeatureModel, layerOptions: any) {
+        return new Promise<FeatureLayer>((resolve)=>{
+            const layer = new FeatureLayer(model, layerOptions);
+            layer.painter = new CartesianAnnotationsPainter();
+            layer.shapeProvider = new VerticalFeaturesShapeProvider(layer.model);
             resolve(layer);
         })
     }

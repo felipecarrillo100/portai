@@ -3,7 +3,7 @@ import {WFSFeatureStore} from "@luciad/ria/model/store/WFSFeatureStore";
 import {FeatureModel} from "@luciad/ria/model/feature/FeatureModel";
 import {getReference} from "@luciad/ria/reference/ReferenceProvider";
 import {UrlTileSetModel} from "@luciad/ria/model/tileset/UrlTileSetModel";
-import {createBounds} from "@luciad/ria/shape/ShapeFactory";
+import {createBounds, createPoint, createPolygon} from "@luciad/ria/shape/ShapeFactory";
 import {BingMapsTileSetModel} from "@luciad/ria/model/tileset/BingMapsTileSetModel";
 import {ScreenMessageTypes} from "../../../interfaces/ScreenMessageTypes";
 import {WMTSTileSetModel} from "@luciad/ria/model/tileset/WMTSTileSetModel";
@@ -13,6 +13,10 @@ import {HSPCTilesModel} from "@luciad/ria/model/tileset/HSPCTilesModel";
 import {FeatureFileStore} from "../stores/FeatureFileStore";
 import {RestStore} from "../stores/RestStore";
 import {UrlStore} from "@luciad/ria/model/store/UrlStore";
+import {Feature} from "@luciad/ria/model/feature/Feature";
+import {FeaturesRestAPIStore} from "../stores/FeaturesRestAPIStore";
+
+const crs1Reference = getReference("CRS:1");
 
 class ModelFactory {
 
@@ -104,6 +108,33 @@ class ModelFactory {
             const store = new FeatureFileStore(modelOptions);
             const model = new FeatureModel(store);
             resolve(model);
+        });
+    }
+
+    static createVerticalModel(modelOptions: any) {
+        return new Promise<FeatureModel>((resolve, reject)=> {
+            if (modelOptions.image && modelOptions.coordinates) {
+                const request = modelOptions.image + "?service=GetInfo"
+                fetch(request).then((response)=>{
+                    if (response.status===200) {
+                        response.json().then(data=>{
+//                            const store = new MemoryStore(modelOptions);
+                            const store = new FeaturesRestAPIStore({url: modelOptions.url, reference: crs1Reference});
+
+                            const reference = getReference("CRS:84");
+                            const shape = createPolygon(reference, [[0,0,0],[0,0,1000],[0.001,0,1000],[0.001,0,0]]);
+                            const feature = new Feature(shape, {}, 1);
+                            const model = new FeatureModel(store);
+                            (model as any).imageInfo = data;
+                            const p0 = createPoint(reference, modelOptions.coordinates[0]);
+                            const p1 = createPoint(reference, modelOptions.coordinates[1]);
+                            (model as any).points = [p0,p1];
+                            store.add(feature);
+                            resolve(model);
+                        });
+                    }
+                })
+            }
         });
     }
 

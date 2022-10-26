@@ -12,18 +12,15 @@ import {createBounds, createPoint} from "@luciad/ria/shape/ShapeFactory";
 import {UrlTileSetModelCartesian} from "../models/UrlTileSetModelCartesian";
 import {Point} from "@luciad/ria/shape/Point";
 import {MouseCoordinateReadout} from "../mousecoordinates/MouseCoordinateReadout";
-import {MemoryStore} from "@luciad/ria/model/store/MemoryStore";
 import {FeatureModel} from "@luciad/ria/model/feature/FeatureModel";
 import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer";
 import {CartesianAnnotationsPainter} from "./CartesianAnnotationsPainter";
-import {boolean} from "@luciad/ria/util/expression/ExpressionFactory";
 import {Feature} from "@luciad/ria/model/feature/Feature";
 import {FeaturesRestAPIStore} from "../stores/FeaturesRestAPIStore";
 import {ContextMenu} from "@luciad/ria/view/ContextMenu";
 import {ContextmenuRecords} from "../../contextmenu/ContextmenuRecords";
 import {EditSelectLayerTools} from "../layertreetools/EditSelectLayerTools";
 import {Shape} from "@luciad/ria/shape/Shape";
-import {FullScreen} from "../../../utils/fullscreen/FullScreen";
 
 interface Props {
     layer: FeatureLayer;
@@ -43,6 +40,16 @@ interface StateProps {
 export const CARTESIAN_RASTER_LAYER_ID = "raster-layer-id";
 export const CARTESIAN_LAYER_FEATURES_ID = "features-layer-id";
 const crs1Reference = getReference("CRS:1");
+
+export const getFilenameFromModel = (model: FeatureModel, feature: Feature) => {
+    let fileOrFileName = "";
+    const store = model.store as any;
+    const url = store.url;
+    const baseUrl = url.substring(0, url.lastIndexOf("/"));
+    const image = feature.properties.image;
+    fileOrFileName = `${baseUrl}${image}`;
+    return fileOrFileName;
+}
 
 const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
     const divEl = useRef(null);

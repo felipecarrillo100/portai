@@ -141,7 +141,7 @@ const ConnectPortOrthophotoForm = (props: FormProps) =>{
             });
             setTimeout(()=>{
                 dispatch(SetAppCommand(command2));
-            }, 100)
+            }, 50)
             if(closeForm) closeForm();
         }
     }
