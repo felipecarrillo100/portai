@@ -103,6 +103,7 @@ export interface CreateFeaturesVerticalAnnotationsCommand extends CreateLayerBas
             label?: string;
             id?: string;
             selectable?: boolean;
+        },
         autoZoom?: boolean
     }
 }
