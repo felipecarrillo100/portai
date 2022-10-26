@@ -16,7 +16,6 @@ import {MemoryStore} from "@luciad/ria/model/store/MemoryStore";
 import {FeatureModel} from "@luciad/ria/model/feature/FeatureModel";
 import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer";
 import {CartesianAnnotationsPainter} from "./CartesianAnnotationsPainter";
-import {boolean} from "@luciad/ria/util/expression/ExpressionFactory";
 import {Feature} from "@luciad/ria/model/feature/Feature";
 
 interface Props {
@@ -153,7 +152,8 @@ const CartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) =>
         };
         const targetBounds = createBounds(bounds.reference, [bounds.x, 6000, bounds.y, bounds.height]);
         map.mapNavigator.fit({
-            bounds: targetBounds
+            bounds: targetBounds,
+            animate: false
         });
         // Remove
         const layerImage = map.layerTree.findLayerById(CARTESIAN_RASTER_LAYER_ID);

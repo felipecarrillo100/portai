@@ -83,13 +83,13 @@ class LayerFactory {
                         const shape = feature.shape as ShapeList;
                         const p1 = shape.getShape(0) as Point;
                         const p2 = shape.getShape(1) as Point;
-                        const p2Corrected = createPoint(feature.shape.reference, [p2.x, p1.y]);
+                        const p2Corrected = createPoint(feature.shape.reference, [p2.x, p2.y, p1.z]);
                         const p3 = createPoint(feature.shape.reference, [0, 0,]);
                         const pvGeodesy = createEllipsoidalGeodesy(feature.shape.reference);
-                        const distance = pvGeodesy.shortestDistanceToLine(points.modelPoint, p1, p2Corrected,{}, p3);
+                        pvGeodesy.shortestDistanceToLine(points.modelPoint, p1, p2Corrected,{}, p3);
                         const w = pvGeodesy.distance(p1,p2);
                         const s = pvGeodesy.distance(p1,p3);
-                        ratio = Math.round(s/w * 100);
+                        ratio = s/w ;
                     }
                 }
             }
@@ -220,8 +220,8 @@ class LayerFactory {
                 const feature = contextMenuInfo.objects[0];
                 console.log("ContextMenu");
                 console.log(layer);
-                contextMenu.addItem({label:"Edit", action: ((position:any)=>{LayerFactory.EditPortOrtho(map, layer, feature, "png") }) as any});
-                // contextMenu.addItem({label:"Edit here", action: ((position:any)=>{LayerFactory.EditPortOrtho(map, layer, feature, "png", position) }) as any});
+                // contextMenu.addItem({label:"Edit", action: ((position:any)=>{LayerFactory.EditPortOrtho(map, layer, feature, "png") }) as any});
+                contextMenu.addItem({label:"Edit", action: ((position:any)=>{LayerFactory.EditPortOrtho(map, layer, feature, "png", position) }) as any});
                 contextMenu.addItem({label:"Look from", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.FULL)}});
                 contextMenu.addItem({label:"Look from start", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.START)}});
                 contextMenu.addItem({label:"Look from end", action: ()=>{LayerFactory.LookFrom(map, feature, LookFromReferenceType.END)}});

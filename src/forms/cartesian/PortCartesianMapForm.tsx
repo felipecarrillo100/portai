@@ -43,28 +43,11 @@ function debounce(cb: any, delay = 250) {
 const PortCartesianMapForm = (props: Props) =>{
     const {closeForm} = props;
 
-   const debouncedFunction = useRef(null as any)
-   const [layerVisibility,setLayerVisibility] = useState(true);
+    const [layerVisibility,setLayerVisibility] = useState(true);
     const [linkedMap,setLinkedMap] = useState(null as Map | null);
-
-    const [navigationScrollerValue,setNavigationScrollerValue] = useState(props.initialRatio ? props.initialRatio: 0);
 
     const map = useRef<Map|null>(null);
 
-
-    useEffect(()=>{
-        // Init
-        debouncedFunction.current = debounce((stateValue: number, paramsValue: any)=>{
-            if (paramsValue!==navigationScrollerValue && Math.abs(paramsValue-stateValue) > 25) {
-                console.log("Previous value:"  + stateValue);
-                console.log("Debounced Map value:" +  paramsValue );
-               // setNavigationScrollerValue(paramsValue)
-            }
-        }, 500);
-        return ()=>{
-            // Init
-        }
-    }, []);
 
     const addShape = (shapeType: ShapeType) => (event: any) =>{
         if (map.current) {
@@ -83,7 +66,7 @@ const PortCartesianMapForm = (props: Props) =>{
             const layer = layerInput as any;
             let defaultProperties = properties ? {...properties} : {};
             map.current.selectObjects([]);
-            if (layer.restoreCommand && layer.restoreCommand.properties && layer.restoreCommand.properties.model && layer.restoreCommand.properties.model.defaultProperties){
+            if (layer.restoreCommand && layer.restoreCommand.properties && layer.restoreCommand.properties.model && layer.restoreCommand.properties.model.defaultProperties) {
                 defaultProperties = JSON.parse(layer.restoreCommand.properties.model.defaultProperties);
             }
             const createController = new CreateFeatureInLayerController(shapeType, defaultProperties, layer, null );
@@ -130,39 +113,10 @@ const PortCartesianMapForm = (props: Props) =>{
         }
     }
 
-    const onMapChange = (aMap: Map) => {
-        if (aMap && map.current !== aMap) {
-            map.current = aMap;
-            // const featureLayer = map.current?.layerTree.findLayerById(CARTESIAN_LAYER_FEATURES_ID) as FeatureLayer;
-            // if (featureLayer && featureLayer.model) {
-            //     const store = (featureLayer.model as any).store as MemoryStore;
-            //     store.clear();
-            //     const cursor = geojsoncodec.decode({content:sampledata, contentType: "application/json", reference: featureLayer.model.reference});
-            //     while (cursor.hasNext()) {
-            //         const feature = cursor.next();
-            //         store.add(feature);
-            //         console.log(feature);
-            //     }
-            // }
-        }
-    }
-
-    const setNavigationMap = (value: number) => {
-        console.log("State:" + navigationScrollerValue);
-        if (debouncedFunction.current) debouncedFunction.current(navigationScrollerValue, value)
-    }
-
     const onVisibilityChange = (v: boolean) => {
         setLayerVisibility(v);
     }
 
-    const updateNavigation = (event: any) => {
-        const {value, name} = event.target;
-        console.log("Before update:" + navigationScrollerValue)
-        setNavigationScrollerValue(value);
-    }
-    
-    console.log("Current Value:" + navigationScrollerValue)
 
     const setPArentMap = (map: Map) => {
         setLinkedMap(map);
@@ -183,14 +137,15 @@ const PortCartesianMapForm = (props: Props) =>{
                 </div>
             </div>
             <div style={{left:0, right:0, bottom: 50, top: 50, position: "absolute"}}>
-                <PortCartesianMap layer={props.layer} onMapChange={onMapChange}
+                <PortCartesianMap layer={props.layer}
                                   onVisibilityChange={onVisibilityChange}
                                   feature={props.feature} type={props.type}
                                   setMap={setPArentMap}
+                                  initialPosition={[props.initialRatio, 0.5]}
                 />
             </div>
             <div style={{left:0, right:0, bottom: 0, height: 50, position: "absolute"}}>
-                    <CartesianNavigationHelper map={linkedMap} feature={props.feature}/>
+                <CartesianNavigationHelper map={linkedMap} feature={props.feature}/>
             </div>
         </div>
     )

@@ -8,7 +8,7 @@ import {useSelector} from "react-redux";
 import {IAppState} from "../../../reduxboilerplate/store";
 import {CoordinateReference} from "@luciad/ria/reference/CoordinateReference";
 import {RasterTileSetLayer} from "@luciad/ria/view/tileset/RasterTileSetLayer";
-import {createBounds} from "@luciad/ria/shape/ShapeFactory";
+import {createBounds, createPoint} from "@luciad/ria/shape/ShapeFactory";
 import {UrlTileSetModelCartesian} from "../models/UrlTileSetModelCartesian";
 import {Point} from "@luciad/ria/shape/Point";
 import {MouseCoordinateReadout} from "../mousecoordinates/MouseCoordinateReadout";
@@ -28,12 +28,12 @@ import {FullScreen} from "../../../utils/fullscreen/FullScreen";
 interface Props {
     layer: FeatureLayer;
     onVisibilityChange?: (v: boolean) => void;
-    onMapChange?: (map: Map) => void;
     className?: string;
     id?: string;
     feature: Feature;
     type: string;
     setMap: (map:Map) => void;
+    initialPosition?: number[]
 }
 
 interface StateProps {
@@ -46,6 +46,7 @@ const crs1Reference = getReference("CRS:1");
 
 const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
     const divEl = useRef(null);
+    const correctionFactor = useRef(1);
     const map = useRef(null as Map | null);
     const className = "CartesianMap"+ (typeof props.className !== "undefined" ? " " + props.className : "");
 
@@ -61,7 +62,6 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
 
         createRasterLayer(map);
         createRestAPIFeatureLayer(map);
-        if (typeof props.onMapChange === "function") props.onMapChange(map);
     }
 
     const createRestAPIFeatureLayer = (map: Map) => {
@@ -153,7 +153,6 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
                 clientY: position[1],
                 menuItems: contextMenu.items.map(item=>({title:item.label, action: item.action}))
             }
-            //  console.log(o)
             menu.openMenu(o);
         }
     }
@@ -190,6 +189,7 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
                     return response.json();
                 })
                 .then(imageInfo => {
+                    correctionFactor.current = imageInfo.totalWidth / imageInfo.width
                     const urlTileSetModel = new UrlTileSetModelCartesian({
                         reference,
                         bounds: createBounds(reference, [0, imageInfo.totalWidth, 0, imageInfo.totalHeight]),
@@ -225,9 +225,11 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
                 maxScale: 1
             }
         };
-        const targetBounds = createBounds(bounds.reference, [bounds.x, 6000, bounds.y, bounds.height]);
+       // const targetBounds = createBounds(bounds.reference, [bounds.x, 6000, bounds.y, bounds.height]);
+        const targetBounds = createBounds(bounds.reference, [bounds.x, bounds.width, bounds.y, bounds.height]);
         map.mapNavigator.fit({
-            bounds: targetBounds
+            bounds: targetBounds,
+            animate: false
         });
         // Remove
         const layerImage = map.layerTree.findLayerById(CARTESIAN_RASTER_LAYER_ID);
@@ -241,6 +243,21 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
         } else {
             map.layerTree.addChild(layer, "bottom");
         }
+            setTimeout(()=>{
+                if (props.initialPosition) {
+                    console.log("Initial:", props.initialPosition)
+
+                    if (map.mapNavigator.constraints.limitBounds && map.mapNavigator.constraints.limitBounds.bounds) {
+                        const width = map.mapNavigator.constraints.limitBounds.bounds.width;
+                        const height = map.mapNavigator.constraints.limitBounds.bounds.height;
+                        const targetX = width * props.initialPosition[0] / correctionFactor.current;
+                        const targetY = height * props.initialPosition[1];
+                        const targetPoint = createPoint(crs1Reference, [targetX, targetY]);
+                        map.mapNavigator.pan({targetLocation: targetPoint, animate: false})
+                    }
+                }
+            }, 100)
+
     }
 
     const formatter = {
