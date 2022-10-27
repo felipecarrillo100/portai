@@ -137,7 +137,7 @@ const PortCartesianMapForm = (props: Props) =>{
                 />
             </div>
             <div style={{left:0, right:0, bottom: 0, height: 50, position: "absolute"}}>
-                <CartesianNavigationHelper map={linkedMap} feature={props.feature}/>
+                <CartesianNavigationHelper map={linkedMap} layer={props.layer} feature={props.feature}/>
             </div>
         </div>
     )

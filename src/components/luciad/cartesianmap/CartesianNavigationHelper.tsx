@@ -5,8 +5,10 @@ import "./CartesianNavigationHelper.scss"
 import {Feature} from "@luciad/ria/model/feature/Feature";
 import {createPoint} from "@luciad/ria/shape/ShapeFactory";
 import {getReference} from "@luciad/ria/reference/ReferenceProvider";
+import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer";
 
 interface Props {
+    layer: FeatureLayer;
     map: Map | null;
     feature: Feature | null;
 }
@@ -17,6 +19,8 @@ const CartesianNavigationHelper: React.FC<Props> = (props: React.PropsWithChildr
 
     const [bounds, setBounds] = useState([0,1,0,1]);
     const [mapBounds, setMapBounds] = useState([0,1,0,1]);
+    const [ratio, setRatio] = useState(100);
+    const [thumbImage, setThumbImage] = useState("");
 
     useEffect(()=>{
         if (props.map) {
@@ -26,9 +30,23 @@ const CartesianNavigationHelper: React.FC<Props> = (props: React.PropsWithChildr
 
     useEffect(()=>{
         if (props.feature ) {
-            initNewFeature(props.feature)
+            initNewFeature(props.feature);
+            loadImageDetails();
         }
     }, [props.feature]);
+
+    const loadImageDetails = () => {
+        const fileOrURL = getFilename();
+        setThumbImage(fileOrURL+"?service=GetThumb");
+        fetch(fileOrURL+"?service=GetInfo")
+            .then(response => {
+                return response.json();
+            })
+            .then(imageInfo => {
+                const ratio = imageInfo.width / imageInfo.totalWidth * 100;
+                setRatio(ratio)
+                })
+    }
 
     const initNewMap = (map:Map) =>{
         map.on("MapChange", ()=>{
@@ -45,6 +63,16 @@ const CartesianNavigationHelper: React.FC<Props> = (props: React.PropsWithChildr
             const featureBounds = feature.shape.bounds;
             if (featureBounds) setMapBounds([featureBounds.x, featureBounds.width, featureBounds.y, featureBounds.height]);
         }
+    }
+
+    const getFilename = () => {
+        let fileOrFileName = "";
+        const store = props.layer.model.store as any;
+        const url = store.url;
+        const baseUrl = url.substring(0, url.lastIndexOf("/"));
+        const image = (props.feature as any).properties.image;
+        fileOrFileName = `${baseUrl}${image}`;
+        return fileOrFileName;
     }
 
     const onClick = (event: any) => {
@@ -66,6 +94,7 @@ const CartesianNavigationHelper: React.FC<Props> = (props: React.PropsWithChildr
 
     return (
         <div className="CartesianNavigationHelper" onClick={onClick}>
+            <img src={thumbImage} width="100%" height="100%" style={{width: ""+ratio+"%"}}/>
             <div className="indicator" style={{left: (bounds[0]*100)+"%", width:(bounds[1]*100)+"%", top: (bounds[2]*100)+"%", height: (bounds[3]*90)+"%" }}  />
         </div>)
 }
