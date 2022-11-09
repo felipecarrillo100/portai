@@ -10,6 +10,8 @@ import CreateFeatureInLayerController from "../../components/luciad/controllers/
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import PolylineIcon from '@mui/icons-material/Polyline';
 import PentagonIcon from '@mui/icons-material/Pentagon';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+
 import {GeoJsonCodec} from "@luciad/ria/model/codec/GeoJsonCodec";
 // eslint-disable-next-line import/no-webpack-loader-syntax
 // @ts-ignore
@@ -18,6 +20,7 @@ import {Feature} from "@luciad/ria/model/feature/Feature";
 import {PortCartesianMap} from "../../components/luciad/cartesianmap/PortCartesianMap";
 import {FeaturesRestAPIStore} from "../../components/luciad/stores/FeaturesRestAPIStore";
 import {CartesianNavigationHelper} from "../../components/luciad/cartesianmap/CartesianNavigationHelper";
+import {FullScreen} from "../../utils/fullscreen/FullScreen";
 
 const geojsoncodec = new GeoJsonCodec({generateIDs:true});
 
@@ -30,12 +33,18 @@ interface Props extends FormProps {
 
 
 const PortCartesianMapForm = (props: Props) =>{
-
+    const formAnchorRef = useRef<HTMLDivElement>(null);
     const [layerVisibility,setLayerVisibility] = useState(true);
     const [linkedMap,setLinkedMap] = useState(null as Map | null);
 
     const map = useRef<Map|null>(null);
 
+    const toggleScreen = () => {
+        if (formAnchorRef.current) {
+            const fullScreen = !FullScreen.isFullscreen();
+            fullScreen ? FullScreen.requestFullscreen(formAnchorRef.current) : FullScreen.cancelFullscreen();
+        }
+    }
 
     const addShape = (shapeType: ShapeType) => (event: any) =>{
         if (map.current) {
@@ -112,7 +121,7 @@ const PortCartesianMapForm = (props: Props) =>{
 
 
     return (
-        <div >
+        <div ref={formAnchorRef}>
             <Button color="primary" variant="outlined" onClick={addShape(ShapeType.POINT)}><ControlPointIcon /></Button>
             <Button color="primary" variant="outlined" onClick={addShape(ShapeType.POLYLINE)}><PolylineIcon/></Button>
             <Button color="primary" variant="outlined" onClick={addShape(ShapeType.POLYGON)}><PentagonIcon/></Button>
@@ -121,6 +130,9 @@ const PortCartesianMapForm = (props: Props) =>{
                     <Button color="primary" variant="outlined" onClick={addShape(ShapeType.POINT)}><ControlPointIcon /></Button>
                     <Button color="primary" variant="outlined" onClick={addShape(ShapeType.POLYLINE)}><PolylineIcon/></Button>
                     <Button color="primary" variant="outlined" onClick={addShape(ShapeType.POLYGON)}><PentagonIcon/></Button>
+                </div>
+                <div style={{display: "inline", float: "right", marginLeft:10}}>
+                    <Button color="primary" variant="outlined" onClick={toggleScreen}><FullscreenIcon/></Button>
                 </div>
                 <div style={{display: "inline", float: "right"}}>
                     <Button variant="outlined" onClick={clearModel}>Clear all</Button>

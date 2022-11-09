@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useCallback, useEffect, useRef} from "react";
 import {Map} from "@luciad/ria/view/Map";
 import {WebGLMap} from "@luciad/ria/view/WebGLMap";
 import {getReference} from "@luciad/ria/reference/ReferenceProvider";
@@ -21,6 +21,7 @@ import {ContextMenu} from "@luciad/ria/view/ContextMenu";
 import {ContextmenuRecords} from "../../contextmenu/ContextmenuRecords";
 import {EditSelectLayerTools} from "../layertreetools/EditSelectLayerTools";
 import {Shape} from "@luciad/ria/shape/Shape";
+import {ElementResizeListener} from "../../resizelistener/ElementResizeListener";
 
 interface Props {
     layer: FeatureLayer;
@@ -228,7 +229,7 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
         map.mapNavigator.constraints = {
             limitBounds: bounds,
             scale: {
-                minScale: 1e-2,
+                minScale: 2e-2,
                 maxScale: 1
             }
         };
@@ -273,7 +274,15 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
         }
     }
 
+    const adaptResize =() => {
+        console.log("Map size has changed!!");
+        if (map.current) {
+            map.current.resize();
+        }
+    };
+
     return <div id={props.id} className={className} ref={divEl}>
+        <ElementResizeListener onResize={adaptResize}/>
         {props.children}
         {<MouseCoordinateReadout map={map.current} reference={crs1Reference} formatter={formatter} />}
     </div>
