@@ -35,7 +35,7 @@ const styleVPlaneSelected = (width: number, height: number, rotation: number, fi
     const texture = document.createElement('img');
     texture.crossOrigin = "Anonymous";
     // texture.src = `http://localhost/ortho/?filename=${filename}&service=GetThumb`;
-    texture.src = `/tiff/?filename=${filename}&service=GetThumb`;
+    texture.src = filename;
     return ({
         mesh: createVPlane(width, height, texture),
         color: 'rgba(255, 0, 0, 1)',
