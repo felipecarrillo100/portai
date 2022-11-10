@@ -124,7 +124,9 @@ class ModelFactory {
                             const reference = getReference("CRS:84");
                             const shape = createPolygon(reference, [[0,0,0],[0,0,1000],[0.001,0,1000],[0.001,0,0]]);
                             const feature = new Feature(shape, {}, 1);
-                            const model = new FeatureModel(store);
+                            const model = new FeatureModel(store, {
+                                reference: crs1Reference
+                            });
                             (model as any).imageInfo = data;
                             const p0 = createPoint(reference, modelOptions.coordinates[0]);
                             const p1 = createPoint(reference, modelOptions.coordinates[1]);

@@ -22,6 +22,8 @@ import {ContextmenuRecords} from "../../contextmenu/ContextmenuRecords";
 import {EditSelectLayerTools} from "../layertreetools/EditSelectLayerTools";
 import {Shape} from "@luciad/ria/shape/Shape";
 import {ElementResizeListener} from "../../resizelistener/ElementResizeListener";
+import {LayerTreeVisitor} from "@luciad/ria/view/LayerTreeVisitor";
+import {LayerTreeNode} from "@luciad/ria/view/LayerTreeNode";
 
 interface Props {
     layer: FeatureLayer;
@@ -52,6 +54,24 @@ export const getFilenameFromModel = (model: FeatureModel, feature: Feature) => {
     return fileOrFileName;
 }
 
+function findFeatureModel(map: Map, url:string) {
+    let targetModel = null;
+    const layerTreeVisitor = {
+        visitLayer: (layer: any) => {
+            if (layer.model && layer.model.store instanceof FeaturesRestAPIStore && layer.model.store.url===url) {
+                targetModel = layer.model;
+            }
+            return LayerTreeVisitor.ReturnValue.CONTINUE;
+        },
+        visitLayerGroup: (layerGroup: any) => {
+            layerGroup.visitChildren(layerTreeVisitor, LayerTreeNode.VisitOrder.TOP_DOWN);
+            return LayerTreeVisitor.ReturnValue.CONTINUE;
+        }
+    };
+    map?.layerTree.visitChildren(layerTreeVisitor, LayerTreeNode.VisitOrder.TOP_DOWN);
+    return targetModel;
+}
+
 const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
     const divEl = useRef(null);
     const correctionFactor = useRef(1);
@@ -73,13 +93,23 @@ const PortCartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>
     }
 
     const createRestAPIFeatureLayer = (map: Map) => {
-        const createAnnotationsLayer = () =>{
+
+        const getFeatureModel = () => {
             const filename = getFilename();
             const url = "./annotations/" + filename.replace(/\//g, "_").replace(/\./g, "_");
+            let modelExists = null;
+            if (mainMap) {
+                modelExists = findFeatureModel(mainMap, url);
+            }
+            if (modelExists) return modelExists;
             const featureStore = new FeaturesRestAPIStore({url, reference: crs1Reference});
-            const featureModel = new FeatureModel(featureStore, {
+            return new FeatureModel(featureStore, {
                 reference: crs1Reference
-            });
+            })
+        }
+        const createAnnotationsLayer = () =>{
+
+            const featureModel = getFeatureModel();
             return new FeatureLayer(featureModel, {
                 selectable: true,
                 editable: true,

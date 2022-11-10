@@ -329,9 +329,9 @@ class LayerFactory {
 
     static createVerticalFeatureLayer(model: FeatureModel, layerOptions: any) {
         return new Promise<FeatureLayer>((resolve)=>{
-            const layer = new FeatureLayer(model, layerOptions);
-            layer.painter = new CartesianAnnotationsPainter();
-            layer.shapeProvider = new VerticalFeaturesShapeProvider(layer.model);
+            const shapeProvider = new VerticalFeaturesShapeProvider(model);
+            const painter = new CartesianAnnotationsPainter();
+            const layer = new FeatureLayer(model, {...layerOptions, shapeProvider, painter});
             resolve(layer);
         })
     }

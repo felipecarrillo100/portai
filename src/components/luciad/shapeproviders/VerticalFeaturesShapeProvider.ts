@@ -46,7 +46,7 @@ class VerticalFeaturesShapeProvider extends ShapeProvider {
         this.p0 = this.pvGeodesy.interpolate(p0, 0.05, alpha);
         this.p1 = this.pvGeodesy.interpolate(p1, 0.05, alpha);
         this.p3 = createPoint(this.p0.reference,[this.p1.x, this.p1.y, this.p0.z]);
-        // this.reference = this.p0.reference;
+        this.reference = this.p0.reference;
     }
 
     provideShape(feature: Feature): Shape | null {
