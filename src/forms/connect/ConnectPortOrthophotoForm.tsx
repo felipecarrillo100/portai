@@ -118,7 +118,7 @@ const ConnectPortOrthophotoForm = (props: FormProps) =>{
                     layer: {
                         label: inputs.label+ "(Orthophoto)",
                         visible: true,
-                        selectable: true
+                        selectable: false
                     },
                     autoZoom: true,
                 }
