@@ -75,7 +75,7 @@ const ConnectPortOrthophotoForm = (props: FormProps) =>{
     }
 
     const loadAvailableDatasets = () => {
-        const request = "http://localhost:5000/portInfo/";
+        const request = "./portInfo/";
         fetch(request)
             .then(response => {
                 return response.json();
