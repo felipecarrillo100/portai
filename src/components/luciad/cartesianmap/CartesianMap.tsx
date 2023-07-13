@@ -127,7 +127,7 @@ const CartesianMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) =>
                         tileWidth: imageInfo.tileWidth ,
                         tileHeight: imageInfo.tileHeight,
                         credentials: false
-                    });
+                    } );
 
                     resolve(new RasterTileSetLayer(urlTileSetModel, {
                         label: layerName,

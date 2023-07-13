@@ -179,7 +179,7 @@ const LuciadMap: React.FC<Props> = (props: React.PropsWithChildren<Props>) => {
                     setShowLeaveButton(false)
                 });
             }
-            if (newMap.mapNavigator.constraints.above) newMap.mapNavigator.constraints.above.minAltitude = 0; // 0.5;
+           if (newMap.mapNavigator.constraints.above) newMap.mapNavigator.constraints.above.minAltitude = 0; // 0.5;
             newMap.onShowContextMenu = onShowContextMenu;
             const mapHandler = new MapHandler(newMap);
             mapHandler.onLayerTreeChange = notifyLayerChange;

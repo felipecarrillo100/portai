@@ -1,8 +1,12 @@
-import {UrlTileSetModel, URLTileSetModelConstructorOptions} from "@luciad/ria/model/tileset/UrlTileSetModel";
+import {
+    UrlTileSetModel,
+    URLTileSetModelConstructorDeprecatedOptions,
+    URLTileSetModelConstructorOptions
+} from "@luciad/ria/model/tileset/UrlTileSetModel";
 import {TileCoordinate} from "@luciad/ria/model/tileset/TileCoordinate";
 
 class UrlTileSetModelCartesian extends UrlTileSetModel {
-    constructor(options: URLTileSetModelConstructorOptions) {
+    constructor(options: URLTileSetModelConstructorOptions | URLTileSetModelConstructorDeprecatedOptions) {
         super(options);
     }
 

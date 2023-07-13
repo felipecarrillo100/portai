@@ -7,6 +7,7 @@ import { Map } from "@luciad/ria/view/Map";
 import { GeoCanvas } from "@luciad/ria/view/style/GeoCanvas";
 import GeoTools from "../utils/GeoTools";
 import {ScreenMessage} from "../../../screen/ScreenMessage";
+import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer";
 
 type CreateFeatureInLayerOnComplete = (feature: Feature, layer?: Layer) => any;
 
@@ -36,9 +37,11 @@ class CreateFeatureInLayerController extends BasicCreateController {
             this.promiseReject = reject;
         }));
     }
-    public onChooseLayer = (aMapView: Map) => {
-        return this.layer;
-    };
+
+    onChooseLayer(map: Map): FeatureLayer | null {
+        return this.layer as FeatureLayer;
+    }
+
     public onDeactivate(map: Map){
         super.onDeactivate(map);
         map.controller = this.fallbackController;
@@ -46,45 +49,47 @@ class CreateFeatureInLayerController extends BasicCreateController {
             this.promiseReject();
         }
     }
-    public onCreateNewObject(aMapView: Map, aLayer: Layer) {
+    public onCreateNewObject(aMapView: Map, aLayer: FeatureLayer) {
         const feature =  super.onCreateNewObject(aMapView, aLayer);
         return feature;
     }
     public onDraw(geoCanvas: GeoCanvas) {
         super.onDraw(geoCanvas);
     }
-    public onObjectCreated(aMapView: Map, aLayer: Layer, feature: any): boolean {
-        const layer = aLayer;
-        let newFeature = feature;
-        // If Shape === Bounds it will be converted to a Polygon
-        const targetID = this.forceID !== null ? this.forceID : feature.id;
-        if (feature.shape.type === ShapeType.BOUNDS) {
-            const newShape = GeoTools.createGeoJSONShapeFromBounds(feature.shape);
-            newFeature = new Feature(newShape, feature.properties, targetID);
-        } else
-            // tslint:disable-next-line:no-bitwise
-        if (ShapeType.CIRCLE_BY_CENTER_POINT  & feature.shape.type) {
-            const newShape = GeoTools.createDiscreteCircle_SHORTEST_DISTANCE(feature.shape.center, feature.shape.radius, 60);
-            newFeature = new Feature(newShape, feature.properties, targetID);
-        } else if (this.forceID!==null){
-            newFeature = new Feature(feature.shape, feature.properties, targetID);
-        }
-        const model = layer.model as any;
-        if (model.add) {
-            super.onObjectCreated(aMapView, layer, newFeature);
-            if (this.callOnCompletion) {
-                this.callOnCompletion(newFeature, layer)
+
+    onObjectCreated(aMapView: Map, aLayer: FeatureLayer, aFeature: Feature): void | Promise<void> {
+            const layer = aLayer;
+            const feature = aFeature as any;
+            let newFeature = feature;
+            // If Shape === Bounds it will be converted to a Polygon
+            const targetID = this.forceID !== null ? this.forceID : feature.id;
+            if (feature.shape.type === ShapeType.BOUNDS) {
+                const newShape = GeoTools.createGeoJSONShapeFromBounds(feature.shape);
+                newFeature = new Feature(newShape, feature.properties, targetID);
+            } else
+                // tslint:disable-next-line:no-bitwise
+            if (ShapeType.CIRCLE_BY_CENTER_POINT  & feature.shape.type) {
+                const newShape = GeoTools.createDiscreteCircle_SHORTEST_DISTANCE(feature.shape.center, feature.shape.radius, 60);
+                newFeature = new Feature(newShape, feature.properties, targetID);
+            } else if (this.forceID!==null){
+                newFeature = new Feature(feature.shape, feature.properties, targetID);
             }
-            if (this.promiseResolve){
-                this.promiseResolve(newFeature);
-                this.promiseReject = null;
+            const model = layer.model as any;
+            if (model.add) {
+                super.onObjectCreated(aMapView, layer as any, newFeature);
+                if (this.callOnCompletion) {
+                    this.callOnCompletion(newFeature, layer)
+                }
+                if (this.promiseResolve){
+                    this.promiseResolve(newFeature);
+                    this.promiseReject = null;
+                }
             }
-        }
-        else {
-            ScreenMessage.error("Layer can not be edited:" + layer.label);
-        }
-        return true;
+            else {
+                ScreenMessage.error("Layer can not be edited:" + layer.label);
+            }
     }
+
 }
 
 export default CreateFeatureInLayerController;
